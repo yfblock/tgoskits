@@ -355,7 +355,7 @@ dependencies = [
  "kspin",
  "log",
  "memory_addr",
- "percpu",
+ "percpu 0.3.1",
  "strum",
 ]
 
@@ -433,7 +433,7 @@ dependencies = [
  "memory_addr",
  "page_table_entry",
  "page_table_multiarch",
- "percpu",
+ "percpu 0.2.3-preview.1",
  "riscv",
  "static_assertions",
  "tock-registers 0.10.1",
@@ -743,7 +743,7 @@ dependencies = [
  "log",
  "memory_addr",
  "page_table_multiarch",
- "percpu",
+ "percpu 0.3.1",
  "spin 0.10.0",
 ]
 
@@ -778,7 +778,7 @@ dependencies = [
  "kspin",
  "lazyinit",
  "log",
- "percpu",
+ "percpu 0.3.1",
 ]
 
 [[package]]
@@ -888,7 +888,7 @@ dependencies = [
  "handler_table",
  "kspin",
  "memory_addr",
- "percpu",
+ "percpu 0.2.3-preview.1",
 ]
 
 [[package]]
@@ -988,7 +988,7 @@ dependencies = [
  "heapless 0.9.2",
  "log",
  "memory_addr",
- "percpu",
+ "percpu 0.3.1",
  "rd-block",
  "rdrive",
  "somehal",
@@ -1059,7 +1059,7 @@ dependencies = [
  "lazyinit",
  "log",
  "multiboot",
- "percpu",
+ "percpu 0.2.3-preview.1",
  "raw-cpuid 11.6.0",
  "uart_16550",
  "x2apic",
@@ -1105,7 +1105,7 @@ dependencies = [
  "crate_interface 0.1.4",
  "ctor_bare",
  "indoc",
- "percpu",
+ "percpu 0.3.1",
 ]
 
 [[package]]
@@ -1164,7 +1164,7 @@ dependencies = [
  "lazyinit",
  "log",
  "memory_addr",
- "percpu",
+ "percpu 0.3.1",
  "spin 0.10.0",
 ]
 
@@ -2553,9 +2553,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8c03ecfaf97c11a791d8b65e34a6353d012a735a5cbfebba34ee6668da16ce38"
 dependencies = [
  "cfg-if",
- "kernel_guard",
- "percpu_macros",
+ "percpu_macros 0.2.3-preview.1",
  "spin 0.10.0",
+ "x86",
+]
+
+[[package]]
+name = "percpu"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93b6fe1254fea36c3e47e738d214915a2ec3fbdc9785319af0258b2373997e69"
+dependencies = [
+ "cfg-if",
+ "kernel_guard",
+ "percpu_macros 0.3.1",
  "x86",
 ]
 
@@ -2564,6 +2575,18 @@ name = "percpu_macros"
 version = "0.2.3-preview.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6660d83b91174e6d39fae0cdf893889dcdbffda6e99664f8ee8a45fde6a6936c"
+dependencies = [
+ "cfg-if",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
+name = "percpu_macros"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf0555054a19885a701a7b1680cd727cebbf3a50a2d129fdcc4caaaa08729237"
 dependencies = [
  "cfg-if",
  "proc-macro2",
@@ -3000,7 +3023,7 @@ version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c80f3dd0611957c9384d8e5b076236a265e873b41dcae7ccc5d1ba4fe58e32ae"
 dependencies = [
- "percpu",
+ "percpu 0.2.3-preview.1",
  "spin 0.10.0",
 ]
 
@@ -3102,9 +3125,9 @@ dependencies = [
 
 [[package]]
 name = "someboot"
-version = "0.1.8"
+version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9afbf93ac5c9501d93d1496f58ff089ac3aa02648adedad5777a767bcfd448ad"
+checksum = "4877fed8767a4012fee195bc791f3f0b5224a110ffd795566a3f4c579fe8a1fa"
 dependencies = [
  "aarch64-cpu 11.2.0",
  "aarch64-cpu-ext",
@@ -3142,13 +3165,14 @@ dependencies = [
  "tock-registers 0.10.1",
  "uefi",
  "uguid",
+ "x86",
 ]
 
 [[package]]
 name = "somehal"
-version = "0.6.3"
+version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df2e441db2f693b803ee5fdf85b89bcc1830c83ae483406d4f0bb74cf90473a6"
+checksum = "60cb0a4534555ab461547d0c43044fc27d6069044078ab30172994fed80a7cb5"
 dependencies = [
  "aarch64-cpu 11.2.0",
  "anyhow",
@@ -3756,7 +3780,3 @@ dependencies = [
  "quote",
  "syn 2.0.117",
 ]
-
-[[patch.unused]]
-name = "ostool"
-version = "0.8.13"

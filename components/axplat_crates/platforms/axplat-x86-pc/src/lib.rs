@@ -8,6 +8,7 @@ extern crate axplat;
 mod apic;
 mod boot;
 mod console;
+mod hw;
 mod init;
 mod mem;
 mod power;

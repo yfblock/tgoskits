@@ -22,6 +22,7 @@ pub mod config {
 
 mod boot;
 mod dw_apb_uart;
+mod hw;
 mod init;
 mod mem;
 mod misc;

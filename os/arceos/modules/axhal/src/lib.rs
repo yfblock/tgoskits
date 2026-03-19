@@ -122,7 +122,7 @@ pub fn init_early(cpu_id: usize, arg: usize) {
 /// When SMP is disabled, this function always returns 1.
 ///
 /// When SMP is enabled, it's the smaller one between the platform-declared CPU
-/// number [`axplat::power::cpu_num`] and the configured maximum CPU number
+/// number [`axplat::hw::cpu_num`] and the configured maximum CPU number
 /// `axconfig::plat::MAX_CPU_NUM`.
 ///
 /// This value is determined during the BSP initialization phase.
@@ -135,7 +135,7 @@ pub fn cpu_num() -> usize {
         /// platform crate and limited by the configured maximum CPU number.
         static CPU_NUM: Lazy<usize> = Lazy::new(|| {
             let max_cpu_num = axconfig::plat::MAX_CPU_NUM;
-            let plat_cpu_num = axplat::power::cpu_num();
+            let plat_cpu_num = axplat::hw::cpu_num();
             let cpu_num = plat_cpu_num.min(max_cpu_num);
 
             info!("CPU number: max = {max_cpu_num}, platform = {plat_cpu_num}, use = {cpu_num}");

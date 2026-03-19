@@ -1,3 +1,4 @@
+use axplat::mem::pa;
 use axplat::power::PowerIf;
 
 struct PowerImpl;
@@ -26,10 +27,5 @@ impl PowerIf for PowerImpl {
     fn system_off() -> ! {
         info!("Shutting down...");
         axplat_aarch64_peripherals::psci::system_off()
-    }
-
-    /// Get the number of CPU cores available on this platform.
-    fn cpu_num() -> usize {
-        crate::config::plat::MAX_CPU_NUM
     }
 }

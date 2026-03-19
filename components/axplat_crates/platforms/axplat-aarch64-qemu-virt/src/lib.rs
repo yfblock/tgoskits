@@ -4,6 +4,7 @@
 extern crate axplat;
 
 mod boot;
+mod hw;
 mod init;
 mod mem;
 mod power;

@@ -21,6 +21,7 @@ pub mod config {
 }
 
 mod boot;
+mod hw;
 mod init;
 mod mem;
 mod power;

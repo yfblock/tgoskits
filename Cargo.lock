@@ -6648,9 +6648,9 @@ dependencies = [
 
 [[package]]
 name = "someboot"
-version = "0.1.9"
+version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3557a437ad0d81e4ff6935da1ee7c06ca4d8f086db2e9838a941697d879221b3"
+checksum = "4877fed8767a4012fee195bc791f3f0b5224a110ffd795566a3f4c579fe8a1fa"
 dependencies = [
  "aarch64-cpu 11.2.0",
  "aarch64-cpu-ext",
@@ -6688,13 +6688,14 @@ dependencies = [
  "tock-registers 0.10.1",
  "uefi",
  "uguid",
+ "x86",
 ]
 
 [[package]]
 name = "somehal"
-version = "0.6.3"
+version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df2e441db2f693b803ee5fdf85b89bcc1830c83ae483406d4f0bb74cf90473a6"
+checksum = "60cb0a4534555ab461547d0c43044fc27d6069044078ab30172994fed80a7cb5"
 dependencies = [
  "aarch64-cpu 11.2.0",
  "anyhow",

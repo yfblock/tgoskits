@@ -1,6 +1,7 @@
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![doc = include_str!("../README.md")]
+#![feature(linkage)]
 
 #[macro_use]
 extern crate axplat_macros;
@@ -13,6 +14,7 @@ pub mod mem;
 pub mod percpu;
 pub mod power;
 pub mod time;
+pub mod hw;
 
 pub use axplat_macros::main;
 pub use crate_interface::impl_interface as impl_plat_interface;

@@ -24,7 +24,11 @@ pub fn this_cpu_is_bsp() -> bool {
 /// This function should be called as early as possible, as other
 /// initializations may access the CPU-local data.
 pub fn init_primary(cpu_id: usize) {
-    percpu::init_in_place();
+    match crate::hw::early_percpu_area() {
+        Some(area) => percpu::init(area, crate::hw::cpu_num()),
+        None => percpu::init_in_place(),
+    }.expect("Failed to initialize percpu");
+
     percpu::init_percpu_reg(cpu_id);
     unsafe {
         CPU_ID.write_current_raw(cpu_id);

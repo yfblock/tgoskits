@@ -64,7 +64,7 @@ impl MemIf for MemIfImpl {
     }
 }
 
-#[unsafe(no_mangle)]
-fn _percpu_base_ptr(idx: usize) -> *mut u8 {
-    somehal::smp::percpu_data_ptr(idx).unwrap_or_default()
-}
+// #[unsafe(no_mangle)]
+// fn _percpu_base_ptr(idx: usize) -> *mut u8 {
+//     somehal::smp::percpu_data_ptr(idx).unwrap_or_default()
+// }

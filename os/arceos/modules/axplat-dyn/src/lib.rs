@@ -14,6 +14,7 @@ mod boot;
 mod console;
 pub mod drivers;
 mod generic_timer;
+mod hw;
 mod init;
 #[cfg(feature = "irq")]
 mod irq;

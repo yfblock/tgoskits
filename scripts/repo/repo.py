@@ -429,6 +429,18 @@ class GitSubtreeManager:
         # Use bash to invoke git-subtree to avoid dash's hardcoded 1000-recursion
         # limit, which is hit when the repo history exceeds ~1000 commits.
         subtree_env = self._git_subtree_env()
+
+        # Clear any stale subtree split cache before pushing.  Some git-subtree
+        # versions call `git notes add` (not `--force`) when caching a split
+        # result, which raises "fatal: cache for <hash> already exists!" if the
+        # same commit was previously cached.  Deleting the notes ref beforehand
+        # is safe; the cache is purely a performance optimisation and will be
+        # rebuilt automatically on the next operation.
+        subprocess.run(
+            ['git', 'update-ref', '-d', 'refs/notes/subtree-cache'],
+            capture_output=True,
+        )
+
         cmd = self._git_subtree_cmd('push', [
             '--quiet',
             '--prefix=' + target_dir,

@@ -242,6 +242,45 @@ class GitSubtreeManager:
         return name
 
     @staticmethod
+    def detect_current_branch() -> str:
+        """Detect the current source branch from git or CI environment."""
+        result = subprocess.run(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode == 0:
+            branch = result.stdout.strip()
+            if branch and branch != "HEAD":
+                return branch
+
+        # GitHub Actions often checks out a detached HEAD, so fall back to env.
+        for env_name in ("GITHUB_REF_NAME", "GITHUB_HEAD_REF"):
+            branch = os.environ.get(env_name, "").strip()
+            if branch:
+                return branch
+
+        return ""
+
+    def detect_remote_branch(self, url: str, target_dir: str) -> str:
+        """Auto-detect the default branch for a repository by fetching a temp remote."""
+        remote_name = target_dir.replace('/', '_')
+        subprocess.run(['git', 'remote', 'add', remote_name, url], capture_output=True)
+
+        try:
+            fetch_result = subprocess.run(
+                ['git', 'fetch', remote_name, '--no-tags'],
+                capture_output=True,
+                text=True,
+            )
+            if fetch_result.returncode != 0:
+                raise ValueError(f"Failed to fetch from {url}")
+
+            return self.detect_branch(url, remote_name)
+        finally:
+            subprocess.run(['git', 'remote', 'remove', remote_name], capture_output=True)
+
+    @staticmethod
     def check_working_tree_clean() -> bool:
         """Check if working tree is clean (no uncommitted changes)."""
         result = subprocess.run(
@@ -407,7 +446,7 @@ class GitSubtreeManager:
 
         repo_name = self.get_repo_name(url)
 
-        # Push to the component dev branch by default.
+        # Fall back to dev only if the caller did not resolve a target branch.
         if branch == "":
             branch = PUSH_DEFAULT_BRANCH
             print(f"Using default push branch: {branch}")
@@ -676,11 +715,27 @@ def cmd_push(args: argparse.Namespace) -> int:
             skipped.append(f"{repo.repo_name} (no target_dir)")
             continue
 
-        # Use command-line branch if specified, otherwise push to the default dev branch.
-        branch = args.branch if args.branch else PUSH_DEFAULT_BRANCH
+        if args.branch:
+            branch = args.branch
+            branch_source = "command-line override"
+        elif repo.branch:
+            branch = repo.branch
+            branch_source = "repos.csv"
+        else:
+            try:
+                branch = git_manager.detect_remote_branch(repo.url, repo.target_dir)
+            except ValueError as e:
+                print(f"Error resolving branch for {repo.repo_name}: {e}", file=sys.stderr)
+                if not args.all:
+                    return 1
+                continue
+            branch_source = "remote default branch"
 
         try:
             print(f"\nPushing {repo.repo_name}...", flush=True)
+            source_branch = git_manager.detect_current_branch() or "<unknown>"
+            print(f"Branch mapping: tgoskits {source_branch} -> {repo.repo_name} {branch}", flush=True)
+            print(f"Target branch source: {branch_source}", flush=True)
             if args.force:
                 print("Using force mode (will force-push subtree history)", flush=True)
             git_manager.push_subtree(repo.url, repo.target_dir, branch, force=args.force)
@@ -923,7 +978,7 @@ Examples:
     push_parser.add_argument('repo_name', nargs='?', help='Repository name (or use --all)')
     push_parser.add_argument('--all', action='store_true', help='Push all repositories')
     push_parser.add_argument('-b', '--branch', default='',
-                             help=f'Branch name (default: {PUSH_DEFAULT_BRANCH})')
+                             help='Target branch override for all selected repositories')
     push_parser.add_argument('-f', '--force', action='store_true',
                              help='Force push subtree history to remote')
 

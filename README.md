@@ -50,9 +50,11 @@ tgoskits/
 feature/* ──PR──► dev ──push.yml──► 独立组件仓库 dev 分支
                    │
                 定期合并
-                   │
                    ▼
-           main ◄──PR── 独立组件仓库 main 更新
+                 main ──push.yml──► ArceOS 组件 release / 其他组件 main
+                   ▲
+                   │ 独立组件仓库 push.yml + PR
+                   └────────────── 独立组件仓库 main 更新
 ```
 
 详见 [docs/repo.md](docs/repo.md#9-分支管理)。

@@ -42,9 +42,112 @@ tgoskits/
 - 大多数组件直接平铺在 `components/` 下
 - 组件分类主要来自 `scripts/repo/repos.csv` 中的 `category` 字段，而不是目录层级
 
-## 2. 组件配置
+## 2. 分支管理
 
-### 2.1 为什么需要 `repos.csv`
+TGOSKits 主仓库采用三层层级的分支管理策略：`main` 作为稳定发布分支、`dev` 作为集成分支、以及开发者个人使用的功能分支。这套策略与第 6 节描述的双向自动同步机制紧密配合。
+
+### 2.1 分支总览
+
+```text
+功能分支 (feature/*, fix/*, ...)
+    │  开发者本地开发、自测
+    │
+    │  PR（禁止直接发到 main）
+    ▼
+  dev  集成分支
+    │  实时汇聚开发功能、执行 CI 测试
+    │  push.yml 自动推送 subtree 改动到组件仓库 dev
+    │
+    │  定期合并到 main（含分支保护）
+    ▼
+ main  稳定发布分支
+    │  带有分支保护，每周合并来自 dev 的内容
+    │  push.yml 自动推送 subtree 改动到组件仓库 release/main
+    │  根据需要发布版本
+    │  接收组件仓库反向同步 PR
+    └──────────────────────────────────────
+```
+
+### 2.2 main 分支 — 稳定发布分支
+
+`main` 分支是仓库的稳定基线，始终处于可发布状态。该分支带有分支保护规则（见下方），确保只有经过充分验证的代码才能进入。
+
+核心规则：
+
+- **每周合并**：定期从 `dev` 分支合并最新内容，合并前应确认 CI 测试通过
+- **版本发布**：作为稳定发布线独立演进，由 `release.yml` 自动创建或更新面向 `main` 的版本 PR，并在 PR 合并后执行正式发布
+- **分支保护**：禁止直接 push，所有代码变更必须通过 PR 进入
+- **接收同步 PR**：组件仓库通过其 `push.yml` 向主仓库 `main` 发起的 subtree 同步 PR 也在此合并
+
+### 2.3 dev 分支 — 集成分支
+
+`dev` 分支是日常开发的主战场，所有功能开发和 bug 修复最终都汇聚到这里。
+
+核心规则：
+
+- **实时汇聚**：所有经 PR 验证的功能分支合并到 `dev`，确保开发进度持续集成
+- **CI 测试**：`dev` 分支上的每次 push 都触发 CI 测试（`.github/workflows/test.yml` 等），确保代码质量
+- **自动同步**：`dev` 分支上的 push 会触发 `push.yml`，自动将组件改动推送到各组件仓库的 `dev` 分支（详见第 6.1 节）
+- **独立发布**：`dev` 也会由 `release.yml` 自动创建或更新面向 `dev` 的版本 PR，并在 PR 合并后执行正式发布
+- **作为合并源**：`main` 分支仍可定期从 `dev` 合并，因此 `dev` 应保持可编译、可测试的状态
+
+### 2.4 功能分支 — 开发者个人分支
+
+开发者基于 `dev` 分支创建功能分支进行开发。功能分支的命名建议遵循以下约定：
+
+| 类型 | 命名格式 | 示例 |
+|------|----------|------|
+| 新功能 | `feature/<描述>` | `feature/vm-pause-resume` |
+| Bug 修复 | `fix/<描述>` | `fix/pl011-uart-overflow` |
+| 重构 | `refactor/<描述>` | `refactor/axvm-crate-split` |
+| 文档 | `docs/<描述>` | `docs/branch-policy` |
+| 实验性 | `experiment/<描述>` | `experiment/riscv-smp` |
+
+### 2.5 PR 规则与合并流程
+
+所有代码变更必须通过 Pull Request 进入 `dev` 分支，以下是合并流程的关键约束：
+
+```text
+1. 开发者在功能分支上完成开发和自测
+2. 向 dev 分支提交 PR（禁止直接向 main 提交 PR）
+3. CI 自动运行测试矩阵
+4. 代码评审通过、CI 绿色后合并到 dev
+5. dev 积累一定周期后，定期合并到 main 并发布
+```
+
+**重要约束**：
+
+| 规则 | 说明 |
+|------|------|
+| **禁止直接 PR 到 main** | 所有开发 PR 的目标分支必须是 `dev`，只有维护者在定期合并时才操作 `main` |
+| **功能分支基于 dev** | 新功能分支应从 `dev` 创建，不要从 `main` 创建，以避免合并冲突 |
+| **保持分支更新** | 功能分支开发周期较长时，应定期 rebase `dev` 以减少最终合并的冲突 |
+| **PR 描述完整** | PR 应包含变更说明、测试方法和关联 issue |
+
+### 2.6 与自动同步的关系
+
+分支管理策略与第 6 节描述的双向自动同步机制紧密配合，具体关系如下：
+
+- **主仓库 `dev` → 组件仓库 `dev`**：`push.yml` 在 `dev` 分支 push 时触发，自动推送 subtree 改动到所有组件仓库的 `dev`
+- **主仓库 `main` → 组件仓库 `release/main`**：`push.yml` 在 `main` 分支 push 时触发，`arceos-org/*` 推到 `release`，其他仓库推到 `main`
+- **组件仓库 `main` → 主仓库 `main`**：组件仓库的 `push.yml` 在组件仓库主线更新时触发，向主仓库 `main` 发起同步 PR
+- **主仓库 `main/dev` 版本编排**：`release.yml` 在 `main` 和 `dev` 分支的 push 上运行，自动检测组件变动并创建或更新版本 PR
+- **主仓库正式发布**：`main` 和 `dev` 上的版本 PR 合并后，`release-plz` 都会在主仓库创建 tag、GitHub Release，并将可发布 crate 发布到 crates.io
+
+```text
+功能分支 ──PR──► 主仓 dev ──push.yml──► 组件仓库 dev
+                      │
+                      ├─ 定期合并
+                      ▼
+                主仓 main ──push.yml──► 组件仓库 release 或 main
+                      ▲
+                      │ 组件仓库 push.yml（以 PR 方式）
+组件仓库 main ─────────┘
+```
+
+## 3. 组件配置
+
+### 3.1 `repos.csv`
 
 Git Subtree 不像 Git Submodule 那样自带 `.gitmodules`。这意味着：
 
@@ -54,7 +157,7 @@ Git Subtree 不像 Git Submodule 那样自带 `.gitmodules`。这意味着：
 
 因此，TGOSKits 使用 [repos.csv](/home/zcs/WORKSPACE/tgoskits/scripts/repo/repos.csv) 作为组件来源配置清单。
 
-### 2.2 字段说明
+### 3.2 字段说明
 
 `repos.csv` 的格式为：
 
@@ -72,7 +175,7 @@ url,branch,target_dir,category,description
 | `category` | 否 | 组件分类 | `ArceOS` |
 | `description` | 否 | 备注描述 | `CPU abstraction component` |
 
-### 2.3 当前组件分布
+### 3.3 当前组件分布
 
 仓库中的组件大致分为以下几类：
 
@@ -91,7 +194,7 @@ python3 scripts/repo/repo.py list
 python3 scripts/repo/repo.py list --category Hypervisor
 ```
 
-## 3. `repo.py` 管理命令
+## 4. `repo.py` 管理命令
 
 [repo.py](/home/zcs/WORKSPACE/tgoskits/scripts/repo/repo.py) 是主仓库里的 subtree 管理入口。它负责：
 
@@ -99,7 +202,7 @@ python3 scripts/repo/repo.py list --category Hypervisor
 - 封装 `git subtree add/pull/push`
 - 在未显式指定分支时，按配置或远端默认分支解析目标分支
 
-### 3.1 添加组件
+### 4.1 添加组件
 
 使用 `repo.py add` 命令可以将一个新的组件仓库以 subtree 的方式添加到主仓库中。该命令会自动将组件信息写入 `repos.csv` 配置文件，并执行 `git subtree add` 操作将组件代码拉取到指定的目标目录。
 
@@ -129,7 +232,7 @@ python3 scripts/repo/repo.py add \
 3. 写入 `repos.csv`
 4. 执行 `git subtree add`
 
-### 3.2 移除组件
+### 4.2 移除组件
 
 使用 `repo.py remove` 命令可以从 `repos.csv` 配置文件中移除指定组件的记录。如果需要同时删除组件目录，可以添加 `--remove-dir` 选项。
 
@@ -138,7 +241,7 @@ python3 scripts/repo/repo.py remove old-component
 python3 scripts/repo/repo.py remove old-component --remove-dir
 ```
 
-### 3.3 切换组件分支
+### 4.3 切换组件分支
 
 使用 `repo.py branch` 命令可以切换组件所跟踪的分支。该命令会先执行 subtree pull 同步新分支的代码，成功后会更新 `repos.csv` 中对应组件的 `branch` 字段。
 
@@ -147,7 +250,7 @@ python3 scripts/repo/repo.py branch arm_vcpu dev
 python3 scripts/repo/repo.py branch arm_vcpu main
 ```
 
-### 3.4 批量初始化
+### 4.4 批量初始化
 
 使用 `repo.py init` 命令可以根据 `repos.csv` 配置文件批量初始化所有组件的 subtree。这个命令适合在新环境中首次拉取所有组件时使用。
 
@@ -155,32 +258,9 @@ python3 scripts/repo/repo.py branch arm_vcpu main
 python3 scripts/repo/repo.py init -f scripts/repo/repos.csv
 ```
 
-## 4. 分支解析规则
-
-### 4.1 `add` / `pull` 的默认分支
-
-当 `repos.csv` 的 `branch` 字段为空，且命令行也没有显式传入 `-b/--branch` 参数时，`repo.py` 会自动检测组件仓库的默认分支。检测逻辑是依次尝试 `main` 分支、`master` 分支、读取 remote 的 `HEAD branch`，最后兜底为 `main`。这套自动检测逻辑主要用于 `repo.py add`、`repo.py pull` 以及 `repo.py list` 中的分支展示。
-
-### 4.2 `push` 的默认分支
-
-`repo.py push` 和 `pull` 在“分支来源优先级”上是相似的，都是优先尊重命令行参数，其次读取 `repos.csv`，最后再自动检测。因此，两者的主要差异不在优先级顺序，而在于“自动检测的对象”和“是否带源分支提示”。
-
-`push` 的优先级如下：
-
-- 显式 `-b/--branch`
-- `scripts/repo/repos.csv` 中该组件的 `branch`
-- 自动检测组件仓库的远端默认分支
-
-与 `pull` 相比，`push` 有两点额外区别：
-
-- `pull` 的自动检测主要用于决定“从哪个远端分支拉取并合并到主仓库”
-- `push` 的自动检测主要用于决定“把主仓库中的 subtree 改动推送到组件仓库的哪个远端分支”
-
-另外，`repo.py push` 会额外检测当前主仓库源分支并打印提示，例如 `tgoskits main -> axcpu release`。这个源分支信息仅用于日志展示，不参与手工 `push` 命令本身的目标分支解析。
-
-需要特别注意的是，主仓库 CI 的分支映射规则并不是由 `repo.py push` 内部决定的，而是由 [push.yml](/home/zcs/WORKSPACE/tgoskits/.github/workflows/push.yml) 先计算出目标分支，再显式通过 `-b` 传给 `repo.py push`。`repo.py` 在本地优先读取当前 Git 分支，在 GitHub Actions 这类 detached HEAD 场景下则会回退到环境变量。
-
 ## 5. 手动同步
+
+仓库提供了 `scripts/repo/repo.py` 工具来实现当前主仓库与独立组件仓库的双向同步，以便处理某些特殊情况下的同步。但是，一般情况下，无需手动同步，仓库配置了 CI 来实现自动同步！
 
 ### 5.1 从组件仓库同步到主仓库
 
@@ -197,6 +277,8 @@ python3 scripts/repo/repo.py pull --all
 ```bash
 python3 scripts/repo/repo.py pull arm_vcpu --force
 ```
+
+需要注意的是，当 `repos.csv` 的 `branch` 字段为空，且命令行也没有显式传入 `-b/--branch` 参数时，`repo.py` 会自动检测组件仓库的默认分支。检测逻辑是依次尝试 `main` 分支、`master` 分支、读取 remote 的 `HEAD branch`，最后兜底为 `main`。这套自动检测逻辑主要用于 `repo.py add`、`repo.py pull` 以及 `repo.py list` 中的分支展示。
 
 ### 5.2 从主仓库同步到组件仓库
 
@@ -215,6 +297,21 @@ python3 scripts/repo/repo.py push --all
 - 执行 `python3 scripts/repo/repo.py push axcpu -b release`，会直接推送到 `release`
 - 如果 `repos.csv` 中 `axcpu` 的 `branch` 记录为 `dev`，执行 `python3 scripts/repo/repo.py push axcpu` 时会推送到 `dev`
 - 如果 `repos.csv` 中 `arm_vcpu` 的 `branch` 为空，执行 `python3 scripts/repo/repo.py push arm_vcpu` 时会自动检测组件仓库默认分支并推送到该分支
+
+`repo.py push` 和 `pull` 在“分支来源优先级”上是相似的，都是优先尊重命令行参数，其次读取 `repos.csv`，最后再自动检测。因此，两者的主要差异不在优先级顺序，而在于“自动检测的对象”和“是否带源分支提示”。
+
+`push` 的优先级如下：
+
+- 显式 `-b/--branch`
+- `scripts/repo/repos.csv` 中该组件的 `branch`
+- 自动检测组件仓库的远端默认分支
+
+与 `pull` 相比，`push` 有两点额外区别：
+
+- `pull` 的自动检测主要用于决定“从哪个远端分支拉取并合并到主仓库”
+- `push` 的自动检测主要用于决定“把主仓库中的 subtree 改动推送到组件仓库的哪个远端分支”
+
+另外，`repo.py push` 会额外检测当前主仓库源分支并打印提示，例如 `tgoskits main -> axcpu release`。这个源分支信息仅用于日志展示，不参与手工 `push` 命令本身的目标分支解析。
 
 需要注意的是，`git subtree push` 本身并不支持单独的 `--force` 参数，强制推送是通过 refspec 形式（例如 `+dev`）实现的。如果组件仓库远端已经前进，通常应先做同步确认，再决定是否使用强制推送。
 
@@ -252,6 +349,8 @@ python3 scripts/repo/repo.py push --all
 - 主仓库 `main` -> `arceos-org/*` 的 `release`
 - 主仓库 `main` -> 非 `arceos-org/*` 的 `main`
 - 主仓库 `dev` -> 所有组件仓库的 `dev`
+
+需要特别注意的是，主仓库 CI 的分支映射规则并不是由 `repo.py push` 内部决定的，而是由 [push.yml](/home/zcs/WORKSPACE/tgoskits/.github/workflows/push.yml) 先计算出目标分支，再显式通过 `-b` 传给 `repo.py push`。`repo.py` 在本地优先读取当前 Git 分支，在 GitHub Actions 这类 detached HEAD 场景下则会回退到环境变量。
 
 #### 6.1.3 认证
 
@@ -416,9 +515,153 @@ T1        开发者修改组件代码
   ▼
 ```
 
-## 7. 开发场景示例
+## 7. 版本发布
 
-### 7.1 当前 CI 拓扑
+TGOSKits 当前使用 [`.github/workflows/release.yml`](/home/zcs/WORKSPACE/tgoskits/.github/workflows/release.yml) 和 [`release-plz.toml`](/home/zcs/WORKSPACE/tgoskits/release-plz.toml) 管理版本发布。它不再依赖“维护者先手工打 tag，再触发发布”的模式，而是改为“先自动生成版本 PR，合并后再正式发布”。
+
+### 7.1 目标
+
+这套发布流程主要解决三个问题：
+
+- 自动识别 workspace 中哪些 crate 发生了会影响发布的改动
+- 自动计算版本号并生成版本变更 PR，而不是手工逐个改 `Cargo.toml`
+- 在版本 PR 合并后，自动创建 tag、GitHub Release，并发布到 crates.io
+
+### 7.2 触发时机
+
+`release.yml` 会在以下场景触发：
+
+- push 到 `main`
+- push 到 `dev`
+- 手工执行 `workflow_dispatch`
+
+也就是说，`main` 和 `dev` 都会参与“版本编排”，并且两条分支都会各自生成 release PR、各自执行正式发布。它们在流程上是两条独立发布线。
+
+### 7.3 工作流结构
+
+当前 workflow 由两个 job 组成：
+
+- `release-pr`：执行 `release-plz update`，然后由 CI 自己创建或更新 PR
+- `release`：在 `main` 和 `dev` 上执行 `release-plz release`
+
+其中：
+
+- `release-pr` 负责扫描提交记录、分析 crate 变动、计算下一个版本、更新 changelog，并将结果提交到机器人分支 `release-plz-<base-branch>`
+- `release-pr` 随后会创建或更新一个 PR，使其从 `release-plz-<base-branch>` 合并回当前触发分支
+- `release` 负责在 `main` 和 `dev` 上，根据已经落在各自主线上的版本提交执行真正的发布动作
+
+[`release-plz.toml`](/home/zcs/WORKSPACE/tgoskits/release-plz.toml) 中当前设置了：
+
+```toml
+[workspace]
+release_always = false
+```
+
+这个配置的含义是：普通 push 不会直接发版，只有在版本变更已经通过 `release-plz-*` 机器人分支对应的 release PR 合入目标分支后，`release` job 才会真正执行发布。
+
+### 7.4 发布流程
+
+完整流程如下：
+
+```text
+功能开发 -> 合入 dev
+        -> release.yml 在 dev 上运行
+        -> release-plz 检测有发布价值的改动
+        -> 更新机器人分支 release-plz-dev
+        -> 创建或更新 PR: release-plz-dev -> dev
+        -> 合并该 PR 后，在 dev 上正式发布
+
+dev 定期合入 main
+        -> release.yml 在 main 上运行
+        -> 更新机器人分支 release-plz-main
+        -> 创建或更新 PR: release-plz-main -> main
+        -> 合并该 PR 后，在 main 上正式发布
+
+两条分支各自审核并合并自己的 release PR
+        -> release.yml 再次运行
+        -> release-plz release 执行正式发布
+        -> 创建 git tag / GitHub Release / 发布 crates.io
+```
+
+从维护动作上看，维护者通常不需要手工修改版本号，也不需要手工先打 tag；更常见的动作是：
+
+1. 在 `dev` 或 `main` 上推进需要发布的改动
+2. 等待或检查该分支自动生成的 release PR
+3. 审阅版本号、changelog、待发布 crate 列表
+4. 合并该分支对应的 release PR
+5. 等待 workflow 自动完成该分支上的 tag、GitHub Release 和 crates.io publish
+
+### 7.5 版本号如何更新
+
+release PR 会自动修改和发布相关的文件，通常包括：
+
+- 各 crate 的 `Cargo.toml` 版本号
+- 依赖了这些 crate 的内部依赖版本
+- `Cargo.lock`
+- `CHANGELOG.md`（如果对应 crate 启用了 changelog 生成）
+
+对 TGOSKits 这种 workspace 来说，版本号更新分两类：
+
+- 对于在各自 `Cargo.toml` 中显式写了 `version = "..."` 的 crate，release-plz 会直接修改该 crate 自己的版本号
+- 对于使用 `version.workspace = true` 的 crate，实际版本源头在根 [`Cargo.toml`](/home/zcs/WORKSPACE/tgoskits/Cargo.toml) 的 `[workspace.package].version`，因此 release PR 也可能直接修改根 `Cargo.toml`
+
+这意味着：根 `Cargo.toml` 是否变化，取决于这次待发布的 crate 里是否包含使用 workspace 继承版本的公开包。
+
+### 7.6 Tag 与 Release 命名
+
+当 `main` 或 `dev` 分支上的 release PR 合并后，`release-plz` 会在当前仓库创建 git tag，并同步创建 GitHub Release。
+
+在没有额外自定义 tag 模板时，多 crate workspace 默认采用：
+
+```text
+<package_name>-v<version>
+```
+
+例如：
+
+- `aarch64_sysreg-v0.1.2`
+- `axplat-dyn-v0.3.1`
+
+如果未来希望统一使用整仓 tag（例如 `v0.3.0`），则需要进一步调整 `release-plz` 配置，而不是依赖默认行为。
+
+### 7.7 `main` 与 `dev` 的分工
+
+虽然 workflow 在 `main` 和 `dev` 上都会运行，但两个分支承担的角色并不完全相同：
+
+- `dev`：集成与预览发布线，会生成面向 `dev` 的版本 PR，并在合并后独立发布
+- `main`：稳定发布线，会生成面向 `main` 的版本 PR，并在合并后独立发布
+
+因此，推荐的日常节奏是：
+
+- 开发 PR 一律先进入 `dev`
+- 当需要发布集成版本时，直接合并 `dev` 上的 release PR
+- 待一轮集成稳定后，再把 `dev` 合入 `main`
+- 当需要发布稳定版本时，再合并 `main` 上的 release PR
+
+### 7.8 需要的 Secrets 与权限
+
+要让发布流程完整生效，仓库通常需要准备以下 secrets：
+
+- `GITHUB_TOKEN`：GitHub Actions 默认提供，用于创建或更新 release PR、创建 tag 和 GitHub Release
+- `RELEASE_PLZ_TOKEN`：可选；如果默认 `GITHUB_TOKEN` 在仓库策略下权限不足，可改用单独 token
+- `CARGO_REGISTRY_TOKEN`：必需；用于向 crates.io 发布 crate
+
+如果缺少 `CARGO_REGISTRY_TOKEN`，release PR 仍然可以创建，但 `main` 和 `dev` 上的正式 `cargo publish` 都会失败。
+
+### 7.9 维护建议
+
+为了让发布流程更稳定，建议遵循以下约定：
+
+- 不要手工提前修改一批 crate 版本号，优先让 release-plz 统一维护
+- 不要手工创建“准备发布”的 tag，避免和自动生成的 tag 冲突
+- 合并 release PR 前，先确认 CI、changelog 和待发布 crate 列表都符合预期
+- 若 `main` 和 `dev` 都发布到同一个 cargo registry，需要额外留意两条分支的版本号不要互相冲突
+- 若某个 crate 不应发布到 crates.io，应在其 `Cargo.toml` 中明确配置 `publish = false`
+- 若需要统一调整 tag 命名、changelog 策略或分支行为，应优先修改 `release-plz.toml`
+
+## 8. 开发场景示例
+
+### 8.1 当前 CI 拓扑
 
 当前的双向自动同步机制由两条独立的 CI 链路组成：主仓库的 `push.yml` 负责将主仓库中的组件改动按规则推送到组件仓库的映射分支；组件仓库的 `push.yml`（由主仓库的 `scripts/push.yml` 复制而来）负责在组件仓库主线更新时向主仓库发起同步 PR。这两条链路共同确保了主仓库和各组件仓库之间的代码能够及时、准确地双向同步。
 
@@ -438,7 +681,7 @@ T1        开发者修改组件代码
 
 这两条链路合起来，构成当前实际生效的双向同步机制。
 
-### 7.2 端到端闭环示意
+### 8.2 端到端闭环示意
 
 下面这张图把“主仓库改组件 -> 推到组件仓库映射分支 -> 组件仓库合并到 main -> 反向给主仓库提 PR -> 主仓库合并”的完整闭环串起来。
 
@@ -483,9 +726,9 @@ release / main / dev
                               评审 / 测试 / 合并
 ```
 
-### 7.3 典型场景
+### 8.3 典型场景
 
-#### 7.3.1 在主仓库里改了组件代码
+#### 8.3.1 在主仓库里改了组件代码
 
 当你在主仓库的 `components/` 目录下修改了某个组件的代码并提交推送到 `main` 或 `dev` 分支后，主仓库的 `push.yml` 工作流会自动识别受影响的组件，并按规则将对应的 subtree 改动推送到组件仓库的映射分支。整个流程完全自动化，开发者无需手动执行任何同步操作。
 
@@ -496,7 +739,7 @@ release / main / dev
 3. 主仓库 `push.yml` 自动识别受影响组件
 4. 自动把对应 subtree 推到组件仓库 `release` / `main` / `dev`
 
-#### 7.3.2 在组件仓库里改了主线代码
+#### 8.3.2 在组件仓库里改了主线代码
 
 当组件仓库的 `main` 或 `master` 分支合入新的提交后，组件仓库的 workflow 会自动 checkout 主仓库并执行精确到当前 SHA 的 `git subtree pull` 操作，然后自动向主仓库创建或更新同步 PR。主仓库维护者只需要评审、测试并合并该 PR 即可完成同步。
 
@@ -507,122 +750,6 @@ release / main / dev
 3. 自动执行一次精确到当前 SHA 的 `git subtree pull`
 4. 自动向主仓库创建或更新同步 PR
 
-#### 7.3.3 组件仓库远端已前进，主仓库要强制回推
+#### 8.3.3 组件仓库远端已前进，主仓库要强制回推
 
 当组件仓库的远端分支已经前进，而主仓库需要强制回推改动时，可以手动使用 `python3 scripts/repo/repo.py push <repo_name> -f` 命令。但强制推送意味着会重写组件仓库目标分支的历史，建议只在明确知道该分支是主仓库控制的集成分支、已经确认组件仓库远端改动不需要保留、且团队已经对这次历史覆盖达成一致的情况下使用。
-
-## 8. 注意事项
-
-### 8.1 `repos.csv` 是同步的事实来源
-
-无论是手工命令还是 CI 自动化操作，组件 URL、路径、推荐分支等关键信息都来自 `repos.csv` 配置文件。如果该文件中的记录出现错误，会直接影响 `repo.py list`、`repo.py pull`、`repo.py push` 等手工命令的执行，以及主仓库自动推送和组件仓库自动创建 PR 等自动化流程的正常运行。因此，维护 `repos.csv` 的准确性对于整个同步系统至关重要。
-
-### 8.2 `push` 和 `pull` 的默认分支规则不同
-
-`pull` 操作更偏向于跟踪组件仓库配置的分支，会优先使用 `repos.csv` 中记录的分支或自动检测组件仓库的默认分支；`push` 手工命令也遵循类似优先级，只是先看显式 `-b`，再看 `repos.csv`，最后才自动检测远端默认分支。另一方面，主仓库 CI 中的自动映射规则是在 workflow 里完成的，不属于 `repo.py push` 本地命令本身的默认策略。
-
-## 9. 分支管理
-
-TGOSKits 主仓库采用三层层级的分支管理策略：`main` 作为稳定发布分支、`dev` 作为集成分支、以及开发者个人使用的功能分支。这套策略与第 6 节描述的双向自动同步机制紧密配合。
-
-### 9.1 分支总览
-
-```text
-功能分支 (feature/*, fix/*, ...)
-    │  开发者本地开发、自测
-    │
-    │  PR（禁止直接发到 main）
-    ▼
-  dev  集成分支
-    │  实时汇聚开发功能、执行 CI 测试
-    │  push.yml 自动推送 subtree 改动到组件仓库 dev
-    │
-    │  定期合并到 main（含分支保护）
-    ▼
- main  稳定发布分支
-    │  带有分支保护，每周合并来自 dev 的内容
-    │  push.yml 自动推送 subtree 改动到组件仓库 release/main
-    │  根据需要发布版本
-    │  接收组件仓库反向同步 PR
-    └──────────────────────────────────────
-```
-
-### 9.2 main 分支 — 稳定发布分支
-
-`main` 分支是仓库的稳定基线，始终处于可发布状态。该分支带有分支保护规则（见下方），确保只有经过充分验证的代码才能进入。
-
-核心规则：
-
-- **每周合并**：定期从 `dev` 分支合并最新内容，合并前应确认 CI 测试通过
-- **版本发布**：根据项目进度在 `main` 分支上打版本 tag（如 `v0.1.0`），触发 release 流程
-- **分支保护**：禁止直接 push，所有代码变更必须通过 PR 进入
-- **接收同步 PR**：组件仓库通过其 `push.yml` 向主仓库 `main` 发起的 subtree 同步 PR 也在此合并
-
-### 9.3 dev 分支 — 集成分支
-
-`dev` 分支是日常开发的主战场，所有功能开发和 bug 修复最终都汇聚到这里。
-
-核心规则：
-
-- **实时汇聚**：所有经 PR 验证的功能分支合并到 `dev`，确保开发进度持续集成
-- **CI 测试**：`dev` 分支上的每次 push 都触发 CI 测试（`.github/workflows/test.yml` 等），确保代码质量
-- **自动同步**：`dev` 分支上的 push 会触发 `push.yml`，自动将组件改动推送到各组件仓库的 `dev` 分支（详见第 6.1 节）
-- **作为合并源**：`main` 分支定期从 `dev` 合并，因此 `dev` 应保持可编译、可测试的状态
-
-### 9.4 功能分支 — 开发者个人分支
-
-开发者基于 `dev` 分支创建功能分支进行开发。功能分支的命名建议遵循以下约定：
-
-| 类型 | 命名格式 | 示例 |
-|------|----------|------|
-| 新功能 | `feature/<描述>` | `feature/vm-pause-resume` |
-| Bug 修复 | `fix/<描述>` | `fix/pl011-uart-overflow` |
-| 重构 | `refactor/<描述>` | `refactor/axvm-crate-split` |
-| 文档 | `docs/<描述>` | `docs/branch-policy` |
-| 实验性 | `experiment/<描述>` | `experiment/riscv-smp` |
-
-### 9.5 PR 规则与合并流程
-
-所有代码变更必须通过 Pull Request 进入 `dev` 分支，以下是合并流程的关键约束：
-
-```text
-1. 开发者在功能分支上完成开发和自测
-2. 向 dev 分支提交 PR（禁止直接向 main 提交 PR）
-3. CI 自动运行测试矩阵
-4. 代码评审通过、CI 绿色后合并到 dev
-5. dev 积累一定周期后，定期合并到 main 并发布
-```
-
-**重要约束**：
-
-| 规则 | 说明 |
-|------|------|
-| **禁止直接 PR 到 main** | 所有开发 PR 的目标分支必须是 `dev`，只有维护者在定期合并时才操作 `main` |
-| **功能分支基于 dev** | 新功能分支应从 `dev` 创建，不要从 `main` 创建，以避免合并冲突 |
-| **保持分支更新** | 功能分支开发周期较长时，应定期 rebase `dev` 以减少最终合并的冲突 |
-| **PR 描述完整** | PR 应包含变更说明、测试方法和关联 issue |
-
-### 9.6 与自动同步的关系
-
-分支管理策略与第 6 节描述的双向自动同步机制紧密配合，具体关系如下：
-
-- **主仓库 `dev` → 组件仓库 `dev`**：`push.yml` 在 `dev` 分支 push 时触发，自动推送 subtree 改动到所有组件仓库的 `dev`
-- **主仓库 `main` → 组件仓库 `release/main`**：`push.yml` 在 `main` 分支 push 时触发，`arceos-org/*` 推到 `release`，其他仓库推到 `main`
-- **组件仓库 `main` → 主仓库 `main`**：组件仓库的 `push.yml` 在组件仓库主线更新时触发，向主仓库 `main` 发起同步 PR
-- **主仓库 `main` 发布**：`main` 分支上的版本 tag 触发 release 流程，发布到 crates.io
-
-```text
-功能分支 ──PR──► dev ──push.yml──► 组件仓库 dev
-                      │
-                      ├─ 定期合并
-                      ▼
-                    main ──push.yml──► 组件仓库 release/main
-                      ▲
-                      │ 组件仓库 push.yml + PR
-组件仓库 main ────────┘
-                      │
-                   版本 tag
-                      │
-                      ▼
-          crates.io 发布
-```

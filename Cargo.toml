@@ -144,13 +144,30 @@ exclude = [
 [patch.crates-io]
 # === axerrno ===
 axerrno = { path = "components/axerrno" }
+axallocator = { path = "components/axallocator" }
+axbacktrace = { path = "components/axbacktrace" }
 
 axconfig = { path = "os/arceos/modules/axconfig" }
+axdisplay = { path = "os/arceos/modules/axdisplay" }
+axdma = { path = "os/arceos/modules/axdma" }
 axhal = { path = "os/arceos/modules/axhal" }
 
 axcpu = { path = "components/axcpu" }
 axio = { path = "components/axio" }
+axsched = { path = "components/axsched" }
 axpoll = { path = "components/axpoll" }
+lazyinit = { path = "components/lazyinit" }
+linked_list_r4l = { path = "components/linked_list_r4l" }
+timer_list = { path = "components/timer_list" }
+int_ratio = { path = "components/int_ratio" }
+cap_access = { path = "components/cap_access" }
+handler_table = { path = "components/handler_table" }
+riscv_plic = { path = "components/riscv_plic" }
+rsext4 = { path = "components/rsext4" }
+arm_pl011 = { path = "components/arm_pl011" }
+arm_pl031 = { path = "components/arm_pl031" }
+fxmac_rs = { path = "components/fxmac_rs" }
+smoltcp = { path = "components/starry-smoltcp" }
 axfs-ng-vfs = { path = "components/axfs-ng-vfs" }
 axfs_vfs = { path = "components/axfs_crates/axfs_vfs" }
 axfs_ramfs = { path = "components/axfs_crates/axfs_ramfs" }
@@ -162,6 +179,8 @@ axnet = { path = "os/arceos/modules/axnet" }
 axnet-ng = { path = "os/arceos/modules/axnet-ng" }
 axalloc = { path = "os/arceos/modules/axalloc" }
 axdriver = { path = "os/arceos/modules/axdriver" }
+axinput = { path = "os/arceos/modules/axinput" }
+axipi = { path = "os/arceos/modules/axipi" }
 axlog = { path = "os/arceos/modules/axlog" }
 axmm = { path = "os/arceos/modules/axmm" }
 axruntime = { path = "os/arceos/modules/axruntime" }
@@ -196,6 +215,7 @@ axdriver_net = { path = "components/axdriver_crates/axdriver_net" }
 axdriver_pci = { path = "components/axdriver_crates/axdriver_pci" }
 axdriver_virtio = { path = "components/axdriver_crates/axdriver_virtio" }
 axdriver_input = { path = "components/axdriver_crates/axdriver_input" }
+axdriver_vsock = { path = "components/axdriver_crates/axdriver_vsock" }
 
 # === percpu ===
 percpu = { path = "components/percpu/percpu" }
@@ -206,6 +226,7 @@ page_table_entry = { path = "components/page_table_multiarch/page_table_entry" }
 page_table_multiarch = { path = "components/page_table_multiarch/page_table_multiarch" }
 
 # === crate_interface ===
+crate_interface = { path = "components/crate_interface" }
 crate_interface_lite = { path = "components/crate_interface/crate_interface_lite" }
 
 # === ctor_bare ===
@@ -237,6 +258,7 @@ starry-vm = { path = "components/starry-vm" }
 scope-local = { path = "components/scope-local" }
 
 axbuild = { path = "scripts/axbuild" }
+starry-kernel = { path = "os/StarryOS/kernel" }
 
 # === axvisor ===
 axvm = { path = "components/axvm" }
@@ -254,9 +276,13 @@ axaddrspace = { path = "components/axaddrspace" }
 axdevice = { path = "components/axdevice" }
 axdevice_base = { path = "components/axdevice_base" }
 axvisor_api = { path = "components/axvisor_api" }
+axvisor_api_proc = { path = "components/axvisor_api/axvisor_api_proc" }
 axhvc = { path = "components/axhvc" }
 axklib = { path = "components/axklib" }
 range-alloc-arceos = { path = "components/range-alloc-arceos" }
+cpumask = { path = "components/cpumask" }
+axconfig-gen = { path = "components/axconfig-gen/axconfig-gen" }
+axconfig-macros = { path = "components/axconfig-gen/axconfig-macros" }
 
 # === drivers ===
 # fxmac_rs = { path = "components/fxmac_rs", version = "0.2.1" }

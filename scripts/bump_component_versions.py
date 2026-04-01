@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
+import subprocess
 import sys
 import tomllib
 from dataclasses import dataclass
@@ -30,12 +32,44 @@ class PackageVersion:
     version_source: Path
 
 
+@dataclass(frozen=True)
+class MetadataPackage:
+    manifest: Path
+    version: str
+    workspace_root: Path
+
+
 def bump_version(version: str) -> str:
     match = SEMVER_CORE_RE.match(version)
     if match is None:
         raise ValueError(f"unsupported semver version: {version}")
     major, minor, patch = (int(part) for part in match.groups())
     return f"{major}.{minor + 1}.{patch}"
+
+
+def load_workspace_metadata() -> dict[Path, MetadataPackage]:
+    cmd = ["cargo", "metadata", "--format-version", "1", "--no-deps"]
+    result = subprocess.run(
+        cmd,
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    data = json.loads(result.stdout)
+    workspace_root = Path(data["workspace_root"]).resolve()
+
+    packages: dict[Path, MetadataPackage] = {}
+    for package in data["packages"]:
+        manifest = Path(package["manifest_path"]).resolve()
+        version = package.get("version")
+        if isinstance(version, str):
+            packages[manifest] = MetadataPackage(
+                manifest=manifest,
+                version=version,
+                workspace_root=workspace_root,
+            )
+    return packages
 
 
 def resolve_workspace_package_version(manifest: Path) -> tuple[Path, str] | None:
@@ -72,8 +106,10 @@ def is_dependency_section(section: str | None) -> bool:
 
 def discover_internal_package_versions(manifests: list[Path]) -> dict[str, PackageVersion]:
     versions: dict[str, PackageVersion] = {}
+    metadata_packages = load_workspace_metadata()
 
     for manifest in manifests:
+        manifest = manifest.resolve()
         data = tomllib.loads(manifest.read_text(encoding="utf-8"))
         package = data.get("package")
         if not isinstance(package, dict):
@@ -87,9 +123,14 @@ def discover_internal_package_versions(manifests: list[Path]) -> dict[str, Packa
         if not isinstance(version, str):
             raw_text = manifest.read_text(encoding="utf-8")
             if re.search(r"^\s*version\.workspace\s*=\s*true\s*$", raw_text, re.MULTILINE):
-                resolved = resolve_workspace_package_version(manifest)
-                if resolved is not None:
-                    version_source, version = resolved
+                metadata_package = metadata_packages.get(manifest)
+                if metadata_package is not None:
+                    version = metadata_package.version
+                    version_source = metadata_package.workspace_root / "Cargo.toml"
+                else:
+                    resolved = resolve_workspace_package_version(manifest)
+                    if resolved is not None:
+                        version_source, version = resolved
         if not isinstance(version, str):
             continue
 
@@ -156,6 +197,78 @@ def update_workspace_package_version(lines: list[str], package_versions: dict[st
     return changed
 
 
+def collect_used_dependency_keys(manifests: list[Path]) -> set[str]:
+    used: set[str] = set()
+    pattern = re.compile(r'^\s*([A-Za-z0-9_.-]+)\s*=\s*(?:"|\{)')
+    for manifest in manifests:
+        section: str | None = None
+        for line in manifest.read_text(encoding="utf-8").splitlines():
+            section_match = SECTION_RE.match(line)
+            if section_match:
+                section = section_match.group(1).strip()
+                continue
+            if not is_dependency_section(section):
+                continue
+            match = pattern.match(line)
+            if match:
+                used.add(match.group(1))
+    return used
+
+
+def update_root_patch_crates_io(
+    lines: list[str],
+    manifest: Path,
+    package_versions: dict[str, PackageVersion],
+    manifests: list[Path],
+) -> bool:
+    if manifest.resolve() != (REPO_ROOT / "Cargo.toml").resolve():
+        return False
+
+    data = tomllib.loads("".join(lines))
+    patch_crates_io = data.get("patch", {}).get("crates-io", {})
+    if not isinstance(patch_crates_io, dict):
+        return False
+
+    used_dependency_keys = collect_used_dependency_keys(manifests)
+    missing_entries: list[tuple[str, str]] = []
+    for name, package in package_versions.items():
+        if name in patch_crates_io:
+            continue
+        if name not in used_dependency_keys:
+            continue
+        missing_entries.append((name, str(package.manifest.parent.relative_to(REPO_ROOT))))
+
+    if not missing_entries:
+        return False
+
+    patch_start = None
+    patch_end = len(lines)
+    for idx, line in enumerate(lines):
+        match = SECTION_RE.match(line)
+        if not match:
+            continue
+        section = match.group(1).strip()
+        if patch_start is None:
+            if section == "patch.crates-io":
+                patch_start = idx
+            continue
+        patch_end = idx
+        break
+
+    if patch_start is None:
+        return False
+
+    if patch_end > patch_start + 1 and lines[patch_end - 1].strip():
+        insertion = ["\n"]
+    else:
+        insertion = []
+    for name, path in sorted(missing_entries):
+        insertion.append(f'{name} = {{ path = "{path}" }}\n')
+
+    lines[patch_end:patch_end] = insertion
+    return True
+
+
 def update_inline_dependency_block(
     block_lines: list[str],
     package_versions: dict[str, PackageVersion],
@@ -220,6 +333,7 @@ def rewrite_manifest(
     manifest: Path,
     package_versions: dict[str, PackageVersion],
     component_package: PackageVersion | None,
+    manifests: list[Path],
 ) -> tuple[str, bool]:
     original = manifest.read_text(encoding="utf-8")
     lines = original.splitlines(keepends=True)
@@ -228,6 +342,7 @@ def rewrite_manifest(
     if component_package is not None:
         changed |= update_package_version(lines, component_package)
     changed |= update_workspace_package_version(lines, package_versions, manifest)
+    changed |= update_root_patch_crates_io(lines, manifest, package_versions, manifests)
 
     section: str | None = None
     idx = 0
@@ -306,7 +421,9 @@ def main() -> int:
     staged_changes: list[Path] = []
     for manifest in manifests:
         component_package = component_index.get(manifest.resolve())
-        updated, changed = rewrite_manifest(manifest, package_versions, component_package)
+        updated, changed = rewrite_manifest(
+            manifest, package_versions, component_package, manifests
+        )
         if changed:
             staged_changes.append(manifest)
             if args.apply:

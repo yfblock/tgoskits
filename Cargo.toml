@@ -246,6 +246,9 @@ kernel_guard = { path = "components/kernel_guard" }
 # === kspin ===
 kspin = { path = "components/kspin" }
 
+# === timer_list ===
+timer_list = { path = "components/timer_list" }
+
 # === starry-process ===
 starry-process = { path = "components/starry-process" }
 

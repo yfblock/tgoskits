@@ -1580,7 +1580,6 @@ version = "0.5.0"
 dependencies = [
  "axsync",
  "axtask",
- "event-listener",
  "fastrand",
  "kspin 0.3.1",
  "lock_api",
@@ -1609,6 +1608,7 @@ dependencies = [
  "memory_addr 0.6.1",
  "percpu 0.4.3",
  "spin 0.10.0",
+ "timer_list",
 ]
 
 [[package]]

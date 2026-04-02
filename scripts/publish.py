@@ -11,9 +11,9 @@ Behavior:
 - prints a result line for every package
 
 Typical usage:
-    python3 scripts/publish_workspace_topo.py
-    python3 scripts/publish_workspace_topo.py --root components
-    python3 scripts/publish_workspace_topo.py --dry-run
+    python3 scripts/publish.py
+    python3 scripts/publish.py --root components
+    python3 scripts/publish.py --dry-run
 """
 
 from __future__ import annotations
@@ -37,6 +37,10 @@ from typing import Any
 
 USER_AGENT = "tgoskits-publish-workspace-topo/1.0"
 DEFAULT_PUBLISH_DELAY_SECONDS = 3.0
+ANSI_RESET = "\033[0m"
+ANSI_GREEN = "\033[32m"
+ANSI_YELLOW = "\033[33m"
+ANSI_CYAN = "\033[36m"
 
 
 @dataclass(frozen=True)
@@ -345,6 +349,26 @@ def is_rate_limit_failure(detail: str) -> bool:
     return "429 Too Many Requests" in detail
 
 
+def supports_color() -> bool:
+    return sys.stdout.isatty() and os.environ.get("NO_COLOR") is None
+
+
+def colorize(text: str, color: str) -> str:
+    if not supports_color():
+        return text
+    return f"{color}{text}{ANSI_RESET}"
+
+
+def format_status(status: str) -> str:
+    if status == "PUBLISHED":
+        return colorize(status, ANSI_GREEN)
+    if status == "EXISTS":
+        return colorize(status, ANSI_CYAN)
+    if status == "NO-OWNER":
+        return colorize(status, ANSI_YELLOW)
+    return status
+
+
 def resolve_publish_target(manifest_path: Path) -> str | None:
     try:
         data = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
@@ -400,7 +424,7 @@ def publish_package(pkg: Package, dry_run: bool) -> tuple[str, str]:
         stdout = proc.stdout.strip()
         detail = stderr or stdout or f"exit code {proc.returncode}"
         if is_not_owner_failure(detail):
-            return "SKIP", "not an owner on crates.io"
+            return "NO-OWNER", "not an owner on crates.io"
         if is_rate_limit_failure(detail) and not rate_limit_retried:
             retry_at = parse_retry_after_timestamp(detail)
             if retry_at is not None:
@@ -483,7 +507,7 @@ def main() -> int:
         prefix = f"[{index}/{len(order)}] {pkg.name} {pkg.version} ({pkg.rel_dir})"
         if args.dry_run:
             status, detail = publish_package(pkg, dry_run=True)
-            print(f"{prefix} -> {status} {detail}")
+            print(f"{prefix} -> {format_status(status)} {detail}")
             continue
 
         missing_blockers = [
@@ -493,17 +517,17 @@ def main() -> int:
         ]
         if missing_blockers:
             blocked[package_id] = f"blocked by unavailable dependency: {', '.join(missing_blockers)}"
-            print(f"{prefix} -> SKIP {blocked[package_id]}")
+            print(f"{prefix} -> {format_status('SKIP')} {blocked[package_id]}")
             continue
 
         try:
             crates_io_available[package_id] = crates_io_has_version(pkg.name, pkg.version)
             if crates_io_available[package_id]:
-                print(f"{prefix} -> SKIP already exists on crates.io")
+                print(f"{prefix} -> {format_status('EXISTS')} already published on crates.io")
                 continue
         except Exception as exc:  # noqa: BLE001
             any_failed = True
-            print(f"{prefix} -> FAILED crates.io check: {exc}")
+            print(f"{prefix} -> {format_status('FAILED')} crates.io check: {exc}")
             continue
 
         if last_publish_attempt_at is not None and args.publish_delay > 0:
@@ -518,11 +542,11 @@ def main() -> int:
         if status == "FAILED":
             any_failed = True
             blocked[package_id] = detail
-            print(f"{prefix} -> {status} {detail}")
+            print(f"{prefix} -> {format_status(status)} {detail}")
         else:
-            if status == "SKIP" and detail == "not an owner on crates.io":
+            if status == "NO-OWNER":
                 blocked[package_id] = detail
-            print(f"{prefix} -> {status} {detail}")
+            print(f"{prefix} -> {format_status(status)} {detail}")
 
     return 1 if any_failed else 0
 

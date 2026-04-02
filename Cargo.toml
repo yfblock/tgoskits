@@ -59,6 +59,8 @@ members = [
     "components/starry-smoltcp",
     "components/starry-vm",
     "components/timer_list",
+    "components/x86_vcpu",
+    "components/x86_vlapic",
     "components/axfs_crates/axfs_vfs",
     "components/axfs_crates/axfs_ramfs",
     "components/axfs_crates/axfs_devfs",

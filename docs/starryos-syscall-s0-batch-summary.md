@@ -12,7 +12,7 @@
 | 机器可读分发表 | `docs/starryos-syscall-dispatch.json` | 当前约 210 条 syscall 条目（含分区注释与 cfg） |
 | Catalog 种子 | `docs/starryos-syscall-catalog.yaml` | 12 个高优先级 syscall 元数据（含 `dup` / `fcntl` / `read` / `close` 等） |
 | 探针生成器 | `scripts/gen_syscall_probes.py` | 从 catalog 生成 `*_generated.c` |
-| 手写 contract | `test-suit/starryos/probes/contract/write_stdout.c` 等 | `write` 零长度；`close_badfd` 非法 fd |
+| 手写 contract | `test-suit/starryos/probes/contract/*.c` | 含 `openat_badfd` / `openat_enoent`、`read`/`write` 零长度、`close`/`dup`/`fcntl` 非法 fd 等 |
 | 期望 oracle 行 | `test-suit/starryos/probes/expected/*.line` | `verify-oracle` / `verify-oracle-all` |
 | 构建/差分脚本 | `build-probes.sh`、`run-diff-probes.sh`、`list-contract-probes.sh`、`diff-guest-line.sh`、`run-starry-probe-qemu.sh` | 批量 oracle / guest 比对 / QEMU 封装 |
 | 覆盖检查 | `scripts/check_probe_coverage.py` | catalog `tests:` 路径存在性 |

@@ -35,6 +35,8 @@ VERIFY_STRICT=1 test-suit/starryos/scripts/run-diff-probes.sh verify-oracle-all
 | `read_stdin_zero` | read(2) stdin count=0 → 0 | `expected/read_stdin_zero.line` |
 | `dup_badfd` | dup(2) 非法 fd → EBADF | `expected/dup_badfd.line` |
 | `fcntl_badfd` | fcntl(2) 非法 fd + F_GETFD → EBADF | `expected/fcntl_badfd.line` |
+| `openat_badfd` | openat(2) 非法 dirfd + 相对路径 → EBADF | `expected/openat_badfd.line` |
+| `openat_enoent` | openat(2) 不存在绝对路径 → ENOENT | `expected/openat_enoent.line` |
 
 列出当前 contract 名称：`test-suit/starryos/scripts/list-contract-probes.sh`
 
@@ -82,6 +84,22 @@ Copy the static ELF into the guest rootfs (e.g. with `debugfs` on `rootfs-riscv6
 cargo xtask starry test qemu --target riscv64 \
   --test-disk-image target/riscv64gc-unknown-none-elf/rootfs-riscv64-probe-close_badfd.img \
   --shell-init-cmd test-suit/starryos/testcases/probe-close_badfd-0 \
+  --timeout 120
+```
+
+`openat` 两个 contract 示例（镜像名随探针 basename 变化）：
+
+```sh
+./test-suit/starryos/scripts/prepare-rootfs-with-probe.sh openat_badfd
+cargo xtask starry test qemu --target riscv64 \
+  --test-disk-image target/riscv64gc-unknown-none-elf/rootfs-riscv64-probe-openat_badfd.img \
+  --shell-init-cmd test-suit/starryos/testcases/probe-openat_badfd-0 \
+  --timeout 120
+
+./test-suit/starryos/scripts/prepare-rootfs-with-probe.sh openat_enoent
+cargo xtask starry test qemu --target riscv64 \
+  --test-disk-image target/riscv64gc-unknown-none-elf/rootfs-riscv64-probe-openat_enoent.img \
+  --shell-init-cmd test-suit/starryos/testcases/probe-openat_enoent-0 \
   --timeout 120
 ```
 

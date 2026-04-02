@@ -40,9 +40,10 @@ entries:
       - "F_GETFD on 非法 fd -> EBADF"
 
   - syscall: openat
-    contract_probe: null
-    parity: unknown
+    contract_probe: openat_badfd
+    parity: partial
     notes:
-      - "catalog 已登记，待 contract"
+      - "非法 dirfd -> EBADF（openat_badfd）"
+      - "不存在绝对路径 -> ENOENT（openat_enoent）"
 
 # 后续：为 catalog 中其余条目追加 rows，并链接 issues / errno 对照表。

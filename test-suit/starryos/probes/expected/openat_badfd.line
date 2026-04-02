@@ -1,0 +1,1 @@
+CASE openat.bad_dirfd ret=-1 errno=9 note=handwritten

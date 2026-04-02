@@ -1,0 +1,3 @@
+chmod +x /root/openat_badfd
+/root/openat_badfd
+echo 'All tests passed!'

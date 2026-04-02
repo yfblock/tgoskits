@@ -14,11 +14,15 @@ syscalls:
     boundary_profiles:
       - path_lookup
       - fd_basic
+      - bad_dirfd
+      - enoent_abs_path
     core_modes:
       - smp1
     linux_refs:
       - man 2 openat
-    tests: []
+    tests:
+      - test-suit/starryos/probes/contract/openat_badfd.c
+      - test-suit/starryos/probes/contract/openat_enoent.c
     risk_tags:
       - errno_mismatch
       - user_buffer

@@ -27,5 +27,6 @@
 ## 相关文档
 
 - **`docs/starryos-syscall-compat-matrix.yaml`** — 权威字段与 **`notes`**
+- **`docs/starryos-syscall-behavior-evidence.md`** — 分发表 syscall 与矩阵/catalog 探针、parity 对照（机器生成）
 - **`docs/starryos-syscall-testing-method.md`** — 「StarryOS 与 Linux 不一致时的处理」
 - **`docs/starryos-probes-matrix-failure-playbook.md`** — 矩阵失败 triage

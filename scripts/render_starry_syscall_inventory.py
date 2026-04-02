@@ -5,7 +5,7 @@ Steps (for separate commits):
   --step 1  syscall, section, cfgs only -> docs/starryos-syscall-dispatch-table.md
   --step 2  + handler (from mod.rs), catalog flag, impl_path -> docs/starryos-syscall-dispatch-handlers.md
   --step 3  + catalog probe basenames, matrix parity -> docs/starryos-syscall-behavior-evidence.md
-  --all     write all three files (full pipeline)
+  --step all  write all three files (full pipeline)
 """
 
 from __future__ import annotations
@@ -141,7 +141,7 @@ def write_handlers_table(
         "# StarryOS 分发表 + mod.rs 入口函数（handler）",
         "",
         "由 `scripts/render_starry_syscall_inventory.py --step 2` 生成。"
-        " **handler** 自 `handle_syscall` 的 `match` 臂解析（块形式 `=> { ... }` 取首个 `sys_*` 调用）。",
+        "\n\n**handler** 自 `handle_syscall` 的 `match` 臂解析（块形式 `=> { ... }` 取首个 `sys_*` 调用）。",
         "",
         f"**条目数**: {len(rows)}",
         "",

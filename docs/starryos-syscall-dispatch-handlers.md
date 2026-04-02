@@ -1,6 +1,8 @@
 # StarryOS 分发表 + mod.rs 入口函数（handler）
 
-由 `scripts/render_starry_syscall_inventory.py --step 2` 生成。 **handler** 自 `handle_syscall` 的 `match` 臂解析（块形式 `=> { ... }` 取首个 `sys_*` 调用）。
+由 `scripts/render_starry_syscall_inventory.py --step 2` 生成。
+
+**handler** 自 `handle_syscall` 的 `match` 臂解析（块形式 `=> { ... }` 取首个 `sys_*` 调用）。
 
 **条目数**: 210
 

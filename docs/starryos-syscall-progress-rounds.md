@@ -368,3 +368,13 @@
 **验证**：`./scripts/starryos-probes-ci.sh`（矩阵当前无 divergent 行则仅校验通过）。
 
 ---
+
+## 第 38 轮 — 210 syscall 盘点文档（步骤 1～3）
+
+**目标**：把「分发表枚举 / mod.rs handler / 行为证据列」落成可再生的 Markdown。
+
+**交付物**：`scripts/render_starry_syscall_inventory.py`（`--step 1|2|3|all`）；`docs/starryos-syscall-dispatch-table.md`；`docs/starryos-syscall-dispatch-handlers.md`；`docs/starryos-syscall-behavior-evidence.md`。
+
+**验证**：`python3 scripts/render_starry_syscall_inventory.py --all`；`VERIFY_STRICT=1 verify-oracle-all`（行为证据文档描述之命令）。
+
+---

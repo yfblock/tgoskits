@@ -58,7 +58,7 @@ log.workspace = true
 memory_addr = { workspace = true, optional = true }
 percpu = { workspace = true, optional = true }
 spin = { workspace = true, optional = true }
-timer_list = { version = "0.1", optional = true }
+timer_list = { workspace = true, optional = true }
 
 [dev-dependencies]
 axhal = { workspace = true, features = ["fp-simd"] }

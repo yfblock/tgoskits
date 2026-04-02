@@ -335,6 +335,7 @@ axhvc = { path = "components/axhvc", version = "0.4.0" }
 axio = { path = "components/axio", version = "0.5.0" }
 axklib = { path = "components/axklib", version = "0.5.0" }
 axpoll = { path = "components/axpoll", version = "0.3.2" }
+timer_list = { path = "components/timer_list", version = "0.3.0" }
 axsched = { path = "components/axsched", version = "0.5.1" }
 axvcpu = { path = "components/axvcpu", version = "0.5.0" }
 axvm = { path = "components/axvm", version = "0.5.0" }

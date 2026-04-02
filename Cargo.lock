@@ -1607,7 +1607,7 @@ dependencies = [
  "memory_addr 0.6.1",
  "percpu 0.4.3",
  "spin 0.10.0",
- "timer_list 0.1.0",
+ "timer_list",
 ]
 
 [[package]]
@@ -1730,7 +1730,7 @@ dependencies = [
  "sdmmc",
  "spin 0.10.0",
  "syn 2.0.117",
- "timer_list 0.3.0",
+ "timer_list",
  "tokio",
  "toml 0.9.12+spec-1.1.0",
 ]
@@ -7400,12 +7400,6 @@ dependencies = [
  "num-conv",
  "time-core",
 ]
-
-[[package]]
-name = "timer_list"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "158b52ace9609dd94f4af338f4828ff23b600d9160def8c001f2c73885521936"
 
 [[package]]
 name = "timer_list"

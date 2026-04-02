@@ -28,6 +28,7 @@ except ImportError:
     yaml = None  # type: ignore
 
 from _materialize_badfd import BADFD_STMT
+from _materialize_batch_c import EXTRA_C
 
 
 def case_tag(probe: str) -> str:
@@ -254,6 +255,9 @@ def build_source_for_entry(syscall: str, probe: str, pattern: str) -> str | None
     """Return full C source or None if batch not implemented in this script version."""
     ct = case_tag(probe)
     p = probe_path(syscall)
+
+    if probe in EXTRA_C:
+        return EXTRA_C[probe].strip() + "\n"
 
     # ---- explicit probes (oracle differs from suffix heuristic) ----
     if probe == "close_range_badfd":

@@ -223,7 +223,7 @@ SPECIAL_PROBE: dict[str, tuple[str, str, str]] = {
     "mremap": ("B06-mm", "mremap_einval", "invalid old_address -> EINVAL"),
     "madvise": ("B06-mm", "madvise_einval", "invalid advice -> EINVAL"),
     "msync": ("B06-mm", "msync_einval", "invalid flags -> EINVAL"),
-    "mlock": ("B06-mm", "mlock_eagain", "over limit -> EAGAIN/ENOMEM"),
+    "mlock": ("B06-mm", "mlock_enomem", "unmapped range -> ENOMEM"),
     "mlock2": ("B06-mm", "mlock2_einval", "bad flags -> EINVAL"),
     "sync": ("B01-fs-ctl", "sync_void_smoke", "void syscall; serializable no-op line"),
     "clone": ("B10-task-mgmt", "clone_errno_probe", "invalid flags -> EINVAL (minimal)"),

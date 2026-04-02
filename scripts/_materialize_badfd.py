@@ -15,19 +15,32 @@ BADFD_STMT: dict[str, tuple[list[str], str, bool]] = {
     "dup2": (["errno.h", "stdio.h", "unistd.h"], "int r = dup2(-1, 2);", False),
     "dup3": (["errno.h", "stdio.h", "unistd.h"], "int r = dup3(-1, 2, 0);", False),
     "epoll_ctl": (
-        ["errno.h", "stdio.h", "sys/epoll.h", "sys/syscall.h", "unistd.h"],
-        "int r = epoll_ctl(-1, EPOLL_CTL_ADD, -1, NULL);",
+        ["errno.h", "stdio.h", "string.h", "sys/epoll.h", "unistd.h"],
+        """struct epoll_event ev;
+	memset(&ev, 0, sizeof(ev));
+	int epfd = epoll_create1(0);
+	int r = epoll_ctl(epfd, EPOLL_CTL_ADD, -1, &ev);
+	close(epfd);""",
         False,
     ),
     "epoll_pwait": (
-        ["errno.h", "stdio.h", "sys/epoll.h", "signal.h", "unistd.h"],
-        "int r = epoll_pwait(-1, NULL, 0, 0, NULL);",
+        ["errno.h", "stdio.h", "string.h", "sys/epoll.h", "signal.h", "unistd.h"],
+        """struct epoll_event ev[1];
+	memset(ev, 0, sizeof(ev));
+	int fd = epoll_create1(0);
+	close(fd);
+	int r = epoll_pwait(fd, ev, 1, 0, NULL);""",
         False,
     ),
     "epoll_pwait2": (
-        ["errno.h", "stdio.h", "sys/epoll.h", "signal.h", "time.h", "unistd.h"],
-        "struct timespec ts = {0, 0}; int r = epoll_pwait2(-1, NULL, 0, &ts, NULL);",
-        False,
+        ["errno.h", "stdio.h", "string.h", "sys/epoll.h", "sys/syscall.h", "time.h", "unistd.h"],
+        """struct epoll_event ev[1];
+	memset(ev, 0, sizeof(ev));
+	int fd = epoll_create1(0);
+	close(fd);
+	struct timespec ts = {0, 0};
+	long r = syscall(441, (long)fd, ev, 1, &ts, NULL);""",
+        True,
     ),
     "fadvise64": (
         ["errno.h", "stdio.h", "sys/syscall.h", "unistd.h"],

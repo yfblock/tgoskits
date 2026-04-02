@@ -1,15 +1,17 @@
-# Optional reference workflow: tools for Linux guest oracle (qemu-system + real kernel).
+# Optional workflow: Linux guest oracle (qemu-system + minimal riscv64 virt kernel).
 # Anchor: Alpine Linux 3.23.3 / Linux 6.18 LTS — docs/starryos-linux-guest-oracle-pin.md
 #
-# Default job only installs qemu-system-riscv64. To run verify-oracle-all on guest track in CI,
-# add steps to fetch/cache a riscv64 Image, set STARRY_LINUX_GUEST_IMAGE, then:
-#   CC=riscv64-linux-gnu-gcc test-suit/starryos/scripts/build-probes.sh
-#   VERIFY_ORACLE_TRACK=guest-alpine323 VERIFY_STRICT=1 \
-#     test-suit/starryos/scripts/run-diff-probes.sh verify-oracle-all
+# - Default job: installs qemu + prints usage (fast).
+# - Optional job (manual): build Linux 6.18.20 minimal Image + VERIFY_STRICT guest verify-oracle-all (slow).
 name: starryos-linux-guest-oracle
 
 on:
   workflow_dispatch:
+    inputs:
+      run_full_guest_verify:
+        description: Build minimal riscv64 Linux Image and run guest verify-oracle-all (slow, ~40–90 min)
+        type: boolean
+        default: false
 
 jobs:
   guest-oracle-tools:
@@ -37,4 +39,39 @@ jobs:
           echo "  VERIFY_ORACLE_TRACK=guest-alpine323 test-suit/starryos/scripts/run-diff-probes.sh verify-oracle-all"
           echo "Refresh all guest golden .line files:"
           echo "  STARRY_LINUX_GUEST_IMAGE=... CC=riscv64-linux-musl-gcc scripts/refresh_guest_oracle_expected.sh"
-          echo "Full guest verify in CI needs caching or building a riscv64 Image (not run in this job by default)."
+          echo "CI: re-run this workflow with 'run_full_guest_verify' checked to build Image on runner and run strict guest verify."
+
+  guest-oracle-full-verify:
+    if: ${{ inputs.run_full_guest_verify }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-misc gcc-riscv64-linux-gnu flex bison bc \
+            libssl-dev libelf-dev cpio gzip wget xz-utils python3
+
+      - name: Fetch Linux 6.18.20
+        run: |
+          wget -q https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.20.tar.xz
+          tar -xf linux-6.18.20.tar.xz
+
+      - name: Build minimal virt riscv64 Image
+        run: |
+          export LINUX_SRC="$GITHUB_WORKSPACE/linux-6.18.20"
+          export CROSS_COMPILE=riscv64-linux-gnu-
+          bash scripts/linux-guest-kernel/build-minimal-virt.sh
+
+      - name: Guest track verify-oracle-all (strict)
+        env:
+          STARRY_LINUX_GUEST_IMAGE: ${{ github.workspace }}/linux-6.18.20/arch/riscv/boot/Image
+          CC: riscv64-linux-gnu-gcc
+          STARRY_LINUX_GUEST_CC: riscv64-linux-gnu-gcc
+          VERIFY_ORACLE_TRACK: guest-alpine323
+          VERIFY_STRICT: "1"
+        run: |
+          sh test-suit/starryos/scripts/build-probes.sh
+          sh test-suit/starryos/scripts/run-diff-probes.sh verify-oracle-all

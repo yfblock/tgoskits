@@ -1,5 +1,5 @@
 [package]
-name = "axfs_vfs"
+name = "ax-fs-vfs"
 description = "Virtual filesystem interfaces used by ArceOS"
 documentation = "https://docs.rs/axfs_vfs"
 keywords = ["arceos", "filesystem", "vfs"]

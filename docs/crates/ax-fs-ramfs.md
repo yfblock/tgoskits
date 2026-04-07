@@ -83,7 +83,7 @@
 ## 3. 依赖关系图谱
 ```mermaid
 graph LR
-    axfs_vfs["axfs_vfs"] --> current["ax-fs-ramfs"]
+    axfs_vfs["ax-fs-vfs"] --> current["ax-fs-ramfs"]
 
     current --> ax-fs["ax-fs"]
 ```

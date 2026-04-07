@@ -609,7 +609,7 @@ dependencies = [
  "axfatfs",
  "ax-fs-devfs",
  "ax-fs-ramfs",
- "axfs_vfs",
+ "ax-fs-vfs",
  "axio",
  "cap_access",
  "fatfs 0.4.0 (git+https://github.com/Josen-B/rust-fatfs.git?rev=41122ef)",
@@ -629,7 +629,7 @@ dependencies = [
  "axerrno 0.1.2",
  "ax-fs-devfs",
  "ax-fs-ramfs",
- "axfs_vfs",
+ "ax-fs-vfs",
  "axio",
  "axsync",
  "cap_access",
@@ -646,13 +646,13 @@ version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f50c26614485d837a3fc09a92f24a226caddc25a30df7e6aaf4bd19b304c399"
 dependencies = [
- "axfs_vfs",
+ "ax-fs-vfs",
  "log",
  "spin 0.9.8",
 ]
 
 [[package]]
-name = "axfs_vfs"
+name = "ax-fs-vfs"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dcba2006898d7879d456a9c34b9c9460cb536f5bf69d1d5d7d0e0f19f073368d"

@@ -634,7 +634,7 @@ dependencies = [
  "axfatfs",
  "ax-fs-devfs",
  "ax-fs-ramfs",
- "axfs_vfs",
+ "ax-fs-vfs",
  "axhal",
  "axio",
  "cap_access",
@@ -689,7 +689,7 @@ dependencies = [
 name = "ax-fs-devfs"
 version = "0.3.2"
 dependencies = [
- "axfs_vfs",
+ "ax-fs-vfs",
  "log",
  "spin 0.9.8",
 ]
@@ -698,13 +698,13 @@ dependencies = [
 name = "ax-fs-ramfs"
 version = "0.3.2"
 dependencies = [
- "axfs_vfs",
+ "ax-fs-vfs",
  "log",
  "spin 0.9.8",
 ]
 
 [[package]]
-name = "axfs_vfs"
+name = "ax-fs-vfs"
 version = "0.3.2"
 dependencies = [
  "axerrno",

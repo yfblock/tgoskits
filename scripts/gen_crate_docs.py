@@ -219,7 +219,7 @@ CURATED_DOCS = {
     "axfs-ng-vfs",
     "ax-fs-devfs",
     "ax-fs-ramfs",
-    "axfs_vfs",
+    "ax-fs-vfs",
     "axhvc",
     "axvmconfig",
     "axaddrspace",

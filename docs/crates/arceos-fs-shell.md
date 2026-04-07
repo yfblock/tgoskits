@@ -34,7 +34,7 @@ graph LR
     current["arceos-fs-shell"]
     current --> ax_fs_ramfs["ax-fs-ramfs"]
     current --> ax_std["ax-std"]
-    current --> axfs_vfs["axfs_vfs"]
+    current --> axfs_vfs["ax-fs-vfs"]
     current --> crate_interface["crate_interface"]
 ```
 

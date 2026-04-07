@@ -23,8 +23,8 @@
 - `src/dev.rs`：把 `AxBlockDevice` 包装成带游标的 `Disk`，再切出 `Partition` 视图。整个旧栈默认以 512B block 为基本访问粒度。
 - `src/partition.rs`：解析 GPT 分区表，检测 FAT/ext4 魔数，提取 `UUID`/`PARTUUID`，并根据检测结果创建具体文件系统实例。
 - `src/root.rs`：定义 `RootDirectory`、挂载点表、全局当前目录，以及 `lookup`/`create`/`remove`/`rename` 等根级路径路由逻辑。
-- `src/fs/fatfs.rs`：把 `axfatfs` 适配为 `axfs_vfs::VfsOps`/`VfsNodeOps`。
-- `src/fs/ext4fs.rs`：把 `rsext4` 适配为 `axfs_vfs::VfsOps`/`VfsNodeOps`。
+- `src/fs/fatfs.rs`：把 `axfatfs` 适配为 `ax_fs_vfs::VfsOps`/`VfsNodeOps`。
+- `src/fs/ext4fs.rs`：把 `rsext4` 适配为 `ax_fs_vfs::VfsOps`/`VfsNodeOps`。
 - `src/fs/mod.rs`：暴露旧栈下的具体文件系统实现，并直接复用 `axfs_devfs`、`axfs_ramfs`。
 - `src/mounts.rs`：创建基于 `ramfs` 的 `/proc`、`/sys` 伪目录树。
 - `src/fops.rs`：定义 `File`、`Directory`、`OpenOptions`，并使用 `cap_access::WithCap` 在打开后绑定读写执行能力。
@@ -100,7 +100,7 @@ flowchart TD
 ```mermaid
 graph LR
     ax-driver["ax-driver(block)"] --> current["ax-fs"]
-    axfs_vfs["axfs_vfs"] --> current
+    axfs_vfs["ax-fs-vfs"] --> current
     axfs_ramfs["ax-fs-ramfs"] --> current
     axfs_devfs["ax-fs-devfs"] --> current
     axfatfs["axfatfs"] --> current

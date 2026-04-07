@@ -14,7 +14,7 @@
 
 - 它直接面向 ext4 语义和块设备，而不是面向统一 VFS trait。
 - 它对外导出的接口既有高层 API（`mount`、`open`、`read_at`、`mkdir` 等），也有大量后端内部模块，属于“引擎 + 宽导出 API”的风格。
-- 在当前仓库里，旧 `ax_fs::fs::ext4fs` 通过适配层把它包装成 `axfs_vfs::VfsOps`；新 `ax-fs-ng` 的 ext4 路径则改用了 `lwext4_rust`，不再依赖它。
+- 在当前仓库里，旧 `ax_fs::fs::ext4fs` 通过适配层把它包装成 `ax_fs_vfs::VfsOps`；新 `ax-fs-ng` 的 ext4 路径则改用了 `lwext4_rust`，不再依赖它。
 
 ### 1.2 内部模块划分
 - `src/ext4_backend/blockdev.rs`：定义 `BlockDevice` trait、`BlockDev` 缓冲封装以及 `Jbd2Dev`。

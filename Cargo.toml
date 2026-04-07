@@ -169,7 +169,7 @@ arm_pl031 = { path = "components/arm_pl031" }
 fxmac_rs = { path = "components/fxmac_rs" }
 smoltcp = { path = "components/starry-smoltcp" }
 axfs-ng-vfs = { path = "components/axfs-ng-vfs" }
-axfs_vfs = { path = "components/axfs_crates/axfs_vfs" }
+ax-fs-vfs = { path = "components/axfs_crates/axfs_vfs" }
 ax-fs-ramfs = { path = "components/axfs_crates/axfs_ramfs" }
 ax-fs-devfs = { path = "components/axfs_crates/axfs_devfs" }
 
@@ -340,7 +340,7 @@ axsched = { path = "components/axsched", version = "0.5.1" }
 axvcpu = { path = "components/axvcpu", version = "0.5.0" }
 axvm = { path = "components/axvm", version = "0.5.0" }
 axvmconfig = { path = "components/axvmconfig", version = "0.4.2" }
-axfs_vfs = { path = "components/axfs_crates/axfs_vfs", version = "0.3.2" }
+ax-fs-vfs = { path = "components/axfs_crates/axfs_vfs", version = "0.3.2" }
 
 axbuild = { path = "scripts/axbuild", version = "0.4.0" }
 

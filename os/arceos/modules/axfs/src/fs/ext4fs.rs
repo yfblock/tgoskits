@@ -20,7 +20,7 @@ use alloc::{
     vec::Vec,
 };
 
-use axfs_vfs::{
+use ax_fs_vfs::{
     VfsDirEntry, VfsError, VfsNodeAttr, VfsNodeOps, VfsNodePerm, VfsNodeRef, VfsNodeType, VfsOps,
     VfsResult,
 };

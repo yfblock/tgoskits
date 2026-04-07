@@ -12,6 +12,6 @@ repository.workspace = true
 categories.workspace = true
 
 [dependencies]
-axfs_vfs.workspace = true
+ax-fs-vfs.workspace = true
 spin = "0.9"
 log = "0.4"

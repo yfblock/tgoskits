@@ -68,7 +68,7 @@
 - `time` -> `axhal::time`
 - `stdio` -> `axhal::console` 与 `axlog`
 - `mem::alloc` -> `axalloc`
-- `mem::dma` -> `axdma`
+- `mem::dma` -> `ax-dma`
 - `task` -> `axtask`、`axsync`、`axhal::time`
 - `fs` -> `ax-fs`
 - `net` -> `ax-net`
@@ -112,7 +112,7 @@ graph LR
     ax-runtime["ax-runtime"] --> ax-api["ax-api"]
     axhal["axhal"] --> ax-api
     axalloc["axalloc"] --> ax-api
-    axdma["axdma"] --> ax-api
+    ax_dma["ax-dma"] --> ax-api
     axtask["axtask"] --> ax-api
     ax-fs["ax-fs"] --> ax-api
     ax-net["ax-net"] --> ax-api
@@ -125,7 +125,7 @@ graph LR
 
 ### 3.1 关键直接依赖
 - 核心基础：`axconfig`、`axerrno`、`ax-feat`、`axhal`、`axio`、`axlog`、`ax-runtime`、`axsync`。
-- 可选能力：`axalloc`、`axdma`、`axtask`、`ax-fs`、`ax-net`、`ax-display`、`ax-driver`、`axipi`、`axmm`。
+- 可选能力：`axalloc`、`ax-dma`、`axtask`、`ax-fs`、`ax-net`、`ax-display`、`ax-driver`、`axipi`、`axmm`。
 
 ### 3.2 关键直接消费者
 - `ax-std`：最重要的直接消费者，会把 `ax-api` 作为用户库的重要下层能力来源。

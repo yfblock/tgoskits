@@ -149,7 +149,7 @@ axbacktrace = { path = "components/axbacktrace" }
 
 axconfig = { path = "os/arceos/modules/axconfig" }
 ax-display = { path = "os/arceos/modules/axdisplay" }
-axdma = { path = "os/arceos/modules/axdma" }
+ax-dma = { path = "os/arceos/modules/axdma" }
 axhal = { path = "os/arceos/modules/axhal" }
 
 axcpu = { path = "components/axcpu" }
@@ -307,7 +307,7 @@ ax-feat = { path = "os/arceos/api/axfeat", version = "0.5.0" }
 axalloc = { path = "os/arceos/modules/axalloc", version = "0.5.0" }
 axconfig = { path = "os/arceos/modules/axconfig", version = "0.5.0" }
 ax-display = { path = "os/arceos/modules/axdisplay", version = "0.5.0" }
-axdma = { path = "os/arceos/modules/axdma", version = "0.5.0" }
+ax-dma = { path = "os/arceos/modules/axdma", version = "0.5.0" }
 ax-driver = { path = "os/arceos/modules/axdriver", version = "0.5.0" }
 ax-fs = { path = "os/arceos/modules/axfs", version = "0.5.0" }
 ax-fs-ng = { path = "os/arceos/modules/axfs-ng", version = "0.5.0" }

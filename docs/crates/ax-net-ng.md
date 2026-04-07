@@ -74,7 +74,7 @@ graph LR
 - `axconfig-gen`
 - `axconfig-macros`
 - `axcpu`
-- `axdma`
+- `ax-dma`
 - `axdriver_base`
 - `axdriver_block`
 - 另外还有 `38` 个同类项未在此展开

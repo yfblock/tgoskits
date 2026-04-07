@@ -69,7 +69,7 @@ graph LR
 - `axconfig-macros`
 - `axcpu`
 - `ax-display`
-- `axdma`
+- `ax-dma`
 - `ax-driver`
 - `axdriver_base`
 - 另外还有 `52` 个同类项未在此展开

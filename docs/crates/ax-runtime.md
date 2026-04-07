@@ -70,7 +70,7 @@ graph LR
 - `axconfig-gen`
 - `axconfig-macros`
 - `axcpu`
-- `axdma`
+- `ax-dma`
 - `axdriver_base`
 - `axdriver_block`
 - `axdriver_display`

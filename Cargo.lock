@@ -527,6 +527,7 @@ name = "ax-api"
 version = "0.5.0"
 dependencies = [
  "ax-display",
+ "ax-dma",
  "ax-driver",
  "ax-feat",
  "ax-fs",
@@ -534,7 +535,6 @@ dependencies = [
  "ax-runtime",
  "axalloc",
  "axconfig",
- "axdma",
  "axerrno",
  "axhal",
  "axio",
@@ -556,12 +556,27 @@ dependencies = [
 ]
 
 [[package]]
-name = "ax-driver"
+name = "ax-dma"
 version = "0.5.0"
 dependencies = [
  "axalloc",
+ "axallocator 0.4.0",
  "axconfig",
- "axdma",
+ "axhal",
+ "axmm",
+ "buddy-slab-allocator",
+ "kspin 0.3.1",
+ "log",
+ "memory_addr 0.6.1",
+]
+
+[[package]]
+name = "ax-driver"
+version = "0.5.0"
+dependencies = [
+ "ax-dma",
+ "axalloc",
+ "axconfig",
  "axdriver_base",
  "axdriver_block",
  "axdriver_display",
@@ -1056,21 +1071,6 @@ dependencies = [
  "axerrno",
  "axvmconfig",
  "serde",
-]
-
-[[package]]
-name = "axdma"
-version = "0.5.0"
-dependencies = [
- "axalloc",
- "axallocator 0.4.0",
- "axconfig",
- "axhal",
- "axmm",
- "buddy-slab-allocator",
- "kspin 0.3.1",
- "log",
- "memory_addr 0.6.1",
 ]
 
 [[package]]

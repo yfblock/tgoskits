@@ -15,7 +15,7 @@ irq = ["ax-feat/irq"]
 ipi = ["dep:axipi", "ax-feat/ipi"]
 alloc = ["dep:axalloc", "ax-feat/alloc"]
 paging = ["dep:axmm", "ax-feat/paging"]
-dma = ["dep:axdma", "ax-feat/dma"]
+dma = ["dep:ax-dma", "ax-feat/dma"]
 multitask = ["axtask/multitask", "axsync/multitask", "ax-feat/multitask"]
 fs = ["dep:ax-fs", "dep:ax-driver", "ax-feat/fs"]
 net = ["dep:ax-net", "dep:ax-driver", "ax-feat/net"]
@@ -29,7 +29,7 @@ dummy-if-not-enabled = []
 axalloc = { workspace = true, optional = true }
 axconfig.workspace = true
 ax-display = { workspace = true, optional = true }
-axdma = { workspace = true, optional = true }
+ax-dma = { workspace = true, optional = true }
 ax-driver = { workspace = true, optional = true }
 axerrno.workspace = true
 ax-feat.workspace = true

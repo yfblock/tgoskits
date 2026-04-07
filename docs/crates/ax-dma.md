@@ -1,4 +1,4 @@
-# `axdma` 技术文档
+# `ax-dma` 技术文档
 
 > 路径：`os/arceos/modules/axdma`
 > 类型：库 crate
@@ -6,11 +6,11 @@
 > 版本：`0.3.0-preview.3`
 > 文档依据：`Cargo.toml`、`src/lib.rs`、`src/dma.rs`、`os/arceos/modules/axdriver/src/ixgbe.rs`、`os/arceos/modules/axdriver/src/drivers.rs`、`os/arceos/api/ax-api/src/imp/mem.rs`、`platform/axplat-dyn/src/drivers/mod.rs`、`os/axvisor/src/driver/blk/mod.rs`
 
-`axdma` 不是驱动聚合层，也不是某类设备驱动。它的真实职责是为 ArceOS 内核提供一套全局一致的 DMA 一致性内存分配服务：从页分配器拿到内存、把页表属性改成 `UNCACHED`、给设备返回可用的总线地址，并在释放时尽可能恢复映射属性。它位于 `axalloc` / `axmm` / `axhal` 等内存基础设施之上，位于需要软件管理 DMA 缓冲的驱动之下。
+`ax-dma` 不是驱动聚合层，也不是某类设备驱动。它的真实职责是为 ArceOS 内核提供一套全局一致的 DMA 一致性内存分配服务：从页分配器拿到内存、把页表属性改成 `UNCACHED`、给设备返回可用的总线地址，并在释放时尽可能恢复映射属性。它位于 `axalloc` / `axmm` / `axhal` 等内存基础设施之上，位于需要软件管理 DMA 缓冲的驱动之下。
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
-`axdma` 解决的是这样一个问题：
+`ax-dma` 解决的是这样一个问题：
 
 - CPU 侧需要拿到一块可访问的虚拟地址。
 - 设备侧需要拿到与之对应的总线地址。
@@ -63,20 +63,20 @@
 - 再加上 `axconfig::plat::PHYS_BUS_OFFSET`；
 - 最终得到总线地址。
 
-这说明当前 `axdma` 假设平台满足一种简单的线性总线地址模型，而不是依赖 IOMMU 做复杂映射。
+这说明当前 `ax-dma` 假设平台满足一种简单的线性总线地址模型，而不是依赖 IOMMU 做复杂映射。
 
 ### 1.6 与驱动栈的真实接线关系
-当前仓库里，`axdma` 的最明确直接使用者是 `os/arceos/modules/axdriver/src/ixgbe.rs`：
+当前仓库里，`ax-dma` 的最明确直接使用者是 `os/arceos/modules/axdriver/src/ixgbe.rs`：
 
-- `IxgbeHalImpl::dma_alloc()` 调用 `axdma::alloc_coherent()`；
-- `dma_dealloc()` 调用 `axdma::dealloc_coherent()`。
+- `IxgbeHalImpl::dma_alloc()` 调用 `ax_dma::alloc_coherent()`；
+- `dma_dealloc()` 调用 `ax_dma::dealloc_coherent()`。
 
 但要特别注意一个实现事实：
 
-- `ax-driver/Cargo.toml` 中 `fxmac` feature 也声明了 `dep:axdma`；
-- 可是 `os/arceos/modules/axdriver/src/drivers.rs` 里的 `FXmacDriver` glue 实际使用的是 `axalloc::global_allocator().alloc_pages(..., UsageKind::Dma)`，并没有直接调用 `axdma` 的 coherent allocator。
+- `ax-driver/Cargo.toml` 中 `fxmac` feature 也声明了 `dep:ax-dma`；
+- 可是 `os/arceos/modules/axdriver/src/drivers.rs` 里的 `FXmacDriver` glue 实际使用的是 `axalloc::global_allocator().alloc_pages(..., UsageKind::Dma)`，并没有直接调用 `ax-dma` 的 coherent allocator。
 
-这说明在当前代码树里，**`axdma` 不是所有 DMA 驱动的唯一后端**，而是其中一条已被明确使用的 DMA 服务路径。
+这说明在当前代码树里，**`ax-dma` 不是所有 DMA 驱动的唯一后端**，而是其中一条已被明确使用的 DMA 服务路径。
 
 ### 1.7 与其它 DMA 实现的边界
 仓库里至少还有两条独立 DMA 路径：
@@ -84,10 +84,10 @@
 - `platform/axplat-dyn/src/drivers/mod.rs`：提供 `dma_api::DmaOp` 实现，服务动态平台块设备探测。
 - `os/axvisor/src/driver/blk/mod.rs`：提供 Axvisor 自己的 `rdif_block::dma_api::DmaOp` 实现。
 
-因此不能把 `axdma` 写成“整个仓库唯一的 DMA 抽象层”；它是 ArceOS 主线中的一个内核 DMA 内存服务模块。
+因此不能把 `ax-dma` 写成“整个仓库唯一的 DMA 抽象层”；它是 ArceOS 主线中的一个内核 DMA 内存服务模块。
 
 ### 1.8 边界澄清
-最关键的边界是：**`axdma` 负责分配一致性 DMA 内存并给出总线地址，但不负责设备探测、描述符编程、总线枚举或 IOMMU 策略。**
+最关键的边界是：**`ax-dma` 负责分配一致性 DMA 内存并给出总线地址，但不负责设备探测、描述符编程、总线枚举或 IOMMU 策略。**
 
 ## 2. 核心功能说明
 ### 2.1 主要能力
@@ -103,15 +103,15 @@
 - `ax_dealloc_coherent()`
 - `DMAInfo`
 
-这说明 `axdma` 不只是驱动内部工具，也被设计成可向更高层 API 暴露的系统能力。
+这说明 `ax-dma` 不只是驱动内部工具，也被设计成可向更高层 API 暴露的系统能力。
 
 ### 2.3 与 `ax-runtime` / `ax-feat` 的关系
 需要区分两个概念：
 
-- `ax-runtime` 的 `dma` feature 只是 `["paging"]`，它并不直接依赖 `axdma` crate。
+- `ax-runtime` 的 `dma` feature 只是 `["paging"]`，它并不直接依赖 `ax-dma` crate。
 - `ax-feat` 的 `dma` feature 表示整机要具备 DMA 所需的内存和分页能力。
 
-也就是说，`axdma` 更像一个“可被 API 或驱动选用的具体实现模块”，而不是 runtime 自动初始化出来的独立子系统。
+也就是说，`ax-dma` 更像一个“可被 API 或驱动选用的具体实现模块”，而不是 runtime 自动初始化出来的独立子系统。
 
 ## 3. 依赖关系图谱
 ### 3.1 直接依赖
@@ -137,7 +137,7 @@
 
 ## 4. 开发指南
 ### 4.1 适合修改这里的场景
-应修改 `axdma` 的情况主要包括：
+应修改 `ax-dma` 的情况主要包括：
 
 - DMA 一致性内存分配策略需要调整。
 - 平台总线地址换算规则需要统一变更。
@@ -152,7 +152,7 @@
 4. 直接使用者，例如 `ixgbe` 和 `ax-api`，是否仍满足其地址与生命周期假设。
 
 ### 4.3 常见坑
-- 不要把 `axdma` 当成 IOMMU 管理器；它只做简单地址换算和一致性内存管理。
+- 不要把 `ax-dma` 当成 IOMMU 管理器；它只做简单地址换算和一致性内存管理。
 - 不要假设仓库中所有 DMA 设备都走这里；当前动态平台块设备和 Axvisor 就有独立实现。
 - 对小块分配路径的扩容与页属性修改不能遗漏，否则问题会非常隐蔽。
 
@@ -181,10 +181,10 @@
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-`axdma` 是 ArceOS 主线中的 DMA 内存服务模块，当前最明确服务于 `ixgbe` 和 API 层。
+`ax-dma` 是 ArceOS 主线中的 DMA 内存服务模块，当前最明确服务于 `ixgbe` 和 API 层。
 
 ### 6.2 StarryOS
-当前仓库里没有看到 StarryOS 直接依赖 `axdma` 的证据，因此不应把它描述为 StarryOS 常规 DMA 子系统。
+当前仓库里没有看到 StarryOS 直接依赖 `ax-dma` 的证据，因此不应把它描述为 StarryOS 常规 DMA 子系统。
 
 ### 6.3 Axvisor
-Axvisor 在本仓库中有自己的块设备 DMA 实现，不直接依赖 `axdma`。因此它不是 Axvisor 的统一 DMA 中枢。
+Axvisor 在本仓库中有自己的块设备 DMA 实现，不直接依赖 `ax-dma`。因此它不是 Axvisor 的统一 DMA 中枢。

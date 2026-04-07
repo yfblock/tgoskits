@@ -27,7 +27,7 @@
 - `src/bus/pci.rs`：静态模型下的 PCI 总线枚举、BAR 配置和按驱动逐个 probe。
 - `src/bus/mmio.rs`：静态模型下的 MMIO 设备扫描，主要服务 VirtIO MMIO 路径。
 - `src/virtio.rs`：VirtIO 通用探测与 `VirtIoHalImpl`，连接 `axalloc`、`axhal` 和 `axdriver_virtio`。
-- `src/ixgbe.rs`：ixgbe 的平台 HAL glue，连接 `axdma` 和网卡驱动。
+- `src/ixgbe.rs`：ixgbe 的平台 HAL glue，连接 `ax-dma` 和网卡驱动。
 - `src/structs/mod.rs`、`src/structs/static.rs`、`src/structs/dyn.rs`：定义 `AxDeviceEnum`、`AxDeviceContainer` 以及静态/动态两种 `Ax*Device` 类型模型。
 - `src/dummy.rs`：在某一设备类别启用但未选中具体驱动时，提供 `dummy` 占位类型。
 - `src/dyn_drivers/mod.rs`：`dyn` 路径的设备探测入口，当前主要从 `axplat-dyn` 接入块设备。
@@ -126,7 +126,7 @@ graph LR
     axconfig["axconfig"] --> ax-driver["ax-driver"]
     axhal["axhal"] --> ax-driver
     axalloc["axalloc"] --> ax-driver
-    axdma["axdma"] --> ax-driver
+    ax_dma["ax-dma"] --> ax-driver
     axdriver_base["axdriver_base / axdriver_*"] --> ax-driver
     axplat_dyn["axplat-dyn (dyn 模式)"] --> ax-driver
 
@@ -142,7 +142,7 @@ graph LR
 - `axdriver_base` 与各 `axdriver_*` crate：提供设备 trait 与具体驱动实现。
 - `axconfig`：提供 PCI ECAM、MMIO ranges、SDMMC 基址等平台配置。
 - `axhal`：提供地址转换、总线相关底层能力。
-- `axalloc`、`axdma`：服务 VirtIO 和网卡 DMA 路径。
+- `axalloc`、`ax-dma`：服务 VirtIO 和网卡 DMA 路径。
 - `axplat-dyn`：动态模型下的平台设备探测入口。
 
 ### 3.2 关键直接消费者

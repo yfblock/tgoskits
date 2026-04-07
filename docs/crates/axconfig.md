@@ -61,7 +61,7 @@ flowchart TD
 - `ax-runtime` 用 `ARCH`、`PLATFORM`、`TICKS_PER_SEC` 输出平台信息并配置定时节拍。
 - `axhal/build.rs` 用 `PLATFORM`、`plat::KERNEL_BASE_VADDR`、`plat::MAX_CPU_NUM` 生成链接脚本参数。
 - `ax-driver` 用 `devices::*` 完成 MMIO、PCI、SDMMC 等设备探测参数绑定。
-- `axdma` 用 `plat::PHYS_BUS_OFFSET` 计算总线地址映射。
+- `ax-dma` 用 `plat::PHYS_BUS_OFFSET` 计算总线地址映射。
 - `ax-posix-api` 用 `TASK_STACK_SIZE`、`plat::MAX_CPU_NUM` 实现 `getrlimit` 和 `sysconf`。
 
 ## 2. 核心功能说明
@@ -99,7 +99,7 @@ graph LR
     axconfig --> ax-runtime["ax-runtime"]
     axconfig --> axtask["axtask"]
     axconfig --> ax-driver["ax-driver"]
-    axconfig --> axdma["axdma"]
+    axconfig --> ax_dma["ax-dma"]
     axconfig --> posix["ax-posix-api"]
 ```
 
@@ -111,7 +111,7 @@ graph LR
 - `axhal`：链接脚本和平台内存布局的关键消费者。
 - `ax-runtime`：启动日志、定时器节拍与 SMP 初始化路径的关键消费者。
 - `axtask`、`axipi`：CPU 数量、默认栈大小等调度相关消费者。
-- `ax-driver`、`axdma`：设备和 DMA 地址布局消费者。
+- `ax-driver`、`ax-dma`：设备和 DMA 地址布局消费者。
 - `ax-api`、`ax-posix-api`：向上层重新导出或转译这些常量。
 
 ### 3.3 `plat-dyn` 的特殊性

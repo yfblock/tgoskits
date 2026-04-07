@@ -1,5 +1,5 @@
 [package]
-name = "axdma"
+name = "ax-dma"
 edition.workspace = true
 version.workspace = true
 authors = ["Zhour Rui <zrufo747@outlook.com>"]

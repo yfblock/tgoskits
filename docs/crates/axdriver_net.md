@@ -61,7 +61,7 @@
 - 用 `MemPool` 管理 DMA 友好的网卡缓冲。
 - `init(base, len)` 完成设备初始化。
 - `receive_packets()` 支持批量接收并转成 `NetBufPtr`。
-- `IxgbeHal` 由 `os/arceos/modules/axdriver/src/ixgbe.rs` 对接 `axdma`。
+- `IxgbeHal` 由 `os/arceos/modules/axdriver/src/ixgbe.rs` 对接 `ax-dma`。
 
 ### 1.6 与 `ax-driver` 和 `axdriver_virtio` 的接线关系
 当前仓库中的三条主要接线路径是：

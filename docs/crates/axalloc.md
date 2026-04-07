@@ -13,7 +13,7 @@
 `axalloc` 在启动链和运行期之间扮演的是“统一分配服务”角色：
 
 - 向下，它复用 `axallocator` 或 `buddy-slab-allocator`，而不是自行实现完整分配算法。
-- 向上，它向 `ax-runtime`、`axmm`、`axhal::paging`、`ax-driver`、`axdma`、`ax-api` 等模块暴露统一的堆/页分配接口。
+- 向上，它向 `ax-runtime`、`axmm`、`axhal::paging`、`ax-driver`、`ax-dma`、`ax-api` 等模块暴露统一的堆/页分配接口。
 - 横向，它通过 `UsageKind`/`Usages` 给页表、DMA、页缓存等不同用途打标签，方便上层做统计与诊断。
 
 因此，`axalloc` 不是“内存管理本体”，而是“内存分配入口”。把它写成虚拟内存系统、页表系统或用户地址空间管理器，都会高估它的职责。
@@ -90,7 +90,7 @@ graph LR
     axalloc --> axmm["axmm"]
     axalloc --> axhal["axhal/paging"]
     axalloc --> ax-driver["ax-driver"]
-    axalloc --> axdma["axdma"]
+    axalloc --> ax_dma["ax-dma"]
     axalloc --> axfsng["ax-fs-ng"]
     axalloc --> ax-api["ax-api"]
     axalloc --> starry_kernel["starry-kernel"]
@@ -107,7 +107,7 @@ graph LR
 ### 3.2 关键直接消费者
 - `ax-runtime`：启动期初始化全局分配器。
 - `axmm`、`axhal`：页级分配的主要消费者。
-- `ax-driver`、`axdma`、`ax-fs-ng`：驱动、DMA、文件缓存等运行期场景。
+- `ax-driver`、`ax-dma`、`ax-fs-ng`：驱动、DMA、文件缓存等运行期场景。
 - `ax-api` / `ax-posix-api`：向上层 API 暴露堆能力。
 - `starry-kernel`：可复用其 tracking 和页/堆分配能力。
 

@@ -1,6 +1,6 @@
 use core::{alloc::Layout, ptr::NonNull};
 
-use axdma::{BusAddr, DMAInfo, alloc_coherent, dealloc_coherent};
+use ax_dma::{BusAddr, DMAInfo, alloc_coherent, dealloc_coherent};
 use axdriver_net::ixgbe::{IxgbeHal, PhysAddr as IxgbePhysAddr};
 use axhal::mem::{phys_to_virt, virt_to_phys};
 

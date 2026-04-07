@@ -232,7 +232,7 @@ dependencies = [
  "axalloc",
  "axconfig",
  "ax-display",
- "axdma",
+ "ax-dma",
  "axdriver",
  "axerrno",
  "ax-feat",
@@ -477,7 +477,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "axdma"
+name = "ax-dma"
 version = "0.5.0"
 dependencies = [
  "axalloc",
@@ -497,7 +497,7 @@ version = "0.5.0"
 dependencies = [
  "axalloc",
  "axconfig",
- "axdma",
+ "ax-dma",
  "axdriver_base",
  "axdriver_block",
  "axdriver_display",

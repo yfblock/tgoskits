@@ -97,7 +97,7 @@ ArceOS 的基础骨架由四个必选模块组成：
 | `ax-net-ng` | `net-ng` | 下一代网络栈（异步感知） |
 | `ax-display` | `display` | 图形显示（帧缓冲） |
 | `ax-input` | `input` | 输入设备管理 |
-| `axdma` | `dma` | DMA 内存分配与管理 |
+| `ax-dma` | `dma` | DMA 内存分配与管理 |
 | `axipi` | `ipi` | 处理器间中断管理 |
 
 ## 3. 核心设计机制
@@ -156,7 +156,7 @@ ax-std = { workspace = true, features = ["alloc", "multitask", "net"], optional 
 # 内存
 alloc = ["dep:axalloc"]
 paging = ["dep:axmm"]
-dma = ["dep:axdma"]
+dma = ["dep:ax-dma"]
 # 并发
 multitask = ["axtask/multitask", "dep:axsync"]
 smp = ["axhal/smp"]
@@ -266,7 +266,7 @@ sequenceDiagram
 | `axlog` | `os/arceos/modules/axlog` | 多级日志与格式化输出 | 所有模块 |
 | `ax-fs-ng` | `os/arceos/modules/axfs-ng` | 下一代文件系统（FAT、ext4，LRU 缓存） | `ax-driver` |
 | `ax-net-ng` | `os/arceos/modules/axnet-ng` | 下一代网络栈（异步感知，基于 starry-smoltcp） | `ax-driver` |
-| `axdma` | `os/arceos/modules/axdma` | DMA 内存分配与管理 | `ax-runtime`、`axmm` |
+| `ax-dma` | `os/arceos/modules/axdma` | DMA 内存分配与管理 | `ax-runtime`、`axmm` |
 | `axipi` | `os/arceos/modules/axipi` | 处理器间中断管理 | `axhal` |
 | `ax-input` | `os/arceos/modules/axinput` | 输入设备管理与事件分发 | `ax-driver` |
 

@@ -16,7 +16,7 @@ bus-mmio = []
 bus-pci = ["dep:axdriver_pci", "dep:ax-hal", "dep:ax-config"]
 net = ["dep:axdriver_net"]
 block = ["dep:ax-driver-block"]
-display = ["dep:axdriver_display"]
+display = ["dep:ax-driver-display"]
 input = ["dep:axdriver_input"]
 vsock = ["axdriver_vsock"]
 
@@ -48,7 +48,7 @@ ax-config = { workspace = true, optional = true }
 ax-dma = { workspace = true, optional = true }
 axdriver_base.workspace = true
 ax-driver-block = { workspace = true, optional = true }
-axdriver_display = { workspace = true, optional = true }
+ax-driver-display = { workspace = true, optional = true }
 axdriver_input = { workspace = true, optional = true }
 axdriver_net = { workspace = true, optional = true }
 axdriver_pci = { workspace = true, optional = true }

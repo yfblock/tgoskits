@@ -188,7 +188,7 @@ CURATED_DOCS = {
     "ax-driver",
     "axdriver_base",
     "ax-driver-block",
-    "axdriver_display",
+    "ax-driver-display",
     "axdriver_input",
     "axdriver_net",
     "axdriver_pci",

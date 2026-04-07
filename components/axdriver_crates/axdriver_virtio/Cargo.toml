@@ -15,7 +15,7 @@ readme = "README.md"
 [features]
 alloc = ["virtio-drivers/alloc"]
 block = ["ax-driver-block"]
-gpu = ["alloc", "axdriver_display"]
+gpu = ["alloc", "ax-driver-display"]
 input = ["alloc", "axdriver_input"]
 net = ["alloc", "axdriver_net"]
 socket = ["alloc", "axdriver_vsock"]
@@ -23,7 +23,7 @@ socket = ["alloc", "axdriver_vsock"]
 [dependencies]
 axdriver_base = { version = "0.3.4" }
 ax-driver-block = { version = "0.3.4", optional = true }
-axdriver_display = { version = "0.3.4", optional = true }
+ax-driver-display = { version = "0.3.4", optional = true }
 axdriver_input = { version = "0.3.4", optional = true }
 axdriver_net = { version = "0.3.4", optional = true }
 axdriver_vsock = { version = "0.3.4", optional = true }

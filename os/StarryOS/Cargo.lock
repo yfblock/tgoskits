@@ -504,7 +504,7 @@ dependencies = [
  "ax-config",
  "axdriver_base",
  "ax-driver-block",
- "axdriver_display",
+ "ax-driver-display",
  "axdriver_input",
  "axdriver_net",
  "axdriver_pci",
@@ -535,7 +535,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "axdriver_display"
+name = "ax-driver-display"
 version = "0.1.4-preview.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fcbd2fab37c37193bd21fcee061c96fe6a2850911a6a74a890018541e14ba92a"
@@ -581,7 +581,7 @@ checksum = "da6c36cc900745f3bab9de0dd8d5a2d5ac720a253937b3c5f3ab81bbb9c9e139"
 dependencies = [
  "axdriver_base",
  "ax-driver-block",
- "axdriver_display",
+ "ax-driver-display",
  "axdriver_input",
  "axdriver_net",
  "log",

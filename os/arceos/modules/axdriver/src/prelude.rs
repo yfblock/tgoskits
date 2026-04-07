@@ -6,7 +6,7 @@ pub use {crate::structs::AxBlockDevice, ax_driver_block::BlockDriverOps};
 #[cfg(feature = "display")]
 pub use {
     crate::structs::AxDisplayDevice,
-    axdriver_display::{DisplayDriverOps, DisplayInfo},
+    ax_driver_display::{DisplayDriverOps, DisplayInfo},
 };
 #[cfg(feature = "input")]
 pub use {

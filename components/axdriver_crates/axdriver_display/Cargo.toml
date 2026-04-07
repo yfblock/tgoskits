@@ -1,5 +1,5 @@
 [package]
-name = "axdriver_display"
+name = "ax-driver-display"
 edition.workspace = true
 version.workspace = true
 authors.workspace = true

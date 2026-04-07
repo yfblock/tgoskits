@@ -500,7 +500,7 @@ dependencies = [
  "ax-dma",
  "axdriver_base",
  "ax-driver-block",
- "axdriver_display",
+ "ax-driver-display",
  "axdriver_input",
  "axdriver_net",
  "axdriver_pci",
@@ -531,7 +531,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "axdriver_display"
+name = "ax-driver-display"
 version = "0.3.4"
 dependencies = [
  "axdriver_base",
@@ -569,7 +569,7 @@ version = "0.3.4"
 dependencies = [
  "axdriver_base",
  "ax-driver-block",
- "axdriver_display",
+ "ax-driver-display",
  "axdriver_input",
  "axdriver_net",
  "axdriver_vsock",

@@ -39,7 +39,7 @@ smoltcp
 starry-vm
 timer_list
 ax-alloc
-axconfig
+ax-config
 ax-display
 ax-driver
 ax-hal

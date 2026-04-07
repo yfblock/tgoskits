@@ -71,7 +71,7 @@ ax-std = { version = "0.5.0", features = [
   "smp",
   "hv",
 ]}
-axhal = { version = "0.5.0", features = ["paging", "irq", "smp", "hv"] }
+ax-hal = { version = "0.5.0", features = ["paging", "irq", "smp", "hv"] }
 
 # System dependent modules provided by ArceOS-Hypervisor (bare-metal only)
 axaddrspace = "0.5.0"

@@ -153,7 +153,7 @@
 - 当前任务切换
 - 调度器局部状态一致性
 
-这些运行时语义配合。因此它经常与 `kernel_guard`、`ax-task`、`axhal` 一起出现。
+这些运行时语义配合。因此它经常与 `kernel_guard`、`ax-task`、`ax-hal` 一起出现。
 
 ## 3. 依赖关系图谱
 
@@ -172,7 +172,7 @@
 仓库内直接或间接依赖 `percpu` 的关键组件包括：
 
 - `axplat`
-- `axhal`
+- `ax-hal`
 - `ax-runtime`
 - `ax-task`
 - `axalloc`
@@ -188,7 +188,7 @@
 graph TD
     A[percpu_macros] --> B[percpu]
     B --> C[axplat]
-    C --> D[axhal]
+    C --> D[ax-hal]
     D --> E[ax-runtime]
     D --> F[ax-task]
     B --> G[axvcpu]

@@ -1,6 +1,6 @@
+use ax_hal::time::TimeValue;
 use ax_task::current;
 use axerrno::{AxError, AxResult};
-use axhal::time::TimeValue;
 use linux_raw_sys::general::{__kernel_old_timeval, RLIM_NLIMITS, rlimit64, rusage};
 use starry_process::Pid;
 use starry_vm::{VmMutPtr, VmPtr};

@@ -1,9 +1,9 @@
 use alloc::{sync::Arc, vec::Vec};
 use core::ops::Deref;
 
+use ax_hal::paging::{MappingFlags, PageSize, PageTableCursor};
 use ax_sync::Mutex;
 use axerrno::AxResult;
-use axhal::paging::{MappingFlags, PageSize, PageTableCursor};
 use memory_addr::{MemoryAddr, PhysAddr, VirtAddr, VirtAddrRange};
 
 use super::{AddrSpace, Backend, BackendOps, alloc_frame, dealloc_frame, divide_page, pages_in};

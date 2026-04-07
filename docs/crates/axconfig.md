@@ -6,7 +6,7 @@
 > 版本：`0.3.0-preview.3`
 > 文档依据：`Cargo.toml`、`build.rs`、`src/lib.rs`、`src/driver_dyn_config.rs`、`README.md`
 
-`axconfig` 是 ArceOS 的平台常量入口。它不负责解析命令行、不负责运行时热更新，也不负责系统初始化；它做的事情只有一件：把构建阶段确定下来的平台参数导出成 Rust 常量，供 `axhal`、`ax-runtime`、`ax-task`、`ax-driver`、`ax-posix-api` 等模块在编译期和运行期直接读取。
+`axconfig` 是 ArceOS 的平台常量入口。它不负责解析命令行、不负责运行时热更新，也不负责系统初始化；它做的事情只有一件：把构建阶段确定下来的平台参数导出成 Rust 常量，供 `ax-hal`、`ax-runtime`、`ax-task`、`ax-driver`、`ax-posix-api` 等模块在编译期和运行期直接读取。
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
@@ -30,7 +30,7 @@ flowchart TD
     D["feature = plat-dyn"] --> E["driver_dyn_config.rs"]
     E --> C
 
-    C --> F["axhal / ax-runtime / ax-task / ax-driver / ax-posix-api"]
+    C --> F["ax-hal / ax-runtime / ax-task / ax-driver / ax-posix-api"]
 ```
 
 具体行为如下：
@@ -59,7 +59,7 @@ flowchart TD
 
 - `ax-task` 用 `TASK_STACK_SIZE` 和 `plat::MAX_CPU_NUM` 决定任务栈和 CPU 相关静态对象大小。
 - `ax-runtime` 用 `ARCH`、`PLATFORM`、`TICKS_PER_SEC` 输出平台信息并配置定时节拍。
-- `axhal/build.rs` 用 `PLATFORM`、`plat::KERNEL_BASE_VADDR`、`plat::MAX_CPU_NUM` 生成链接脚本参数。
+- `ax-hal/build.rs` 用 `PLATFORM`、`plat::KERNEL_BASE_VADDR`、`plat::MAX_CPU_NUM` 生成链接脚本参数。
 - `ax-driver` 用 `devices::*` 完成 MMIO、PCI、SDMMC 等设备探测参数绑定。
 - `ax-dma` 用 `plat::PHYS_BUS_OFFSET` 计算总线地址映射。
 - `ax-posix-api` 用 `TASK_STACK_SIZE`、`plat::MAX_CPU_NUM` 实现 `getrlimit` 和 `sysconf`。
@@ -77,7 +77,7 @@ flowchart TD
 1. `axbuild` 或人工流程生成/指定 `.axconfig.toml`
 2. Cargo 通过 `AX_CONFIG_PATH` 把配置文件路径传给 `axconfig`
 3. `axconfig-macros` 在编译期把 TOML 展开成 Rust 常量
-4. `axhal`、`ax-runtime`、`ax-task`、`ax-driver` 等模块直接读取这些常量
+4. `ax-hal`、`ax-runtime`、`ax-task`、`ax-driver` 等模块直接读取这些常量
 
 这也解释了为什么 `axconfig` 自身没有初始化函数：它的“初始化”已经在编译阶段完成了。
 
@@ -95,7 +95,7 @@ graph LR
     toml --> macros["axconfig-macros"]
     macros --> axconfig["axconfig"]
 
-    axconfig --> axhal["axhal"]
+    axconfig --> ax-hal["ax-hal"]
     axconfig --> ax-runtime["ax-runtime"]
     axconfig --> ax-task["ax-task"]
     axconfig --> ax-driver["ax-driver"]
@@ -108,7 +108,7 @@ graph LR
 - `const-str`：仅在 `plat-dyn` 路径下启用，用来在常量上下文解析 `SMP` 环境变量。
 
 ### 3.2 关键直接消费者
-- `axhal`：链接脚本和平台内存布局的关键消费者。
+- `ax-hal`：链接脚本和平台内存布局的关键消费者。
 - `ax-runtime`：启动日志、定时器节拍与 SMP 初始化路径的关键消费者。
 - `ax-task`、`ax-ipi`：CPU 数量、默认栈大小等调度相关消费者。
 - `ax-driver`、`ax-dma`：设备和 DMA 地址布局消费者。
@@ -124,7 +124,7 @@ graph LR
 3. 如果新增常量需要被下游模块普遍访问，应保持它在默认路径和 `plat-dyn` 路径里都可用。
 
 ### 4.2 修改时的关键约束
-- 常量名一旦被 `axhal`、`ax-runtime`、`ax-task` 等广泛使用，改名成本极高。
+- 常量名一旦被 `ax-hal`、`ax-runtime`、`ax-task` 等广泛使用，改名成本极高。
 - `plat::MAX_CPU_NUM` 这类参与数组长度、类型参数和链接脚本展开的常量，属于高风险接口。
 - `devices::*` 中的物理地址和 IRQ 号必须与真实平台配置保持一致，不能仅按 README 直觉修改。
 - `build.rs` 只负责追踪变化，不应把配置生成逻辑塞进这里。
@@ -141,7 +141,7 @@ graph LR
 ### 5.2 建议重点验证
 - 默认路径：`AX_CONFIG_PATH` 指向自定义配置时能否生成正确常量。
 - 回退路径：未设置 `AX_CONFIG_PATH` 时是否能使用 `dummy.toml` 完成最小构建。
-- `plat-dyn` 路径：`driver_dyn_config.rs` 导出的常量是否满足 `axhal`、`ax-runtime`、`ax-driver` 需求。
+- `plat-dyn` 路径：`driver_dyn_config.rs` 导出的常量是否满足 `ax-hal`、`ax-runtime`、`ax-driver` 需求。
 - 关键消费者：`ax-task`、`ax-runtime`、`ax-driver`、`ax-posix-api` 是否继续通过。
 
 ### 5.3 集成测试建议
@@ -154,7 +154,7 @@ graph LR
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-`axconfig` 是 ArceOS 内核模块共享的平台常量入口。它让 `axhal`、`ax-runtime`、`ax-task`、`ax-driver` 在不关心配置来源的前提下使用统一常量接口。
+`axconfig` 是 ArceOS 内核模块共享的平台常量入口。它让 `ax-hal`、`ax-runtime`、`ax-task`、`ax-driver` 在不关心配置来源的前提下使用统一常量接口。
 
 ### 6.2 StarryOS
 StarryOS 在复用 ArceOS 模块时，也会继承这套常量接口。因此在 StarryOS 侧，`axconfig` 不是 Linux 兼容层的一部分，而是底层平台参数基座。

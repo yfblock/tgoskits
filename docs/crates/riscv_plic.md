@@ -168,14 +168,14 @@
 与它关系紧密但非直接依赖的组件包括：
 
 - `riscv_vplic`
-- `axhal` / `axplat` RISC-V 中断路径
+- `ax-hal` / `axplat` RISC-V 中断路径
 
 ### 3.3 关系示意
 
 ```mermaid
 graph TD
     A[riscv_plic] --> B[axplat-riscv64-qemu-virt irq]
-    B --> C[axhal IRQ]
+    B --> C[ax-hal IRQ]
     C --> D[ArceOS / StarryOS]
     E[riscv_vplic] -.相关但非直接依赖.-> A
 ```
@@ -201,7 +201,7 @@ graph TD
 
 - `riscv_plic`：只负责寄存器访问
 - `axplat-*`：负责基址、context 选择和 IRQ 接线
-- `axhal`：负责更高层 IRQ 入口和 handler 分发
+- `ax-hal`：负责更高层 IRQ 入口和 handler 分发
 
 ## 5. 测试策略
 

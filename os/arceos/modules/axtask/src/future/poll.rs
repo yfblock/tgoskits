@@ -53,9 +53,9 @@ pub fn register_irq_waker(irq: usize, waker: &core::task::Waker) {
             s.wake();
         }
     }
-    axhal::irq::register_irq_hook(irq_hook);
+    ax_hal::irq::register_irq_hook(irq_hook);
 
     POLL_IRQ.lock().entry(irq).or_default().register(waker);
 
-    axhal::irq::set_enable(irq, true);
+    ax_hal::irq::set_enable(irq, true);
 }

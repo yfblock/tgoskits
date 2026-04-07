@@ -78,7 +78,7 @@ graph LR
     test["arceos-sleep"] --> ax-std["ax-std(multitask, irq)"]
     ax-std --> ax-api["ax_api::task"]
     ax-api --> ax-task["ax-task"]
-    ax-task --> axhal["axhal time/irq"]
+    ax-task --> ax-hal["ax-hal time/irq"]
 ```
 
 ### 3.1 直接依赖
@@ -86,7 +86,7 @@ graph LR
 
 ### 3.2 关键间接依赖
 - `ax-task::sleep_until`：真正把当前任务挂入等待队列。
-- `axhal` 的时间和中断能力：提供超时唤醒所需的时钟推进。
+- `ax-hal` 的时间和中断能力：提供超时唤醒所需的时钟推进。
 
 ### 3.3 主要消费者
 - `cargo arceos test qemu` 自动发现的任务时间语义回归。

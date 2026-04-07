@@ -100,7 +100,7 @@ flowchart TD
 | `axcpu` | trap 初始化、停机等 CPU 原语 | Q35 MMIO 窗口、Multiboot 内存图解析、APIC/TSC/串口接线 |
 | `axplat-x86-qemu-q35` | Multiboot 启动、COM1、TSC/LAPIC/IOAPIC、RAM/MMIO 描述、AP 启动 | VMX/EPT、虚拟设备、客户机管理、通用 HAL 聚合 |
 | `axplat` | 统一平台契约与 `call_main()` / `call_secondary_main()` | Q35 板级实现细节 |
-| `axhal` | 当前仓库里不是它的主要消费者 | 板级启动与 Q35 宿主环境 bring-up |
+| `ax-hal` | 当前仓库里不是它的主要消费者 | 板级启动与 Q35 宿主环境 bring-up |
 | Axvisor 虚拟化核心 | VCPU、VM exit、EPT、设备虚拟化 | 宿主侧 COM1/APIC/TSC/Multiboot 平台初始化 |
 
 这里最重要的边界澄清是：**这个 crate 是 Axvisor 的宿主板级平台，而不是 Axvisor 的虚拟化核心。** 它负责把 x86_64 Q35 宿主机带起来，但不会负责任何客户机运行时语义。
@@ -110,7 +110,7 @@ flowchart TD
 | 维度 | `axplat-x86-pc` | `axplat-x86-qemu-q35` |
 | --- | --- | --- |
 | 代码位置 | `components/axplat_crates/platforms` | 根目录 `platform/` |
-| 主要消费者 | ArceOS `axhal` 默认 x86 平台 | Axvisor x86_64 宿主平台 |
+| 主要消费者 | ArceOS `ax-hal` 默认 x86 平台 | Axvisor x86_64 宿主平台 |
 | 配置来源 | `axconfig` 体系 | `build.rs` + `linker.lds.S` + `AXVISOR_SMP` |
 | 目标机型 | 标准 PC / Multiboot 参考实现 | QEMU Q35 明确机型 |
 
@@ -244,7 +244,7 @@ AXVISOR_SMP=4 cargo build -p axplat-x86-qemu-q35 --target x86_64-unknown-none
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | 当前无仓库内直接接入 | 潜在 x86 平台包 | 若未来要接入 ArceOS，需要额外完成 `axhal` 平台链路整合；当前并不是默认 x86 平台 |
+| ArceOS | 当前无仓库内直接接入 | 潜在 x86 平台包 | 若未来要接入 ArceOS，需要额外完成 `ax-hal` 平台链路整合；当前并不是默认 x86 平台 |
 | StarryOS | 当前无仓库内直接接入 | 潜在宿主平台基础 | 目前仓库中没有直接依赖，也不是 StarryOS 默认平台路径 |
 | Axvisor | x86_64 宿主默认平台之一 | 宿主板级平台包 | 直接承担 Multiboot、串口、内存、APIC、时间和多核 bring-up，但不承担 VMX/EPT 等虚拟化核心职责 |
 

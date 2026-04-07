@@ -1,13 +1,13 @@
 //! Memory mapping backends.
 use alloc::{boxed::Box, sync::Arc};
 
-use ax_sync::Mutex;
-use axalloc::{UsageKind, global_allocator};
-use axerrno::{AxError, AxResult};
-use axhal::{
+use ax_hal::{
     mem::{phys_to_virt, virt_to_phys},
     paging::{MappingFlags, PageSize, PageTable, PageTableCursor},
 };
+use ax_sync::Mutex;
+use axalloc::{UsageKind, global_allocator};
+use axerrno::{AxError, AxResult};
 use enum_dispatch::enum_dispatch;
 use memory_addr::{DynPageIter, PAGE_SIZE_4K, PhysAddr, VirtAddr, VirtAddrRange};
 use memory_set::MappingBackend;

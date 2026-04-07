@@ -138,7 +138,7 @@
 | 依赖 | 作用 |
 | --- | --- |
 | `ax-driver` | 提供 NIC 设备对象 |
-| `axhal` | 提供时间接口，驱动 `smoltcp::Instant` |
+| `ax-hal` | 提供时间接口，驱动 `smoltcp::Instant` |
 | `axio` | 提供 `PollState` 与通用 I/O trait |
 | `ax-sync` / `spin` / `lazyinit` | 管理全局接口、`SocketSet` 与监听表 |
 | `ax-task` | blocking 路径中的 `yield_now()` 与任务协作 |

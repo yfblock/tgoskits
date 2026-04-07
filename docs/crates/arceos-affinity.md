@@ -85,7 +85,7 @@ graph LR
     test["arceos-affinity"] --> ax-std["ax-std(multitask)"]
     ax-std --> ax-api["ax_api::task"]
     ax-api --> ax-task["ax-task"]
-    test --> axhal["axhal::percpu::this_cpu_id"]
+    test --> ax-hal["ax-hal::percpu::this_cpu_id"]
 ```
 
 ### 3.1 直接依赖
@@ -94,7 +94,7 @@ graph LR
 ### 3.2 关键间接依赖
 - `ax_api::task::ax_set_current_affinity`：对上层暴露亲和性设置接口。
 - `ax-task::set_current_affinity`：实际执行亲和性更新与迁移。
-- `axhal::percpu::this_cpu_id`：用来观察当前任务实际落在哪个 CPU 上。
+- `ax-hal::percpu::this_cpu_id`：用来观察当前任务实际落在哪个 CPU 上。
 
 ### 3.3 主要消费者
 - `cargo arceos test qemu` 自动发现的任务回归集合。

@@ -123,7 +123,7 @@
 `percpu_macros` 并不建议业务代码直接依赖，典型场景都是通过 `percpu` 间接使用：
 
 - 平台层定义 `CPU_ID`、`IS_BSP`
-- `axhal` 定义当前任务指针
+- `ax-hal` 定义当前任务指针
 - `ax-task` 定义 per-CPU 运行队列
 - `axvcpu` 或 `os/axvisor` 定义每核虚拟化状态
 
@@ -156,7 +156,7 @@
 实际最终受益的上层组件包括：
 
 - `axplat`
-- `axhal`
+- `ax-hal`
 - `ax-task`
 - `axvcpu`
 - `arm_vcpu`
@@ -169,7 +169,7 @@
 graph TD
     A[percpu_macros] --> B[percpu]
     B --> C[axplat]
-    C --> D[axhal]
+    C --> D[ax-hal]
     D --> E[ax-task]
     D --> F[ax-runtime]
     B --> G[axvcpu / arm_vcpu]
@@ -217,7 +217,7 @@ graph TD
 ### 5.3 风险点
 
 - 它属于“编译期生成 + 运行时契约”结合点，错误很难只在本 crate 内暴露
-- 任何宏展开格式变动，都可能影响 `percpu`、`axhal`、`ax-task` 和 Axvisor 的每核状态访问
+- 任何宏展开格式变动，都可能影响 `percpu`、`ax-hal`、`ax-task` 和 Axvisor 的每核状态访问
 
 ## 6. 跨项目定位分析
 

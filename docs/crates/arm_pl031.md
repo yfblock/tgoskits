@@ -112,7 +112,7 @@ graph LR
 
 ### 3.3 间接消费者
 - `axplat-aarch64-qemu-virt` 在启用 `rtc` 时会间接使用。
-- 通过 `axplat` / `axhal` 共享这条平台路径的 ArceOS 栈。
+- 通过 `axplat` / `ax-hal` 共享这条平台路径的 ArceOS 栈。
 - StarryOS、Axvisor 的依赖图中可能间接出现该 crate，但是否实际启用取决于具体平台包与 feature 组合。
 
 ## 4. 开发指南

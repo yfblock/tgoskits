@@ -6,7 +6,7 @@
 > 版本：`0.3.0-preview.8`
 > 文档依据：当前仓库源码、`Cargo.toml`、`README.md`、`src/lib.rs`、各架构 `mod.rs`/`asm.rs`/`context.rs`/`init.rs`/`trap.rs`
 
-`axcpu` 是 ArceOS 系栈中位于 `axhal` 之下、位于原始 CPU 指令之上的一层 ISA 抽象库。它负责把不同架构下的特权寄存器、异常现场、任务上下文切换、页表根寄存器、TLB 刷新和部分早期 CPU 初始化统一成可供内核/HAL 调用的接口。它不是页表库，也不是板级支持包，而是“面向 CPU 本身”的底层抽象层。
+`axcpu` 是 ArceOS 系栈中位于 `ax-hal` 之下、位于原始 CPU 指令之上的一层 ISA 抽象库。它负责把不同架构下的特权寄存器、异常现场、任务上下文切换、页表根寄存器、TLB 刷新和部分早期 CPU 初始化统一成可供内核/HAL 调用的接口。它不是页表库，也不是板级支持包，而是“面向 CPU 本身”的底层抽象层。
 
 ## 1. 架构设计分析
 
@@ -175,7 +175,7 @@
 
 ### 3.2 主要消费者
 
-- `axhal`
+- `ax-hal`
 - 各类 `axplat-*` 平台包
 - `platform/*` 下的平台实现
 - `starry-signal`
@@ -188,7 +188,7 @@
 graph TD
     A[page_table_entry] --> B[axcpu]
     C[memory_addr] --> B
-    B --> D[axhal]
+    B --> D[ax-hal]
     D --> E[axplat-*]
     D --> F[ArceOS]
     D --> G[StarryOS]
@@ -215,7 +215,7 @@ graph TD
 
 ### 4.3 与其他 crate 的协作边界
 
-- 新 trap 类型若需要上传给内核逻辑，应优先考虑 `axhal` 暴露的接口面
+- 新 trap 类型若需要上传给内核逻辑，应优先考虑 `ax-hal` 暴露的接口面
 - 页错误处理不要塞进 `axcpu`，应交给地址空间层
 - 板级初始化时序不要写进 `axcpu`，应留给 `axplat`
 
@@ -241,7 +241,7 @@ graph TD
 
 ### 5.3 风险点
 
-- 它是 `axhal` 的 ISA 基础层，改动很容易波及全部平台
+- 它是 `ax-hal` 的 ISA 基础层，改动很容易波及全部平台
 - 页表根/TLB 语义错误通常不是立即崩溃，而是表现为隐蔽的地址空间异常
 - trap 和 context 路径任何小改动都可能导致难调试的问题
 
@@ -249,10 +249,10 @@ graph TD
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | `axhal` 下方的 ISA 层 | CPU 特权抽象基础件 | 为平台启动、trap、上下文切换和页表根切换提供统一底层能力 |
-| StarryOS | 通过 `axhal` 使用 | 用户态和异常路径底层支撑 | 为页错误处理、用户态上下文和任务切换提供 CPU 原语 |
+| ArceOS | `ax-hal` 下方的 ISA 层 | CPU 特权抽象基础件 | 为平台启动、trap、上下文切换和页表根切换提供统一底层能力 |
+| StarryOS | 通过 `ax-hal` 使用 | 用户态和异常路径底层支撑 | 为页错误处理、用户态上下文和任务切换提供 CPU 原语 |
 | Axvisor | 宿主 CPU 侧能力的间接来源 | Hypervisor 宿主 CPU 抽象层 | 尤其在 AArch64 `arm-el2` 路径下，为宿主 EL2 trap/MMU/TLB 行为提供基础语义 |
 
 ## 7. 总结
 
-`axcpu` 的核心价值在于把“必须懂 CPU 才能写”的那一层能力系统化了。它不去管理页表内容，也不去管理板级设备，而是把 trap、上下文、页表根和特权寄存器这些真正属于 CPU 的责任集中起来，为 `axhal`、平台包和上层 OS/Hypervisor 代码提供了稳定的 ISA 接口面。
+`axcpu` 的核心价值在于把“必须懂 CPU 才能写”的那一层能力系统化了。它不去管理页表内容，也不去管理板级设备，而是把 trap、上下文、页表根和特权寄存器这些真正属于 CPU 的责任集中起来，为 `ax-hal`、平台包和上层 OS/Hypervisor 代码提供了稳定的 ISA 接口面。

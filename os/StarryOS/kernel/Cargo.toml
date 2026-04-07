@@ -44,7 +44,7 @@ axconfig.workspace = true
 ax-display.workspace = true
 ax-driver.workspace = true
 ax-fs = { version = "0.5.0", package = "ax-fs-ng" }
-axhal.workspace = true
+ax-hal.workspace = true
 ax-input = { workspace = true, optional = true }
 axlog.workspace = true
 ax-mm.workspace = true

@@ -10,10 +10,10 @@
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
-这个 crate 的核心职责不是实现通用 HAL，而是把 `virt` 板级假设固化为一套可被 `axhal` 和运行时稳定调用的接口：
+这个 crate 的核心职责不是实现通用 HAL，而是把 `virt` 板级假设固化为一套可被 `ax-hal` 和运行时稳定调用的接口：
 
 - 向下，它直接面对 SBI、PLIC、16550 UART、Goldfish RTC 和固定的 MMIO/内存布局。
-- 向上，它并不直接服务应用，而是通过 `axplat` trait 接口被 `axhal`、`ax-runtime` 和平台示例内核复用。
+- 向上，它并不直接服务应用，而是通过 `axplat` trait 接口被 `ax-hal`、`ax-runtime` 和平台示例内核复用。
 - 在启动期，它负责最早期页表、栈、MMU 与主核/从核入口桥接；在运行期，它继续承担时间、中断、控制台、电源和内存区间查询。
 
 因此，`axplat-riscv64-qemu-virt` 应被理解为“RISC-V virt 板级 bring-up 实现”，而不是“可移植的架构抽象层”。
@@ -51,7 +51,7 @@ flowchart TD
     G --> H["trap / console / time 早期初始化"]
     H --> I["InitIf::init_later"]
     I --> J["irq::init_percpu / time::init_percpu"]
-    J --> K["运行时继续进入 axhal / ax-runtime 主线"]
+    J --> K["运行时继续进入 ax-hal / ax-runtime 主线"]
 ```
 
 更具体地说：
@@ -98,12 +98,12 @@ flowchart TD
 - 提供 `virt` 机型的内存与 MMIO 布局描述。
 
 ### 2.2 关键 API 与使用场景
-- `InitIfImpl`：供 `axplat::init::*` 和 `axhal` 启动路径调用。
-- `MemIfImpl`：供 `axhal::mem` 查询 RAM、MMIO 和地址转换。
+- `InitIfImpl`：供 `axplat::init::*` 和 `ax-hal` 启动路径调用。
+- `MemIfImpl`：供 `ax-hal::mem` 查询 RAM、MMIO 和地址转换。
 - `ConsoleIfImpl`：供日志和控制台输出使用。
-- `TimeIfImpl`：供 `axhal::time` 与调度器 tick 路径使用。
+- `TimeIfImpl`：供 `ax-hal::time` 与调度器 tick 路径使用。
 - `PowerIfImpl`：供关机和 SMP bring-up 使用。
-- `IrqIfImpl`：供 `axhal::irq` 注册、使能和分发中断。
+- `IrqIfImpl`：供 `ax-hal::irq` 注册、使能和分发中断。
 
 ### 2.3 典型使用方式
 对绝大多数上层代码来说，这个 crate 不会被“直接调用”，而是作为所选平台包接入：
@@ -113,7 +113,7 @@ flowchart TD
 axplat-riscv64-qemu-virt = { workspace = true, features = ["irq", "smp", "rtc"] }
 ```
 
-在真正的 ArceOS 系统里，它通常进一步经 `axhal` 的平台选择或 `components/axplat_crates/examples/*` 的样例工程间接生效。
+在真正的 ArceOS 系统里，它通常进一步经 `ax-hal` 的平台选择或 `components/axplat_crates/examples/*` 的样例工程间接生效。
 
 ## 3. 依赖关系图谱
 ```mermaid
@@ -125,7 +125,7 @@ graph LR
     uart["uart_16550"] --> current
     plic["riscv_plic"] --> current
 
-    current --> axhal["axhal"]
+    current --> ax-hal["ax-hal"]
     current --> hello["hello-kernel / irq-kernel / smp-kernel"]
     current --> arceos["ArceOS RISC-V virt 平台路径"]
 ```
@@ -138,12 +138,12 @@ graph LR
 - `uart_16550`、`riscv_plic`、`riscv_goldfish`：对应串口、中断控制器和 RTC。
 
 ### 3.2 关键直接消费者
-- `axhal`：在 RISC-V `virt` 平台选择中复用本 crate 的所有 `axplat` 实现。
+- `ax-hal`：在 RISC-V `virt` 平台选择中复用本 crate 的所有 `axplat` 实现。
 - `components/axplat_crates/examples/*`：作为最小平台 bring-up 示例的底层平台包。
 - ArceOS 栈中的 RISC-V 默认平台路径与 `helloworld-myplat` 等示例。
 
 ### 3.3 间接消费者
-- 通过 `axhal` 间接运行在 RISC-V `virt` 上的 ArceOS 示例和测试。
+- 通过 `ax-hal` 间接运行在 RISC-V `virt` 上的 ArceOS 示例和测试。
 - StarryOS 在 RISC-V 上的默认平台配置路径。
 - Axvisor 依赖图中可能出现该包，但当前主 manifest 并不把它作为 RISC-V 主平台入口使用。
 
@@ -163,7 +163,7 @@ axplat-riscv64-qemu-virt = { workspace = true, features = ["irq", "smp"] }
 ### 4.3 关键开发建议
 - 早期 bring-up 代码应尽量保持无分配、无复杂依赖。
 - 平台实现里出现的 `PHYS_VIRT_OFFSET`、`MAX_CPU_NUM`、`RTC_PADDR` 等不只是配置值，而是运行时假设。
-- 对于使用者，优先通过 `axhal` / `axplat` 接口消费该平台能力，而不是直接调用具体实现模块。
+- 对于使用者，优先通过 `ax-hal` / `axplat` 接口消费该平台能力，而不是直接调用具体实现模块。
 
 ## 5. 测试策略
 ### 5.1 当前测试形态
@@ -185,7 +185,7 @@ axplat-riscv64-qemu-virt = { workspace = true, features = ["irq", "smp"] }
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-这是 ArceOS 在 RISC-V QEMU `virt` 机型上的关键平台包之一。它通过 `axhal` 接到运行时，是 RISC-V 版本 ArceOS 从启动到中断、时间、SMP 的板级基座。
+这是 ArceOS 在 RISC-V QEMU `virt` 机型上的关键平台包之一。它通过 `ax-hal` 接到运行时，是 RISC-V 版本 ArceOS 从启动到中断、时间、SMP 的板级基座。
 
 ### 6.2 StarryOS
 StarryOS 在 RISC-V 默认平台配置里会复用这条 `axplat` 路径。因此它在 StarryOS 中承担的是“RISC-V 板级实现层”，而不是 Linux 兼容语义层。
@@ -241,7 +241,7 @@ graph LR
     current --> lazyinit["lazyinit"]
     current --> riscv_plic["riscv_plic"]
     arceos_helloworld_myplat["ax-helloworld-myplat"] --> current
-    axhal["axhal"] --> current
+    ax-hal["ax-hal"] --> current
     hello_kernel["hello-kernel"] --> current
     irq_kernel["irq-kernel"] --> current
     smp_kernel["smp-kernel"] --> current
@@ -271,7 +271,7 @@ graph LR
 
 ### 3.3 被依赖情况
 - `ax-helloworld-myplat`
-- `axhal`
+- `ax-hal`
 - `hello-kernel`
 - `irq-kernel`
 - `smp-kernel`
@@ -331,7 +331,7 @@ axplat-riscv64-qemu-virt = { workspace = true }
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-`axplat-riscv64-qemu-virt` 不在 ArceOS 目录内部，但被 `ax-helloworld-myplat`、`axhal` 等 ArceOS crate 直接依赖，说明它是该系统的共享构件或底层服务。
+`axplat-riscv64-qemu-virt` 不在 ArceOS 目录内部，但被 `ax-helloworld-myplat`、`ax-hal` 等 ArceOS crate 直接依赖，说明它是该系统的共享构件或底层服务。
 
 ### 6.2 StarryOS
 `axplat-riscv64-qemu-virt` 主要通过 `starry-kernel`、`starryos`、`starryos-test` 等上层 crate 被 StarryOS 间接复用，通常处于更底层的公共依赖层。

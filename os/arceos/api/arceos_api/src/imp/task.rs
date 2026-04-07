@@ -2,7 +2,7 @@ pub fn ax_sleep_until(deadline: crate::time::AxTimeValue) {
     #[cfg(feature = "multitask")]
     ax_task::sleep_until(deadline);
     #[cfg(not(feature = "multitask"))]
-    axhal::time::busy_wait_until(deadline);
+    ax_hal::time::busy_wait_until(deadline);
 }
 
 pub fn ax_yield_now() {
@@ -10,7 +10,7 @@ pub fn ax_yield_now() {
     ax_task::yield_now();
     #[cfg(not(feature = "multitask"))]
     if cfg!(feature = "irq") {
-        axhal::asm::wait_for_irqs();
+        ax_hal::asm::wait_for_irqs();
     } else {
         core::hint::spin_loop();
     }

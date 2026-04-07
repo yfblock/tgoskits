@@ -6,7 +6,7 @@
 > 版本：`0.3.0-preview.3`
 > 文档依据：`Cargo.toml`、`src/lib.rs`、`src/dma.rs`、`os/arceos/modules/axdriver/src/ixgbe.rs`、`os/arceos/modules/axdriver/src/drivers.rs`、`os/arceos/api/ax-api/src/imp/mem.rs`、`platform/axplat-dyn/src/drivers/mod.rs`、`os/axvisor/src/driver/blk/mod.rs`
 
-`ax-dma` 不是驱动聚合层，也不是某类设备驱动。它的真实职责是为 ArceOS 内核提供一套全局一致的 DMA 一致性内存分配服务：从页分配器拿到内存、把页表属性改成 `UNCACHED`、给设备返回可用的总线地址，并在释放时尽可能恢复映射属性。它位于 `axalloc` / `ax-mm` / `axhal` 等内存基础设施之上，位于需要软件管理 DMA 缓冲的驱动之下。
+`ax-dma` 不是驱动聚合层，也不是某类设备驱动。它的真实职责是为 ArceOS 内核提供一套全局一致的 DMA 一致性内存分配服务：从页分配器拿到内存、把页表属性改成 `UNCACHED`、给设备返回可用的总线地址，并在释放时尽可能恢复映射属性。它位于 `axalloc` / `ax-mm` / `ax-hal` 等内存基础设施之上，位于需要软件管理 DMA 缓冲的驱动之下。
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
@@ -120,7 +120,7 @@
 | `axalloc` | 全局页分配器与 DMA 用页申请 |
 | `axallocator` / `buddy-slab-allocator` | 字节级分配器实现 |
 | `axconfig` | 提供 `PHYS_BUS_OFFSET` |
-| `axhal` | 提供物理地址与页表标志相关能力 |
+| `ax-hal` | 提供物理地址与页表标志相关能力 |
 | `ax-mm` | 修改内核地址空间页表属性 |
 | `kspin` | 保护全局分配器 |
 | `memory_addr` | 地址与页大小辅助 |

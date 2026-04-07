@@ -6,7 +6,7 @@
 > 版本：`0.3.0-preview.3`
 > 文档依据：`Cargo.toml`、`README.md`、`src/lib.rs`、`src/event.rs`、`src/queue.rs`
 
-`ax-ipi` 是 ArceOS 的跨核回调分发模块。它基于 `axhal` 的 IPI 发送能力，为每个 CPU 维护一个本地事件队列，并向上暴露“在某个 CPU 上运行闭包”或“在所有其他 CPU 上广播闭包”的接口。它属于运行时叶子基础件：负责 IPI 事件排队和派发，不负责 SMP bring-up、调度策略或通用消息总线。
+`ax-ipi` 是 ArceOS 的跨核回调分发模块。它基于 `ax-hal` 的 IPI 发送能力，为每个 CPU 维护一个本地事件队列，并向上暴露“在某个 CPU 上运行闭包”或“在所有其他 CPU 上广播闭包”的接口。它属于运行时叶子基础件：负责 IPI 事件排队和派发，不负责 SMP bring-up、调度策略或通用消息总线。
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
@@ -14,7 +14,7 @@
 
 1. 把闭包包装成可发送的 IPI 事件。
 2. 放入目标 CPU 的本地队列。
-3. 通过 `axhal::irq::send_ipi()` 触发对方 CPU 进入 IPI 中断。
+3. 通过 `ax-hal::irq::send_ipi()` 触发对方 CPU 进入 IPI 中断。
 4. 在 IPI handler 中把队列里的事件逐个取出执行。
 
 因此，`ax-ipi` 更像“IPI 回调投递器”，而不是调度器、work queue 或通用 RPC 层。
@@ -40,7 +40,7 @@ flowchart TD
     B -- 是 --> C["立即执行 callback"]
     B -- 否 --> D["取目标 CPU 的 IPI_EVENT_QUEUE"]
     D --> E["push(src_cpu_id, callback)"]
-    E --> F["axhal::irq::send_ipi()"]
+    E --> F["ax-hal::irq::send_ipi()"]
     F --> G["目标 CPU 进入 ipi_handler()"]
     G --> H["循环 pop_one() 并执行"]
 ```
@@ -54,7 +54,7 @@ flowchart TD
 ### 1.5 能力边界
 - `ax-ipi` 队列是 FIFO，但不提供优先级、取消、重试或返回值汇总。
 - 回调运行在 IPI 处理上下文里，默认应保持短小且不可阻塞。
-- 这个 crate 没有自己的 feature 门控，但它依赖 `axhal` 已开启 `ipi` 能力。
+- 这个 crate 没有自己的 feature 门控，但它依赖 `ax-hal` 已开启 `ipi` 能力。
 
 ## 2. 核心功能说明
 ### 2.1 主要功能
@@ -76,7 +76,7 @@ flowchart TD
 ## 3. 依赖关系图谱
 ```mermaid
 graph LR
-    axhal["axhal (ipi)"] --> ax-ipi["ax-ipi"]
+    ax-hal["ax-hal (ipi)"] --> ax-ipi["ax-ipi"]
     axconfig["axconfig"] --> ax-ipi
     kspin["kspin"] --> ax-ipi
     lazyinit["lazyinit"] --> ax-ipi
@@ -88,7 +88,7 @@ graph LR
 ```
 
 ### 3.1 关键直接依赖
-- `axhal`：真正的 IPI 发送原语来自这里。
+- `ax-hal`：真正的 IPI 发送原语来自这里。
 - `axconfig`：广播时需要 `MAX_CPU_NUM`。
 - `kspin`：保护每 CPU 队列。
 - `lazyinit`：按 CPU 惰性初始化队列。

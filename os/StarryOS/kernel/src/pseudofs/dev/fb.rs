@@ -2,9 +2,9 @@ use core::{any::Any, slice};
 
 #[allow(unused_imports)]
 use ax_driver::prelude::DisplayDriverOps;
+use ax_hal::mem::virt_to_phys;
 use axerrno::AxError;
 use axfs_ng_vfs::{NodeFlags, VfsError, VfsResult};
-use axhal::mem::virt_to_phys;
 use memory_addr::{PhysAddrRange, VirtAddr};
 use starry_vm::VmMutPtr;
 

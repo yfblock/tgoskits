@@ -10,8 +10,8 @@ mod sys;
 mod task;
 mod time;
 
+use ax_hal::uspace::UserContext;
 use axerrno::{AxError, LinuxError};
-use axhal::uspace::UserContext;
 use syscalls::Sysno;
 
 pub use self::{

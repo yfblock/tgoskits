@@ -1,6 +1,6 @@
+use ax_hal::paging::{MappingFlags, PageSize};
 use ax_task::current;
 use axerrno::AxResult;
-use axhal::paging::{MappingFlags, PageSize};
 use memory_addr::{VirtAddr, align_up_4k};
 
 use crate::{

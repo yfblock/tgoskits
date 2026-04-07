@@ -14,8 +14,8 @@
 
 use std::os::arceos;
 
+use ax_hal::{self, percpu::this_cpu_id};
 use axaddrspace::{AxMmHal, HostPhysAddr, HostVirtAddr};
-use axhal::{self, percpu::this_cpu_id};
 use axvm::AxVMPerCpu;
 use page_table_multiarch::PagingHandler;
 
@@ -42,20 +42,20 @@ pub struct AxMmHalImpl;
 
 impl AxMmHal for AxMmHalImpl {
     fn alloc_frame() -> Option<HostPhysAddr> {
-        <axhal::paging::PagingHandlerImpl as PagingHandler>::alloc_frame()
+        <ax_hal::paging::PagingHandlerImpl as PagingHandler>::alloc_frame()
     }
 
     fn dealloc_frame(paddr: HostPhysAddr) {
-        <axhal::paging::PagingHandlerImpl as PagingHandler>::dealloc_frame(paddr)
+        <ax_hal::paging::PagingHandlerImpl as PagingHandler>::dealloc_frame(paddr)
     }
 
     #[inline]
     fn phys_to_virt(paddr: HostPhysAddr) -> HostVirtAddr {
-        <axhal::paging::PagingHandlerImpl as PagingHandler>::phys_to_virt(paddr)
+        <ax_hal::paging::PagingHandlerImpl as PagingHandler>::phys_to_virt(paddr)
     }
 
     fn virt_to_phys(vaddr: axaddrspace::HostVirtAddr) -> axaddrspace::HostPhysAddr {
-        axhal::mem::virt_to_phys(vaddr)
+        ax_hal::mem::virt_to_phys(vaddr)
     }
 }
 
@@ -65,7 +65,7 @@ impl AxMmHal for AxMmHalImpl {
 //     type MmHal = AxMmHalImpl;
 
 //     fn irq_hanlder() {
-//         axhal::irq::irq_handler(0);
+//         ax_hal::irq::irq_handler(0);
 //     }
 // }
 
@@ -87,7 +87,7 @@ pub(crate) fn enable_virtualization() {
 
     hardware_check();
 
-    let cpu_count = axhal::cpu_num();
+    let cpu_count = ax_hal::cpu_num();
 
     for cpu_id in 0..cpu_count {
         thread::spawn(move || {

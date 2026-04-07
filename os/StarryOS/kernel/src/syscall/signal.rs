@@ -1,11 +1,11 @@
 use core::{future::poll_fn, task::Poll};
 
+use ax_hal::uspace::UserContext;
 use ax_task::{
     current,
     future::{self, block_on},
 };
 use axerrno::{AxError, AxResult, LinuxError};
-use axhal::uspace::UserContext;
 use linux_raw_sys::general::{
     MINSIGSTKSZ, SI_TKILL, SI_USER, SIG_BLOCK, SIG_SETMASK, SIG_UNBLOCK, kernel_sigaction, siginfo,
     timespec,

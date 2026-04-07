@@ -92,7 +92,7 @@ pub(crate) fn cpu_mask_full() -> AxCpuMask {
     use spin::Lazy;
 
     static CPU_MASK_FULL: Lazy<AxCpuMask> = Lazy::new(|| {
-        let cpu_num = axhal::cpu_num();
+        let cpu_num = ax_hal::cpu_num();
         let mut cpumask = AxCpuMask::new();
         for cpu_id in 0..cpu_num {
             cpumask.set(cpu_id, true);
@@ -189,7 +189,7 @@ pub fn set_current_affinity(cpumask: AxCpuMask) -> bool {
         // After setting the affinity, we need to check if current cpu matches
         // the affinity. If not, we need to migrate the task to the correct CPU.
         #[cfg(feature = "smp")]
-        if !cpumask.get(axhal::percpu::this_cpu_id()) {
+        if !cpumask.get(ax_hal::percpu::this_cpu_id()) {
             const MIGRATION_TASK_STACK_SIZE: usize = 4096;
             // Spawn a new migration task for migrating.
             let migration_task = TaskInner::new(
@@ -203,7 +203,7 @@ pub fn set_current_affinity(cpumask: AxCpuMask) -> bool {
             current_run_queue::<NoPreemptIrqSave>().migrate_current(migration_task);
 
             assert!(
-                cpumask.get(axhal::percpu::this_cpu_id()),
+                cpumask.get(ax_hal::percpu::this_cpu_id()),
                 "Migration failed"
             );
         }
@@ -221,17 +221,17 @@ pub fn yield_now() {
 ///
 /// If the feature `irq` is not enabled, it uses busy-wait instead.
 pub fn sleep(dur: core::time::Duration) {
-    sleep_until(axhal::time::wall_time() + dur);
+    sleep_until(ax_hal::time::wall_time() + dur);
 }
 
 /// Current task is going to sleep, it will be woken up at the given deadline.
 ///
 /// If the feature `irq` is not enabled, it uses busy-wait instead.
-pub fn sleep_until(deadline: axhal::time::TimeValue) {
+pub fn sleep_until(deadline: ax_hal::time::TimeValue) {
     #[cfg(feature = "irq")]
     current_run_queue::<NoPreemptIrqSave>().sleep_until(deadline);
     #[cfg(not(feature = "irq"))]
-    axhal::time::busy_wait_until(deadline);
+    ax_hal::time::busy_wait_until(deadline);
 }
 
 /// Exits the current task.
@@ -247,6 +247,6 @@ pub fn run_idle() -> ! {
         yield_now();
         trace!("idle task: waiting for IRQs...");
         #[cfg(feature = "irq")]
-        axhal::asm::wait_for_irqs();
+        ax_hal::asm::wait_for_irqs();
     }
 }

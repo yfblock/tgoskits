@@ -97,7 +97,7 @@ flowchart TD
 - `phys_to_virt()` / `virt_to_phys()` 直接转发到 `somehal::mem`
 - `kernel_aspace()` 来自 `somehal::mem::kernel_space()`
 
-此外，`_percpu_base_ptr()` 通过 `somehal::smp::percpu_data_ptr()` 向 `percpu` crate 提供每核数据基址。这也解释了为什么 `axhal::mem` 在 `plat-dyn` 模式下不再额外注入一套传统平台包的内核保留区逻辑：此路径默认信任 `somehal` 给出的内存事实已经包含 `KImage` 和 `PerCpuData`。
+此外，`_percpu_base_ptr()` 通过 `somehal::smp::percpu_data_ptr()` 向 `percpu` crate 提供每核数据基址。这也解释了为什么 `ax-hal::mem` 在 `plat-dyn` 模式下不再额外注入一套传统平台包的内核保留区逻辑：此路径默认信任 `somehal` 给出的内存事实已经包含 `KImage` 和 `PerCpuData`。
 
 #### 时间、中断与电源
 
@@ -165,7 +165,7 @@ flowchart TD
 
 - 作为 `somehal` 到 `axplat` 的桥接层，提供统一的启动、内存、时间、中断和电源接口实现。
 - 通过 `build.rs + link.ld` 生成适配当前内核镜像的 `axplat.x` 链接脚本扩展。
-- 让 `axhal` 可通过 `plat-dyn` feature 接入这一动态平台路径。
+- 让 `ax-hal` 可通过 `plat-dyn` feature 接入这一动态平台路径。
 - 让 `ax-driver` 可通过 `dyn` feature 复用其设备探测与动态块设备封装。
 - 通过 `hv`、`uspace`、`smp`、`irq` feature 把能力向 `somehal` 和 `axplat` 两侧传播。
 
@@ -182,7 +182,7 @@ flowchart TD
 
 ### 2.3 典型使用场景
 
-- 需要把 `somehal` 管理的运行时平台事实快速挂接到 ArceOS `axplat`/`axhal` 栈。
+- 需要把 `somehal` 管理的运行时平台事实快速挂接到 ArceOS `axplat`/`ax-hal` 栈。
 - 需要配合 `ax-driver` 的 `dyn` 模型，在运行时探测并收集多实例块设备。
 - 需要实验性地复用一套更“运行时驱动”的平台 bring-up 路径，而不是重新写一个静态 `axplat-*` 板级包。
 
@@ -216,7 +216,7 @@ graph TD
     C[axplat] --> B
     D[rdrive / rd-block / dma-api / axdriver_virtio] --> B
 
-    B --> E[axhal: plat-dyn]
+    B --> E[ax-hal: plat-dyn]
     B --> F[ax-driver: dyn]
 
     E --> G[ArceOS]
@@ -230,7 +230,7 @@ graph TD
 
 适合使用 `axplat-dyn` 的情况是：
 
-- 你已经有 `somehal` 这层更底部的平台抽象，希望把它接进 `axplat`/`axhal`。
+- 你已经有 `somehal` 这层更底部的平台抽象，希望把它接进 `axplat`/`ax-hal`。
 - 你需要的是“运行时探测 + 动态设备模型”，而不是“固定板级参数 + 静态平台包”。
 
 不适合直接套用它的情况是：
@@ -240,7 +240,7 @@ graph TD
 
 ### 4.2 接入主线
 
-1. 在上层内核构建中启用 `axhal` 的 `plat-dyn` feature；若需要动态设备探测，再启用 `ax-driver` 的 `dyn` 相关 feature。
+1. 在上层内核构建中启用 `ax-hal` 的 `plat-dyn` feature；若需要动态设备探测，再启用 `ax-driver` 的 `dyn` 相关 feature。
 2. 确保目标是裸机环境，而不是 `unix`/`windows` 宿主机构建路径。
 3. 让 `somehal` 提供入口、FDT、内存图、控制台、时钟、中断和电源实现。
 4. 由 `boot.rs` 把控制流统一转到 `axplat::call_main()`，随后上层只通过 `axplat` 接口使用平台能力。
@@ -280,9 +280,9 @@ graph TD
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | `axhal`/`ax-driver` 的实验性平台路径 | 动态平台桥接层 | 把 `somehal` 与 `rdrive` 驱动式能力接到 ArceOS 标准平台/驱动抽象上 |
+| ArceOS | `ax-hal`/`ax-driver` 的实验性平台路径 | 动态平台桥接层 | 把 `somehal` 与 `rdrive` 驱动式能力接到 ArceOS 标准平台/驱动抽象上 |
 | StarryOS | 仅在复用同一模块栈时才可能间接接入 | 非默认平台包路径 | 它不是 `axplat_crates/platforms` 中那类标准发行平台包，只有在共享 ArceOS 底层模块时才会发挥作用 |
-| Axvisor | 宿主侧若共享 `axhal`/`ax-driver` 路径时可复用 | 宿主 bring-up 桥接层 | 可为基于 ArceOS 模块栈的宿主环境提供动态平台 glue，但虚拟化核心并不在本 crate 中 |
+| Axvisor | 宿主侧若共享 `ax-hal`/`ax-driver` 路径时可复用 | 宿主 bring-up 桥接层 | 可为基于 ArceOS 模块栈的宿主环境提供动态平台 glue，但虚拟化核心并不在本 crate 中 |
 
 ## 7. 总结
 

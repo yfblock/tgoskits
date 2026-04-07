@@ -187,7 +187,7 @@ mod memory_api_impl {
 flowchart TD
     A[组件 crate 调用 axvisor_api::memory::alloc_frame] --> B[call_interface]
     B --> C[os/axvisor 中 memory_api_impl]
-    C --> D[AxMmHalImpl / axalloc / axhal]
+    C --> D[AxMmHalImpl / axalloc / ax-hal]
 ```
 
 类似地：
@@ -284,7 +284,7 @@ graph TD
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | 宿主能力提供侧 | 不是直接消费者，而是能力来源 | `axvisor_api` 最终很多实现都转发到 ArceOS 的 `axhal`、`axalloc`、时间与中断设施 |
+| ArceOS | 宿主能力提供侧 | 不是直接消费者，而是能力来源 | `axvisor_api` 最终很多实现都转发到 ArceOS 的 `ax-hal`、`axalloc`、时间与中断设施 |
 | StarryOS | 当前仓库未见直接依赖 | 非核心路径 | 当前仓库中 StarryOS 没有直接依赖 `axvisor_api` |
 | Axvisor | 多 crate 生态的公共接口中枢 | Hypervisor 组件窄腰层 | 把宿主实现细节与组件调用面隔开，是 `arm_vcpu`、`riscv_vcpu`、`axvcpu`、`arm_vgic` 等组件共享的统一服务面 |
 

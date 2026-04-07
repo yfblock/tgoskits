@@ -116,7 +116,7 @@ starry_kernel::syscall::handle_syscall(&mut uctx);
 ```mermaid
 graph LR
     ax-feat["ax-feat"] --> starry["starry-kernel"]
-    axhal["axhal"] --> starry
+    ax-hal["ax-hal"] --> starry
     ax-task["ax-task"] --> starry
     ax-mm["ax-mm"] --> starry
     ax-fs["ax-fs-ng / axfs-ng-vfs"] --> starry
@@ -131,7 +131,7 @@ graph LR
 
 ### 3.1 关键直接依赖
 - `ax-feat`：把 `uspace`、`multitask`、`sched-rr`、`fs-ng-ext4`、`net-ng` 等能力一次性装配到内核。
-- `axhal`：用户态上下文、页表、trap、时间与控制台基础能力。
+- `ax-hal`：用户态上下文、页表、trap、时间与控制台基础能力。
 - `ax-task`：底层线程调度、`TaskExt` 和阻塞/唤醒机制。
 - `ax-fs-ng`、`axfs-ng-vfs`：文件系统与路径解析。
 - `ax-net-ng`：网络与 socket 路径的底层支撑。
@@ -188,7 +188,7 @@ StarryOS 的主验证方式是端到端系统运行：
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-`starry-kernel` 并不是 ArceOS 的被复用组件，而是构建在 ArceOS `ax*` 模块之上的更高层系统。它消费 `axhal`、`ax-task`、`ax-mm`、`ax-fs`、`ax-net` 等能力，把它们重组为 Linux 风格宏内核语义。
+`starry-kernel` 并不是 ArceOS 的被复用组件，而是构建在 ArceOS `ax*` 模块之上的更高层系统。它消费 `ax-hal`、`ax-task`、`ax-mm`、`ax-fs`、`ax-net` 等能力，把它们重组为 Linux 风格宏内核语义。
 
 ### 6.2 StarryOS
 这是 `starry-kernel` 的主战场。`starryos` 包本身只负责启动入口和参数准备，而真正的内核逻辑几乎都集中在 `starry-kernel` 中，因此它就是 StarryOS 的核心内核实现。

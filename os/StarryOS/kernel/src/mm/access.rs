@@ -7,13 +7,13 @@ use core::{
     ptr, slice, str,
 };
 
-use ax_task::current;
-use axerrno::{AxError, AxResult};
-use axhal::{
+use ax_hal::{
     asm::user_copy,
     paging::MappingFlags,
     trap::{PAGE_FAULT, register_trap_handler},
 };
+use ax_task::current;
+use axerrno::{AxError, AxResult};
 use axio::prelude::*;
 use extern_trait::extern_trait;
 use kernel_guard::IrqSave;

@@ -34,7 +34,7 @@ ax-driver = { workspace = true, optional = true }
 axerrno.workspace = true
 ax-feat.workspace = true
 ax-fs = { workspace = true, optional = true }
-axhal.workspace = true
+ax-hal.workspace = true
 axio.workspace = true
 ax-ipi = { workspace = true, optional = true }
 axlog.workspace = true

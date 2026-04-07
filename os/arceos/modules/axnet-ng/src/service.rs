@@ -4,8 +4,8 @@ use core::{
     task::{Context, Waker},
 };
 
+use ax_hal::time::{NANOS_PER_MICROS, TimeValue, wall_time_nanos};
 use ax_task::future::sleep_until;
-use axhal::time::{NANOS_PER_MICROS, TimeValue, wall_time_nanos};
 use smoltcp::{
     iface::{Interface, SocketSet},
     time::Instant,

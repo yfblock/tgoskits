@@ -165,12 +165,12 @@ flowchart TD
 - 提供主核和次核入口，负责最小页表和 MMU 打开。
 - 暴露 QEMU `virt` 的 RAM、MMIO、线性映射和内核地址空间布局。
 - 接入 PL011、GICv2、Generic Timer、PL031 和 PSCI。
-- 为 `axhal`、示例内核和上层系统提供统一板级运行基础。
+- 为 `ax-hal`、示例内核和上层系统提供统一板级运行基础。
 
 ### 2.2 典型使用场景
 
 - ArceOS 在 AArch64/QEMU 上作为默认开发和回归平台运行。
-- StarryOS 通过 `axhal` 间接使用同一板级 bring-up 栈。
+- StarryOS 通过 `ax-hal` 间接使用同一板级 bring-up 栈。
 - Axvisor 在 AArch64/QEMU 上运行宿主环境时，依赖这套板级支持完成最底层启动。
 
 ### 2.3 feature 行为
@@ -209,7 +209,7 @@ flowchart TD
 - `components/axplat_crates/examples/hello-kernel`
 - `components/axplat_crates/examples/irq-kernel`
 - `components/axplat_crates/examples/smp-kernel`
-- Axvisor 宿主侧经 `axhal` 间接引入的 AArch64 QEMU 平台栈
+- Axvisor 宿主侧经 `ax-hal` 间接引入的 AArch64 QEMU 平台栈
 
 ### 3.3 关系示意
 
@@ -218,7 +218,7 @@ graph TD
     A[axcpu / page_table_entry / axconfig-macros] --> B[axplat-aarch64-qemu-virt]
     C[axplat-aarch64-peripherals] --> B
     D[axplat] --> B
-    B --> E[axhal]
+    B --> E[ax-hal]
     B --> F[hello-kernel / irq-kernel / smp-kernel]
     E --> G[ArceOS]
     E --> H[StarryOS]
@@ -296,7 +296,7 @@ cargo build -p axplat-aarch64-qemu-virt --target aarch64-unknown-none --features
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
 | ArceOS | AArch64 默认平台包之一 | QEMU `virt` 板级实现 | 为 ArceOS 提供最常用的 ARM64 开发/回归环境，覆盖启动、串口、时间、中断和多核基础设施 |
-| StarryOS | 通过 `axhal` 间接接入 | 宿主板级运行底座 | StarryOS 在 AArch64/QEMU 上运行时，底层仍复用这套平台初始化和硬件布局描述 |
+| StarryOS | 通过 `ax-hal` 间接接入 | 宿主板级运行底座 | StarryOS 在 AArch64/QEMU 上运行时，底层仍复用这套平台初始化和硬件布局描述 |
 | Axvisor | 宿主环境的板级基础 | AArch64 hypervisor 宿主 bring-up 层 | Axvisor 的虚拟化核心不在本 crate 中，但若其宿主环境跑在 AArch64/QEMU 上，最低层启动、串口、时钟和 PSCI 基础能力由该 crate 提供 |
 
 ## 7. 总结

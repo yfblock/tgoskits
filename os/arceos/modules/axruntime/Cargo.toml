@@ -15,12 +15,12 @@ alloc = ["dep:axalloc"]
 dma = ["paging"]
 buddy-slab = ["axalloc/buddy-slab"]
 ipi = ["dep:ax-ipi"]
-irq = ["axhal/irq", "ax-task?/irq", "dep:percpu"]
+irq = ["ax-hal/irq", "ax-task?/irq", "dep:percpu"]
 multitask = ["ax-task/multitask"]
-paging = ["axhal/paging", "dep:ax-mm", "dep:axklib"]
+paging = ["ax-hal/paging", "dep:ax-mm", "dep:axklib"]
 rtc = []
-smp = ["axhal/smp", "ax-task?/smp"]
-tls = ["axhal/tls", "ax-task?/tls"]
+smp = ["ax-hal/smp", "ax-task?/smp"]
+tls = ["ax-hal/tls", "ax-task?/tls"]
 
 plat-dyn = ["ax-driver/dyn", "paging", "buddy-slab"]
 
@@ -41,7 +41,7 @@ ax-display = { workspace = true, optional = true }
 ax-driver = { workspace = true, optional = true }
 ax-fs = { workspace = true, optional = true }
 ax-fs-ng = { workspace = true, optional = true }
-axhal = { workspace = true }
+ax-hal = { workspace = true }
 ax-input = { workspace = true, optional = true }
 ax-ipi = { workspace = true, optional = true }
 axklib = { workspace = true, optional = true }

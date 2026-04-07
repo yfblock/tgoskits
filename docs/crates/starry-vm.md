@@ -46,7 +46,7 @@
 - `struct Vm(IrqSave)` 作为具体实现体，读写期间持有中断保护。
 - `check_access()` 先检查地址是否位于用户空间窗口内。
 - `access_user_memory()` 标记当前线程处于用户内存访问区间，允许 page fault 在内核中安全发生。
-- `VmIo::read()` / `write()` 通过 `axhal::asm::user_copy()` 真正完成跨地址空间拷贝。
+- `VmIo::read()` / `write()` 通过 `ax-hal::asm::user_copy()` 真正完成跨地址空间拷贝。
 - 注册的 page fault handler 再转给 `AddrSpace::handle_page_fault()` 补页。
 
 也就是说，`starry-vm` 自身不知道“当前地址空间”是什么，但 StarryOS 通过外部实现把它和当前线程的 `AddrSpace` 绑定了起来。

@@ -25,7 +25,7 @@
 
 - 向下依赖 `axcpu`、`loongArch64`、`uart_16550` 等架构/设备库。
 - 向上直接把 LoongArch QEMU virt 的全部最小平台能力暴露给 `axplat`。
-- 在仓库里既是 `axhal` 的 LoongArch 默认平台之一，也是 `hello-kernel`、`irq-kernel`、`smp-kernel` 的示例平台。
+- 在仓库里既是 `ax-hal` 的 LoongArch 默认平台之一，也是 `hello-kernel`、`irq-kernel`、`smp-kernel` 的示例平台。
 
 这意味着它不是“仅供样例演示”的平台包，而是当前 LoongArch 路径里的主力参考实现。
 
@@ -102,7 +102,7 @@ LoongArch QEMU virt 的中断模型在这个 crate 里被明确分层了：
 | --- | --- | --- |
 | `axcpu` | trap 初始化、MMU 打开、FP/LSX 使能、停机等 CPU 原语 | 串口、GED、EIOINTC/PCH PIC、平台地址窗口 |
 | `axplat-loongarch64-qemu-virt` | 启动头、地址映射、中断拓扑、串口、时间、关机、SMP glue | 调度、页表管理策略、驱动枚举、上层 HAL 组合 |
-| `axhal` | 上层统一内存视图、DTB/bootarg 进一步整合、运行时初始化组织 | LoongArch virt 本地寄存器初始化与外设语义 |
+| `ax-hal` | 上层统一内存视图、DTB/bootarg 进一步整合、运行时初始化组织 | LoongArch virt 本地寄存器初始化与外设语义 |
 
 还要额外澄清两点：
 
@@ -154,10 +154,10 @@ LoongArch QEMU virt 的中断模型在这个 crate 里被明确分层了：
 
 ### 2.4 最关键的边界澄清
 
-这个平台包不是“LoongArch 版本的 `axhal`”，也不是“设备树平台层”：
+这个平台包不是“LoongArch 版本的 `ax-hal`”，也不是“设备树平台层”：
 
 - `axplat` 是它实现的目标接口。
-- `axhal` 是消费它的更高一层。
+- `ax-hal` 是消费它的更高一层。
 - FDT 目前只体现在保留区和 TODO 注释里，尚未成为本 crate 的运行时配置来源。
 
 ## 3. 依赖关系图谱
@@ -190,7 +190,7 @@ LoongArch QEMU virt 的中断模型在这个 crate 里被明确分层了：
 graph TD
     A[axcpu / loongArch64 / page_table_entry / uart_16550] --> B[axplat-loongarch64-qemu-virt]
     C[axplat / axconfig-macros / lazyinit / kspin] --> B
-    B --> D[axhal]
+    B --> D[ax-hal]
     B --> E[hello-kernel / irq-kernel / smp-kernel]
     B --> F[ax-helloworld-myplat]
     D --> G[ArceOS]
@@ -207,7 +207,7 @@ graph TD
 axplat-loongarch64-qemu-virt = { workspace = true, features = ["irq", "smp", "rtc"] }
 ```
 
-如果是 ArceOS 默认平台链路，通常由 `axhal` 的 `defplat` 和 LoongArch 目标自动带入；如果是示例内核，则直接依赖该平台包即可。
+如果是 ArceOS 默认平台链路，通常由 `ax-hal` 的 `defplat` 和 LoongArch 目标自动带入；如果是示例内核，则直接依赖该平台包即可。
 
 ### 4.2 修改时需要成组验证的点
 
@@ -230,7 +230,7 @@ axplat-loongarch64-qemu-virt = { workspace = true, features = ["irq", "smp", "rt
 
 ### 5.1 当前有效验证面
 
-- `axhal` 默认平台链路会持续编译和运行它。
+- `ax-hal` 默认平台链路会持续编译和运行它。
 - `hello-kernel`、`irq-kernel`、`smp-kernel` 分别覆盖最小启动、中断和多核路径。
 - `ax-helloworld-myplat` 提供额外的直接平台验证入口。
 
@@ -254,7 +254,7 @@ axplat-loongarch64-qemu-virt = { workspace = true, features = ["irq", "smp", "rt
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | LoongArch 默认平台路径 | 主力板级平台包 | 直接进入 `axhal` 默认平台链路，并被多个示例内核复用，是当前仓库里最重要的 LoongArch 平台实现之一 |
+| ArceOS | LoongArch 默认平台路径 | 主力板级平台包 | 直接进入 `ax-hal` 默认平台链路，并被多个示例内核复用，是当前仓库里最重要的 LoongArch 平台实现之一 |
 | StarryOS | 当前无仓库内直接依赖 | 潜在宿主平台基础 | 若未来 StarryOS 走 LoongArch + ArceOS HAL 路线，可复用该平台包，但当前仓库未直接接线 |
 | Axvisor | 当前无仓库内直接依赖 | 潜在宿主板级支持 | 本 crate 不提供虚拟化能力，只提供宿主平台 bring-up 基础；当前仓库没有直接依赖 |
 

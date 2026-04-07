@@ -44,7 +44,7 @@ graph LR
     current --> axerrno["axerrno"]
     current --> axfs_ng["ax-fs-ng"]
     current --> axfs_ng_vfs["axfs-ng-vfs"]
-    current --> axhal["axhal"]
+    current --> ax-hal["ax-hal"]
     current --> axio["axio"]
     current --> axpoll["axpoll"]
     ax_runtime["ax-runtime"] --> current
@@ -57,7 +57,7 @@ graph LR
 - `axerrno`
 - `ax-fs-ng`
 - `axfs-ng-vfs`
-- `axhal`
+- `ax-hal`
 - `axio`
 - `axpoll`
 - `ax-sync`

@@ -86,7 +86,7 @@ cfg_if::cfg_if! {
             fn probe_global() -> Option<AxDeviceEnum> {
                 let sdmmc = unsafe {
                     axdriver_block::sdmmc::SdMmcDriver::new(
-                        axhal::mem::phys_to_virt(axconfig::devices::SDMMC_PADDR.into()).into(),
+                        ax_hal::mem::phys_to_virt(axconfig::devices::SDMMC_PADDR.into()).into(),
                     )
                 };
                 Some(AxDeviceEnum::from_block(sdmmc))
@@ -137,7 +137,7 @@ cfg_if::cfg_if! {
                     match bar_info {
                         axdriver_pci::BarInfo::Memory { address, size, .. } => {
                             let ixgbe_nic = IxgbeNic::<IxgbeHalImpl, QS, QN>::init(
-                                axhal::mem::phys_to_virt((address as usize).into()).into(),
+                                ax_hal::mem::phys_to_virt((address as usize).into()).into(),
                                 size as usize,
                             )
                             .expect("failed to initialize ixgbe device");
@@ -158,16 +158,16 @@ cfg_if::cfg_if! {
 cfg_if::cfg_if! {
     if #[cfg(net_dev = "fxmac")]{
         use axalloc::{UsageKind, global_allocator};
-        use axhal::mem::PAGE_SIZE_4K;
+        use ax_hal::mem::PAGE_SIZE_4K;
 
         #[crate_interface::impl_interface]
         impl axdriver_net::fxmac::KernelFunc for FXmacDriver {
             fn virt_to_phys(addr: usize) -> usize {
-                axhal::mem::virt_to_phys(addr.into()).into()
+                ax_hal::mem::virt_to_phys(addr.into()).into()
             }
 
             fn phys_to_virt(addr: usize) -> usize {
-                axhal::mem::phys_to_virt(addr.into()).into()
+                ax_hal::mem::phys_to_virt(addr.into()).into()
             }
 
             fn dma_alloc_coherent(pages: usize) -> (usize, usize) {
@@ -176,7 +176,7 @@ cfg_if::cfg_if! {
                     error!("failed to alloc pages");
                     return (0, 0);
                 };
-                let paddr = axhal::mem::virt_to_phys((vaddr).into());
+                let paddr = ax_hal::mem::virt_to_phys((vaddr).into());
                 debug!("alloc pages @ vaddr={:#x}, paddr={:#x}", vaddr, paddr);
                 (vaddr, paddr.as_usize())
             }

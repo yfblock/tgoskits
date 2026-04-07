@@ -127,7 +127,7 @@ graph LR
 - `axbuild`：主要服务 `xtask` 路径，是构建工作流的重要依赖。
 
 ### 3.2 关键间接依赖
-- `axhal`、`ax-task`、`axalloc`、`ax-mm` 等 ArceOS 模块会通过 `ax-std` 与 `hal` 注入路径间接参与 Hypervisor 运行。
+- `ax-hal`、`ax-task`、`axalloc`、`ax-mm` 等 ArceOS 模块会通过 `ax-std` 与 `hal` 注入路径间接参与 Hypervisor 运行。
 - `arm_vcpu`、`arm_vgic`、`x86_vcpu`、`riscv_vcpu` 等底层组件会通过 `axvm`/`axvcpu` 间接进入虚拟化主线。
 
 ### 3.3 被依赖情况

@@ -42,7 +42,7 @@ axalloc
 axconfig
 ax-display
 ax-driver
-axhal
+ax-hal
 ax-sync
 ax-task
 ax-input

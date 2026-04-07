@@ -7,12 +7,12 @@ use alloc::{
 use core::sync::atomic::{AtomicU8, Ordering};
 use core::{num::NonZeroUsize, ops::Range, task::Context};
 
+use ax_hal::mem::{PhysAddr, VirtAddr, virt_to_phys};
 use ax_sync::Mutex;
 use axalloc::{UsageKind, global_allocator};
 use axfs_ng_vfs::{
     FileNode, Location, NodeFlags, NodePermission, NodeType, VfsError, VfsResult, path::Path,
 };
-use axhal::mem::{PhysAddr, VirtAddr, virt_to_phys};
 use axio::{SeekFrom, prelude::*};
 use axpoll::{IoEvents, Pollable};
 use intrusive_collections::{LinkedList, LinkedListAtomicLink, intrusive_adapter};
@@ -1000,10 +1000,10 @@ impl Drop for File {
         if flags != 0 {
             let mut update = axfs_ng_vfs::MetadataUpdate::default();
             if flags & 1 != 0 {
-                update.atime = Some(axhal::time::wall_time());
+                update.atime = Some(ax_hal::time::wall_time());
             }
             if flags & 2 != 0 {
-                update.mtime = Some(axhal::time::wall_time());
+                update.mtime = Some(ax_hal::time::wall_time());
             }
             if let Err(err) = self.inner.location().update_metadata(update) {
                 warn!("Failed to update file times on drop: {err:?}");

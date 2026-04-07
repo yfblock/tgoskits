@@ -8,7 +8,7 @@ extern crate ax_std as std;
 #[cfg(feature = "ax-std")]
 use std::os::arceos::api::task::{AxCpuMask, ax_set_current_affinity};
 #[cfg(feature = "ax-std")]
-use std::os::arceos::modules::axhal::percpu::this_cpu_id;
+use std::os::arceos::modules::ax_hal::percpu::this_cpu_id;
 use std::{
     sync::atomic::{AtomicUsize, Ordering},
     thread,

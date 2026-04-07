@@ -8,9 +8,9 @@
 
 use alloc::vec;
 
+use ax_hal::paging::MappingFlags;
 use ax_task::current;
 use axerrno::{AxError, AxResult};
-use axhal::paging::MappingFlags;
 use memory_addr::{MemoryAddr, PAGE_SIZE_4K, VirtAddr};
 use starry_vm::vm_write_slice;
 

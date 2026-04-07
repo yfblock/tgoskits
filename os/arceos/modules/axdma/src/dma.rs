@@ -1,9 +1,9 @@
 use core::{alloc::Layout, ptr::NonNull};
 
+use ax_hal::{mem::virt_to_phys, paging::MappingFlags};
 use axalloc::{DefaultByteAllocator, UsageKind, global_allocator};
 #[cfg(not(feature = "buddy-slab"))]
 use axallocator::{AllocError, AllocResult, BaseAllocator, ByteAllocator};
-use axhal::{mem::virt_to_phys, paging::MappingFlags};
 #[cfg(feature = "buddy-slab")]
 use buddy_slab_allocator::{AllocError, AllocResult, ByteAllocator};
 use kspin::SpinNoIrq;

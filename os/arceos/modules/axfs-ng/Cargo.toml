@@ -18,7 +18,7 @@ axalloc = { workspace = true }
 ax-driver = { workspace = true, features = ["block"] }
 axerrno = { workspace = true }
 axfs-ng-vfs = { workspace = true }
-axhal = { workspace = true }
+ax-hal = { workspace = true }
 axio = { workspace = true, features = ["alloc"] }
 axpoll = { workspace = true }
 ax-sync = { workspace = true }

@@ -6,9 +6,9 @@ use alloc::{
 use core::sync::atomic::{AtomicUsize, Ordering};
 
 use ax_fs::{CachedFile, FileFlags};
+use ax_hal::paging::{MappingFlags, PageSize, PageTableCursor, PagingError};
 use ax_sync::Mutex;
 use axerrno::{AxError, AxResult};
-use axhal::paging::{MappingFlags, PageSize, PageTableCursor, PagingError};
 use memory_addr::{PAGE_SIZE_4K, VirtAddr, VirtAddrRange};
 
 use super::{AddrSpace, Backend, BackendOps, PopulateCallback, pages_in};

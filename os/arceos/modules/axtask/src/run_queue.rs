@@ -3,7 +3,7 @@ use alloc::sync::Weak;
 use alloc::{collections::VecDeque, sync::Arc};
 use core::mem::MaybeUninit;
 
-use axhal::percpu::this_cpu_id;
+use ax_hal::percpu::this_cpu_id;
 use axsched::BaseScheduler;
 use kernel_guard::BaseGuard;
 use kspin::{SpinNoIrqGuard, SpinRaw};
@@ -359,7 +359,7 @@ impl<G: BaseGuard> CurrentRunQueueRef<'_, G> {
             unsafe {
                 EXITED_TASKS.current_ref_mut_raw().clear();
             }
-            axhal::power::system_off();
+            ax_hal::power::system_off();
         } else {
             curr.set_state(TaskState::Exited);
 
@@ -441,13 +441,13 @@ impl<G: BaseGuard> CurrentRunQueueRef<'_, G> {
     }
 
     #[cfg(feature = "irq")]
-    pub fn sleep_until(&mut self, deadline: axhal::time::TimeValue) {
+    pub fn sleep_until(&mut self, deadline: ax_hal::time::TimeValue) {
         let curr = &self.current_task;
         debug!("task sleep: {}, deadline={:?}", curr.id_name(), deadline);
         assert!(curr.is_running());
         assert!(!curr.is_idle());
 
-        let now = axhal::time::wall_time();
+        let now = ax_hal::time::wall_time();
         if now < deadline {
             crate::timers::set_alarm_wakeup(deadline, curr.clone());
             curr.set_state(TaskState::Blocked);
@@ -548,7 +548,7 @@ impl AxRunQueue {
         // Make sure that IRQs are disabled by kernel guard or other means.
         #[cfg(all(target_os = "none", feature = "irq"))] // Note: irq is faked under unit tests.
         assert!(
-            !axhal::asm::irqs_enabled(),
+            !ax_hal::asm::irqs_enabled(),
             "IRQs must be disabled during scheduling"
         );
         trace!(

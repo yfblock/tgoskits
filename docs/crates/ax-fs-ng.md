@@ -36,7 +36,7 @@ graph LR
     current --> ax-driver["ax-driver"]
     current --> axerrno["axerrno"]
     current --> axfs_ng_vfs["axfs-ng-vfs"]
-    current --> axhal["axhal"]
+    current --> ax-hal["ax-hal"]
     current --> axio["axio"]
     current --> axpoll["axpoll"]
     current --> ax-sync["ax-sync"]
@@ -51,7 +51,7 @@ graph LR
 - `ax-driver`
 - `axerrno`
 - `axfs-ng-vfs`
-- `axhal`
+- `ax-hal`
 - `axio`
 - `axpoll`
 - `ax-sync`

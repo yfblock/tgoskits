@@ -147,7 +147,7 @@ ArceOS 通过 `ax-runtime` 明确依赖 `#[axplat::main]` / `#[axplat::secondary
 StarryOS 并不直接面向 `axplat-macros` 编程，但只要复用同一套 `axplat` 平台栈，就会间接复用这层入口契约和平台接口展开逻辑。
 
 ### 6.3 Axvisor
-Axvisor 同样不是直接依赖 `axplat-macros` 的业务代码，但在共享 `axplat` / `axhal` 体系时，会间接依赖这层宏生成的链接和接口约定。因此它在 Axvisor 中仍然是基础设施层，而不是业务层。
+Axvisor 同样不是直接依赖 `axplat-macros` 的业务代码，但在共享 `axplat` / `ax-hal` 体系时，会间接依赖这层宏生成的链接和接口约定。因此它在 Axvisor 中仍然是基础设施层，而不是业务层。
 # `axplat-macros` 技术文档
 
 > 路径：`components/axplat_crates/axplat-macros`

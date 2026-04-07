@@ -9,11 +9,11 @@ use crate::{task::AsVCpuTask, vmm};
 struct VmmImpl;
 
 fn virt_to_phys(vaddr: HostVirtAddr) -> HostPhysAddr {
-    axhal::mem::virt_to_phys(vaddr)
+    ax_hal::mem::virt_to_phys(vaddr)
 }
 
 fn current_time_nanos() -> u64 {
-    axhal::time::monotonic_time_nanos()
+    ax_hal::time::monotonic_time_nanos()
 }
 
 fn current_vm_id() -> usize {
@@ -25,7 +25,7 @@ fn current_vcpu_id() -> usize {
 }
 
 fn current_pcpu_id() -> usize {
-    axhal::percpu::this_cpu_id()
+    ax_hal::percpu::this_cpu_id()
 }
 
 fn vcpu_resides_on(vm_id: usize, vcpu_id: usize) -> AxResult<usize> {

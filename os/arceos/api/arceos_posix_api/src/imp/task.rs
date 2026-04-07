@@ -9,7 +9,7 @@ pub fn sys_sched_yield() -> c_int {
     ax_task::yield_now();
     #[cfg(not(feature = "multitask"))]
     if cfg!(feature = "irq") {
-        axhal::asm::wait_for_irqs();
+        ax_hal::asm::wait_for_irqs();
     } else {
         core::hint::spin_loop();
     }
@@ -36,5 +36,5 @@ pub fn sys_exit(exit_code: c_int) -> ! {
     #[cfg(feature = "multitask")]
     ax_task::exit(exit_code);
     #[cfg(not(feature = "multitask"))]
-    axhal::power::system_off();
+    ax_hal::power::system_off();
 }

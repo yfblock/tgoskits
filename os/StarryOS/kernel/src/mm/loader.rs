@@ -4,13 +4,13 @@ use alloc::{borrow::ToOwned, string::String, vec, vec::Vec};
 use core::{ffi::CStr, iter};
 
 use ax_fs::{CachedFile, FS_CONTEXT, FileBackend};
-use ax_sync::Mutex;
-use axerrno::{AxError, AxResult};
-use axfs_ng_vfs::Location;
-use axhal::{
+use ax_hal::{
     mem::virt_to_phys,
     paging::{MappingFlags, PageSize},
 };
+use ax_sync::Mutex;
+use axerrno::{AxError, AxResult};
+use axfs_ng_vfs::Location;
 use kernel_elf_parser::{AuxEntry, ELFHeaders, ELFHeadersBuilder, ELFParser, app_stack_region};
 use memory_addr::{MemoryAddr, PAGE_SIZE_4K, VirtAddr};
 use ouroboros::self_referencing;

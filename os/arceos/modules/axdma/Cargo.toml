@@ -18,7 +18,7 @@ buddy-slab = ["dep:buddy-slab-allocator"]
 axalloc.workspace = true
 axallocator.workspace = true
 axconfig.workspace = true
-axhal.workspace = true
+ax-hal.workspace = true
 ax-mm.workspace = true
 buddy-slab-allocator = { workspace = true, optional = true }
 kspin.workspace = true

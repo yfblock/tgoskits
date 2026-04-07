@@ -85,7 +85,7 @@ ax-dma = { version = "0.5.0", path = "modules/axdma" }
 ax-driver = { version = "0.5.0", path = "modules/axdriver" }
 ax-fs = { version = "0.5.0", path = "modules/axfs" }
 ax-fs-ng = { version = "0.5.0", path = "modules/axfs-ng" }
-axhal = { version = "0.5.0", path = "modules/axhal" }
+ax-hal = { version = "0.5.0", path = "modules/axhal" }
 ax-input = { version = "0.5.0", path = "modules/axinput" }
 ax-ipi = { version = "0.5.0", path = "modules/axipi" }
 axlog = { version = "0.5.0", path = "modules/axlog" }

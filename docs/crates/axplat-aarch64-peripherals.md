@@ -173,7 +173,7 @@ generic_timer::enable_irqs(timer_irq);
 - `axplat-aarch64-raspi`
 - `axplat-aarch64-phytium-pi`
 - `axplat-aarch64-bsta1000b`
-- 间接上层：`axhal` 及其所服务的 ArceOS/StarryOS/Axvisor 宿主环境
+- 间接上层：`ax-hal` 及其所服务的 ArceOS/StarryOS/Axvisor 宿主环境
 
 ### 3.3 依赖关系示意
 
@@ -187,7 +187,7 @@ graph TD
     B --> F[axplat-aarch64-raspi]
     B --> G[axplat-aarch64-phytium-pi]
     B --> H[axplat-aarch64-bsta1000b]
-    E --> I[axhal]
+    E --> I[ax-hal]
     F --> I
     G --> I
     H --> I
@@ -255,7 +255,7 @@ cargo build -p axplat-aarch64-peripherals --target aarch64-unknown-none --all-fe
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
 | ArceOS | AArch64 平台包下层 | 通用外设 glue 层 | 为多个 AArch64 板级平台复用串口、时钟、中断和 PSCI 实现，减少板级重复代码 |
-| StarryOS | 通过 `axhal` 间接使用 | 宿主平台外设适配层 | StarryOS 不直接依赖该 crate，但若运行在 ArceOS 平台栈上，会间接受益于同一套 AArch64 外设 glue |
+| StarryOS | 通过 `ax-hal` 间接使用 | 宿主平台外设适配层 | StarryOS 不直接依赖该 crate，但若运行在 ArceOS 平台栈上，会间接受益于同一套 AArch64 外设 glue |
 | Axvisor | 宿主侧平台支持的一部分 | 宿主 bring-up 公共层 | Axvisor 的虚拟中断和虚拟设备核心在 `arm_vgic`/`axdevice`/`axvm`，而本 crate 负责宿主平台侧的串口、计时和 GIC 基础设施，不应与虚拟化设备层混淆 |
 
 ## 7. 总结

@@ -15,7 +15,7 @@
 //! FDT parsing and processing functionality.
 
 use alloc::{string::ToString, vec::Vec};
-use axhal::{dtb, mem};
+use ax_hal::{dtb, mem};
 use axvm::config::{AxVMConfig, AxVMCrateConfig, PassThroughDeviceConfig};
 use fdt_parser::{Fdt, FdtHeader, PciRange, PciSpace};
 

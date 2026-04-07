@@ -16,7 +16,7 @@ use-ramdisk = [] # TODO: init ramdisk
 [dependencies]
 ax-driver = { workspace = true, features = ["block"] }
 axerrno = { workspace = true }
-axhal = { workspace = true }
+ax-hal = { workspace = true }
 axfs_devfs = { version = "0.3.2" }
 axfs_ramfs = { version = "0.3.2" }
 axfs_vfs = "0.3.2"

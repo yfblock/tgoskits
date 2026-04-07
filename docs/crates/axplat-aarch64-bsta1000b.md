@@ -67,14 +67,14 @@ flowchart TD
 
 ### 1.4 与相邻层的边界
 
-这份文档最需要澄清的，是它和 `axcpu`、`axplat`、`axplat-aarch64-peripherals`、`axhal` 之间的边界：
+这份文档最需要澄清的，是它和 `axcpu`、`axplat`、`axplat-aarch64-peripherals`、`ax-hal` 之间的边界：
 
 | 层 | 负责内容 | 不负责内容 |
 | --- | --- | --- |
 | `axcpu` | EL 切换、MMU 打开、trap 初始化、FP 使能、`halt()` 等 CPU 原语 | A1000B 的 UART/GIC 基地址、RAM 布局、PSCI CPU ID 选择 |
 | `axplat-aarch64-peripherals` | PSCI、Generic Timer、GIC 的通用 glue 与 `TimeIf`/`IrqIf` 宏 | A1000B 启动汇编、引导页表、DW APB UART、板级内存布局 |
 | `axplat-aarch64-bsta1000b` | 启动入口、页表、板级地址配置、本地控制台、`MemIf`/`PowerIf` | 调度、页表管理策略、驱动枚举、上层 HAL 聚合 |
-| `axhal` | 若上层选择接入，则负责 DTB、全局内存视图、运行时初始化顺序整合 | 早期板级寄存器初始化和 SoC 复位寄存器语义 |
+| `ax-hal` | 若上层选择接入，则负责 DTB、全局内存视图、运行时初始化顺序整合 | 早期板级寄存器初始化和 SoC 复位寄存器语义 |
 
 尤其需要注意三点：
 
@@ -154,7 +154,7 @@ flowchart TD
 
 - `os/arceos/examples/helloworld-myplat`：当前仓库里最直接的使用者。
 - 仓库外直接链接该 crate 的自定义内核或实验内核。
-- 间接上层可以是 ArceOS 风格内核，但当前仓库并未把它接入 `axhal::defplat` 默认平台链路。
+- 间接上层可以是 ArceOS 风格内核，但当前仓库并未把它接入 `ax-hal::defplat` 默认平台链路。
 
 ### 3.3 依赖关系示意
 
@@ -240,7 +240,7 @@ fn kernel_main(cpu_id: usize, arg: usize) -> ! {
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | `myplat`/板卡 bring-up 路径 | A1000B 板级平台包 | 当前仓库里主要通过 `ax-helloworld-myplat` 这类最小示例接入，尚未进入 `axhal` 默认平台集 |
+| ArceOS | `myplat`/板卡 bring-up 路径 | A1000B 板级平台包 | 当前仓库里主要通过 `ax-helloworld-myplat` 这类最小示例接入，尚未进入 `ax-hal` 默认平台集 |
 | StarryOS | 当前无仓库内直接接入 | 潜在宿主平台包 | 若未来接入，也更可能作为定制平台包直接链接，而不是开箱即用默认平台 |
 | Axvisor | 当前无仓库内直接接入 | 潜在宿主板级支持 | 该 crate 不提供虚拟化能力，只能作为宿主板级 bring-up 基础；当前仓库没有直接依赖它 |
 

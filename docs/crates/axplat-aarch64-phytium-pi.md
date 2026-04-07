@@ -68,7 +68,7 @@ flowchart TD
 | `axcpu` | EL 切换、MMU 打开、trap 初始化、FP 使能等 CPU 原语 | 飞腾派的 UART/GIC/PCIe 基地址、CPU ID 重映射 |
 | `axplat-aarch64-peripherals` | PL011、Generic Timer、GIC、PSCI 的通用实现与接口 glue | 飞腾派启动入口、`CPU_ID_LIST`、RAM/MMIO 窗口、PCI 资源描述 |
 | `axplat-aarch64-phytium-pi` | 启动页表、CPU 逻辑编号、平台内存模型、`PowerIf` | 设备树解析、PCIe 枚举、驱动注册、上层 HAL 聚合 |
-| `axhal` | 若被上层接入，则负责统一 DTB、内存区域和运行时初始化顺序 | 飞腾派本地寄存器初始值和板级 boot stub |
+| `ax-hal` | 若被上层接入，则负责统一 DTB、内存区域和运行时初始化顺序 | 飞腾派本地寄存器初始值和板级 boot stub |
 
 几个尤其重要的边界如下：
 
@@ -226,7 +226,7 @@ extern crate axplat_aarch64_phytium_pi;
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | `myplat`/板卡 bring-up 路径 | 飞腾派板级平台包 | 当前仓库内主要通过 `ax-helloworld-myplat` 和板卡启动文档使用，不在 `axhal::defplat` 默认平台列表中 |
+| ArceOS | `myplat`/板卡 bring-up 路径 | 飞腾派板级平台包 | 当前仓库内主要通过 `ax-helloworld-myplat` 和板卡启动文档使用，不在 `ax-hal::defplat` 默认平台列表中 |
 | StarryOS | 当前无仓库内直接接入 | 潜在宿主平台包 | 若未来接入，更可能作为定制板级平台直接链接，而不是默认平台能力 |
 | Axvisor | 当前无仓库内直接接入 | 潜在宿主 bring-up 层 | 本 crate 不提供虚拟化能力，只能提供飞腾派宿主板级初始化基础；当前仓库没有直接依赖 |
 

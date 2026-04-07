@@ -29,7 +29,7 @@
 - `disable_irqs()`
 - `enable_irqs()`
 
-这些函数直接读写 `axhal::asm::{irqs_enabled, disable_irqs, enable_irqs}`，所以它们观察的是真实的 CPU IRQ 状态，而不是某个模拟标志位。
+这些函数直接读写 `ax-hal::asm::{irqs_enabled, disable_irqs, enable_irqs}`，所以它们观察的是真实的 CPU IRQ 状态，而不是某个模拟标志位。
 
 ### 1.3 三条真实调用链
 本 crate 实际上在验证下面三种任务路径：
@@ -88,7 +88,7 @@ flowchart TD
 ```mermaid
 graph LR
     test["arceos-irq"] --> ax-std["ax-std(multitask, irq)"]
-    test --> axhal["axhal::asm"]
+    test --> ax-hal["ax-hal::asm"]
     test --> ax-task["ax-task::WaitQueue"]
     ax-std --> ax-api["ax_api::task"]
 ```
@@ -98,7 +98,7 @@ graph LR
 
 ### 3.2 关键间接依赖
 - `ax-task`：任务切换、睡眠和等待队列的真实实现。
-- `axhal::asm`：读取和切换当前 CPU 的 IRQ 状态。
+- `ax-hal::asm`：读取和切换当前 CPU 的 IRQ 状态。
 
 ### 3.3 主要消费者
 - `cargo arceos test qemu` 自动回归。

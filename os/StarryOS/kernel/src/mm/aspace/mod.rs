@@ -1,13 +1,13 @@
 use alloc::sync::Arc;
 use core::{fmt, ops::DerefMut};
 
-use ax_sync::Mutex;
-use axerrno::{AxError, AxResult, ax_bail};
-use axhal::{
+use ax_hal::{
     mem::phys_to_virt,
     paging::{MappingFlags, PageTable},
     trap::PageFaultFlags,
 };
+use ax_sync::Mutex;
+use axerrno::{AxError, AxResult, ax_bail};
 use memory_addr::{
     MemoryAddr, PAGE_SIZE_4K, PageIter4K, PhysAddr, VirtAddr, VirtAddrRange, is_aligned_4k,
 };

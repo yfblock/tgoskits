@@ -163,7 +163,7 @@ FEATURE_LIKE_CRATES = {
 }
 
 CURATED_DOCS = {
-    "axhal",
+    "ax-hal",
     "aarch64_sysreg",
     "ax-task",
     "axvm",

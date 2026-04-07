@@ -176,7 +176,7 @@ impl axplat::init::InitIf for InitIfImpl {
 ### 2.3 使用场景
 
 - ArceOS 在不同架构与板级平台之间复用同一套上层模块。
-- `axhal` 需要一个稳定的平台调用面，而不希望把平台判断散落到各模块。
+- `ax-hal` 需要一个稳定的平台调用面，而不希望把平台判断散落到各模块。
 - 示例内核和实验内核希望用最少样板代码完成 bring-up。
 - 第三方平台包希望以“新增 crate”的方式接入，而不是修改核心内核仓库。
 
@@ -197,9 +197,9 @@ impl axplat::init::InitIf for InitIfImpl {
 ### 3.2 被谁依赖
 
 - 所有具体平台包：如 `axplat-aarch64-qemu-virt`、`axplat-x86-pc`、`axplat-riscv64-qemu-virt`。
-- `axhal`：通过选择某个 `axplat-*` 平台包把平台实现纳入构建。
+- `ax-hal`：通过选择某个 `axplat-*` 平台包把平台实现纳入构建。
 - `components/axplat_crates/examples/*`：示例内核直接使用 `axplat` 接口与平台包。
-- 上层 ArceOS/StarryOS/Axvisor 宿主侧内核：通常通过 `axhal` 间接消费，而不是直接依赖 `axplat`。
+- 上层 ArceOS/StarryOS/Axvisor 宿主侧内核：通常通过 `ax-hal` 间接消费，而不是直接依赖 `axplat`。
 
 ### 3.3 依赖关系示意
 
@@ -211,7 +211,7 @@ graph TD
     E[kspin / percpu / bitflags] --> B
 
     B --> F[axplat-* 平台包]
-    F --> G[axhal]
+    F --> G[ax-hal]
     G --> H[ArceOS]
     G --> I[StarryOS]
     G --> J[Axvisor 宿主侧基础环境]
@@ -245,7 +245,7 @@ axplat = { workspace = true, features = ["irq", "smp"] }
 cargo build -p axplat --all-features
 ```
 
-真正的整机验证一般在平台包或 `axhal` 所在工程中完成，例如为某个内核选择 `aarch64-qemu-virt`、`x86-pc` 等目标平台。
+真正的整机验证一般在平台包或 `ax-hal` 所在工程中完成，例如为某个内核选择 `aarch64-qemu-virt`、`x86-pc` 等目标平台。
 
 ### 4.3 常见注意事项
 
@@ -279,9 +279,9 @@ cargo build -p axplat --all-features
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | 平台抽象基座 | `axhal` 下层的统一硬件契约 | 把具体板级差异隔离在 `axplat-*` 中，使 ArceOS 模块围绕统一接口开发 |
-| StarryOS | 通过 ArceOS 组件间接使用 | 宿主平台抽象层 | StarryOS 通常不直接依赖 `axplat`，而是复用 `axhal`/ArceOS 平台基础设施 |
-| Axvisor | 宿主环境侧的板级抽象基础 | 宿主 bring-up 支撑层 | Axvisor 的虚拟化核心不在 `axplat` 中，但 hypervisor 若运行在 ArceOS/axhal 栈之上，底层平台启动与控制台/时间/中断仍依赖 `axplat` 系列实现 |
+| ArceOS | 平台抽象基座 | `ax-hal` 下层的统一硬件契约 | 把具体板级差异隔离在 `axplat-*` 中，使 ArceOS 模块围绕统一接口开发 |
+| StarryOS | 通过 ArceOS 组件间接使用 | 宿主平台抽象层 | StarryOS 通常不直接依赖 `axplat`，而是复用 `ax-hal`/ArceOS 平台基础设施 |
+| Axvisor | 宿主环境侧的板级抽象基础 | 宿主 bring-up 支撑层 | Axvisor 的虚拟化核心不在 `axplat` 中，但 hypervisor 若运行在 ArceOS/ax-hal 栈之上，底层平台启动与控制台/时间/中断仍依赖 `axplat` 系列实现 |
 
 ## 7. 总结
 

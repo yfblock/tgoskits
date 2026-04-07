@@ -80,7 +80,7 @@ fn test_gpu() {
     }
     println!("Display tests run OK!");
     #[cfg(feature = "ax-std")]
-    std::os::arceos::modules::axhal::power::system_off();
+    std::os::arceos::modules::ax_hal::power::system_off();
 }
 
 #[cfg_attr(feature = "ax-std", unsafe(no_mangle))]

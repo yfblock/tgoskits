@@ -64,12 +64,12 @@
 ### 1.6 API 到下层模块的映射关系
 各 API 域与下层模块的对应关系非常稳定：
 
-- `sys` -> `axhal::cpu_num`、`axhal::power::system_off`
-- `time` -> `axhal::time`
-- `stdio` -> `axhal::console` 与 `axlog`
+- `sys` -> `ax-hal::cpu_num`、`ax-hal::power::system_off`
+- `time` -> `ax-hal::time`
+- `stdio` -> `ax-hal::console` 与 `axlog`
 - `mem::alloc` -> `axalloc`
 - `mem::dma` -> `ax-dma`
-- `task` -> `ax-task`、`ax-sync`、`axhal::time`
+- `task` -> `ax-task`、`ax-sync`、`ax-hal::time`
 - `fs` -> `ax-fs`
 - `net` -> `ax-net`
 - `display` -> `ax-display`
@@ -110,7 +110,7 @@ let _ = (now, cpus);
 ```mermaid
 graph LR
     ax-runtime["ax-runtime"] --> ax-api["ax-api"]
-    axhal["axhal"] --> ax-api
+    ax-hal["ax-hal"] --> ax-api
     axalloc["axalloc"] --> ax-api
     ax_dma["ax-dma"] --> ax-api
     ax-task["ax-task"] --> ax-api
@@ -124,7 +124,7 @@ graph LR
 ```
 
 ### 3.1 关键直接依赖
-- 核心基础：`axconfig`、`axerrno`、`ax-feat`、`axhal`、`axio`、`axlog`、`ax-runtime`、`ax-sync`。
+- 核心基础：`axconfig`、`axerrno`、`ax-feat`、`ax-hal`、`axio`、`axlog`、`ax-runtime`、`ax-sync`。
 - 可选能力：`axalloc`、`ax-dma`、`ax-task`、`ax-fs`、`ax-net`、`ax-display`、`ax-driver`、`ax-ipi`、`ax-mm`。
 
 ### 3.2 关键直接消费者

@@ -19,7 +19,7 @@ ax-driver = { workspace = true, features = ["net"] }
 axerrno = { workspace = true }
 ax-fs-ng = { workspace = true }
 axfs-ng-vfs = { workspace = true }
-axhal = { workspace = true }
+ax-hal = { workspace = true }
 axio = { workspace = true }
 axpoll = { workspace = true }
 ax-sync = { workspace = true }

@@ -36,7 +36,7 @@ axalloc = { workspace = true, optional = true }
 axconfig.workspace = true
 ax-feat.workspace = true
 ax-fs = { workspace = true, optional = true }
-axhal.workspace = true
+ax-hal.workspace = true
 axlog.workspace = true
 ax-net = { workspace = true, optional = true }
 ax-runtime.workspace = true

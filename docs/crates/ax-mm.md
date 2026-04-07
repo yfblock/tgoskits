@@ -6,14 +6,14 @@
 > 版本：`0.3.0-preview.3`
 > 文档依据：`Cargo.toml`、`src/lib.rs`、`src/aspace.rs`、`src/backend/mod.rs`、`src/backend/linear.rs`、`src/backend/alloc.rs`
 
-`ax-mm` 是 ArceOS 的虚拟内存管理模块。它把 `axhal::paging::PageTable` 提供的页表能力、`memory_set` 提供的区间元数据管理，以及 `axalloc` 提供的物理页框分配整合成统一的地址空间抽象 `AddrSpace`，负责建立和维护宿主内核自己的虚拟地址空间。
+`ax-mm` 是 ArceOS 的虚拟内存管理模块。它把 `ax-hal::paging::PageTable` 提供的页表能力、`memory_set` 提供的区间元数据管理，以及 `axalloc` 提供的物理页框分配整合成统一的地址空间抽象 `AddrSpace`，负责建立和维护宿主内核自己的虚拟地址空间。
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
 `ax-mm` 的职责边界非常明确：
 
 - 它管理的是 **宿主内核地址空间**，核心对象是 `AddrSpace` 和全局 `KERNEL_ASPACE`。
-- 它不直接负责底层页表项格式、TLB 指令或地址翻译细节，这些由 `axhal` 提供。
+- 它不直接负责底层页表项格式、TLB 指令或地址翻译细节，这些由 `ax-hal` 提供。
 - 它也不直接承担 StarryOS 进程级复杂地址空间策略，例如 COW、文件后端和用户态高级内存语义；这些通常在 StarryOS 自己的 `mm` 层扩展。
 
 因此，`ax-mm` 更像是 ArceOS 宿主侧的“页表驱动型地址空间管理器”，而不是所有项目共享的一切内存策略中心。
@@ -31,7 +31,7 @@
   - `Linear { pa_va_offset }`：基于固定偏移的线性映射。
   - `Alloc { populate }`：基于物理页框分配的映射，可按需填充。
 - `KERNEL_ASPACE`：全局内核地址空间单例，通过 `LazyInit<SpinNoIrq<AddrSpace>>` 保存。
-- `PageTable`：由 `axhal::paging` 暴露的多架构页表类型，是 `AddrSpace` 实际修改硬件映射的核心对象。
+- `PageTable`：由 `ax-hal::paging` 暴露的多架构页表类型，是 `AddrSpace` 实际修改硬件映射的核心对象。
 
 ### 1.4 内核地址空间初始化主线
 内核页表安装路径集中在 `init_memory_management()`：
@@ -39,8 +39,8 @@
 ```mermaid
 flowchart TD
     A["ax-runtime 调用 ax-mm::init_memory_management"] --> B["new_kernel_aspace()"]
-    B --> C["读取 axhal::mem::kernel_aspace"]
-    C --> D["遍历 axhal::mem::memory_regions()"]
+    B --> C["读取 ax-hal::mem::kernel_aspace"]
+    C --> D["遍历 ax-hal::mem::memory_regions()"]
     D --> E["按区间执行 map_linear()"]
     E --> F["初始化 KERNEL_ASPACE"]
     F --> G["write_kernel_page_table(root)"]
@@ -49,11 +49,11 @@ flowchart TD
 
 其逻辑可概括为：
 
-1. 根据 `axhal::mem::kernel_aspace()` 创建一个空的 `AddrSpace`。
-2. 遍历 `axhal::mem::memory_regions()` 暴露的物理内存、MMIO 和其他区间。
+1. 根据 `ax-hal::mem::kernel_aspace()` 创建一个空的 `AddrSpace`。
+2. 遍历 `ax-hal::mem::memory_regions()` 暴露的物理内存、MMIO 和其他区间。
 3. 把 `MemRegionFlags` 转为 `MappingFlags` 后，用 `map_linear()` 把这些区间映射到内核虚拟地址。
 4. 将构造好的地址空间安装到 `KERNEL_ASPACE`。
-5. 最后用 `axhal::asm::write_kernel_page_table()` 和 `flush_tlb()` 把新根页表写入硬件。
+5. 最后用 `ax-hal::asm::write_kernel_page_table()` 和 `flush_tlb()` 把新根页表写入硬件。
 
 从核路径 `init_memory_management_secondary()` 则明显更轻，只负责再次写入同一根页表并 flush TLB，而不会重建整套地址空间元数据。
 
@@ -102,7 +102,7 @@ aspace.protect(va.into(), mmio_size, flags)?;
 ## 3. 依赖关系图谱
 ```mermaid
 graph LR
-    axhal["axhal::paging / mem / asm"] --> ax-mm["ax-mm"]
+    ax-hal["ax-hal::paging / mem / asm"] --> ax-mm["ax-mm"]
     memory_set["memory_set"] --> ax-mm
     axalloc["axalloc"] --> ax-mm
     memory_addr["memory_addr"] --> ax-mm
@@ -114,7 +114,7 @@ graph LR
 ```
 
 ### 3.1 关键直接依赖
-- `axhal`：提供页表类型、地址转换、内核地址空间布局和写根页表指令。
+- `ax-hal`：提供页表类型、地址转换、内核地址空间布局和写根页表指令。
 - `memory_set`：保存虚拟区间元数据，并通过 backend trait 协作执行映射。
 - `axalloc`：为 `Alloc` backend 提供物理页框来源。
 - `memory_addr`、`axerrno`、`kspin`、`lazyinit`：分别提供地址类型、错误、锁和全局单例初始化。
@@ -141,13 +141,13 @@ ax-mm = { workspace = true }
 
 ### 4.2 初始化与改动约束
 1. `init_memory_management()` 应始终视为运行时启动链的一部分，不能在系统运行中重复调用。
-2. 修改 `new_kernel_aspace()` 时，要同步核对 `axhal::mem::memory_regions()` 暴露的区域语义是否仍然匹配。
+2. 修改 `new_kernel_aspace()` 时，要同步核对 `ax-hal::mem::memory_regions()` 暴露的区域语义是否仍然匹配。
 3. 修改 `Alloc` backend 时，要同时验证 eager populate 与 lazy fault-in 两条路径。
 4. 修改 `copy` 路径时，要区分 aarch64 / loongarch64 与其他架构在“是否复制内核映射”上的差异。
 
 ### 4.3 关键开发建议
 - 设备映射优先走 `iomap()`，不要在外部重复实现一套物理到虚拟映射逻辑。
-- 任何页表安装逻辑都应最终通过 `axhal::asm::write_kernel_page_table()` 与 `flush_tlb()` 完成。
+- 任何页表安装逻辑都应最终通过 `ax-hal::asm::write_kernel_page_table()` 与 `flush_tlb()` 完成。
 - 若在上层实现更复杂的用户地址空间策略，应把 `ax-mm` 明确当作“宿主内核页表基础设施”，而不是强行把所有高层策略塞回本 crate。
 
 ## 5. 测试策略

@@ -24,16 +24,16 @@ fn raise_break_exception() {
 fn raise_page_fault() {
     use std::os::arceos::modules::axhal;
 
-    use axhal::{mem::VirtAddr, paging::MappingFlags};
+    use ax_hal::{mem::VirtAddr, paging::MappingFlags};
 
-    #[linkme::distributed_slice(axhal::trap::PAGE_FAULT)]
+    #[linkme::distributed_slice(ax_hal::trap::PAGE_FAULT)]
     fn page_fault_handler(vaddr: VirtAddr, access_flags: MappingFlags) -> bool {
         println!(
             "Page fault @ {:#x}, access_flags: {:?}",
             vaddr, access_flags
         );
         println!("Page fault test OK!");
-        axhal::power::system_off();
+        ax_hal::power::system_off();
     }
 
     let fault_addr = 0xdeadbeef as *mut u8;

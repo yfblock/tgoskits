@@ -1,4 +1,4 @@
-use axhal::paging::{MappingFlags, PageTable};
+use ax_hal::paging::{MappingFlags, PageTable};
 use memory_addr::{PhysAddr, VirtAddr};
 
 use super::Backend;

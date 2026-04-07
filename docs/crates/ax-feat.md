@@ -38,7 +38,7 @@ graph LR
     current --> ax-driver["ax-driver"]
     current --> ax-fs["ax-fs"]
     current --> axfs_ng["ax-fs-ng"]
-    current --> axhal["axhal"]
+    current --> ax-hal["ax-hal"]
     ax_api["ax-api"] --> current
     ax_libc["ax-libc"] --> current
     ax_posix_api["ax-posix-api"] --> current
@@ -56,7 +56,7 @@ graph LR
 - `ax-driver`
 - `ax-fs`
 - `ax-fs-ng`
-- `axhal`
+- `ax-hal`
 - `ax-input`
 - `ax-ipi`
 - `axlog`

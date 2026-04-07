@@ -59,7 +59,7 @@
 
 - `VirtIoDevMeta`：为每种 VirtIO 设备绑定 `DeviceType`、具体 `Device` 类型和 `try_new()`。
 - `VirtIoDriver<D>`：实现 `DriverProbe`，把 MMIO/PCI 识别结果转成 `AxDeviceEnum`。
-- `VirtIoHalImpl`：对接 `axalloc`、`axhal`，为 `virtio-drivers` 提供 DMA 和地址转换。
+- `VirtIoHalImpl`：对接 `axalloc`、`ax-hal`，为 `virtio-drivers` 提供 DMA 和地址转换。
 
 因此本 crate 只做到“把一个已经识别出来的 VirtIO 设备变成类别驱动”；真正把它纳入系统初始化流程的是 `ax-driver`。
 
@@ -136,7 +136,7 @@
 
 ### 4.2 HAL 接入注意事项
 - `VirtIoHal` 要正确实现 DMA 分配、回收、MMIO 地址转换、share/unshare。
-- ArceOS 当前 `VirtIoHalImpl` 主要基于 `axalloc::global_allocator()` 和 `axhal::mem::{phys_to_virt, virt_to_phys}`。
+- ArceOS 当前 `VirtIoHalImpl` 主要基于 `axalloc::global_allocator()` 和 `ax-hal::mem::{phys_to_virt, virt_to_phys}`。
 - 不同平台若总线地址不等于物理地址，必须在 HAL 层处理，不要把这个问题推给设备包装层。
 
 ### 4.3 常见坑

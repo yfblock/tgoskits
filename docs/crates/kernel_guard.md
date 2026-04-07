@@ -133,7 +133,7 @@
 - `kspin`
 - `percpu`
 - `ax-task`
-- `axhal`
+- `ax-hal`
 - `os/StarryOS/kernel`
 - `os/axvisor`
 
@@ -144,7 +144,7 @@ graph TD
     A[kernel_guard] --> B[kspin]
     A --> C[percpu]
     A --> D[ax-task]
-    A --> E[axhal]
+    A --> E[ax-hal]
     D --> F[ArceOS 调度路径]
     E --> G[IRQ / current task path]
     A --> H[StarryOS]

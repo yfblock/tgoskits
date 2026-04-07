@@ -135,7 +135,7 @@ graph LR
 
 ### 3.3 间接消费者
 - `axvisor`：通过 `axvm` 复用这套 ARM vCPU 栈。
-- 宿主侧 IRQ 处理路径：经 `axvisor_api` 与 `axhal::irq` 协作。
+- 宿主侧 IRQ 处理路径：经 `axvisor_api` 与 `ax-hal::irq` 协作。
 
 ## 4. 开发指南
 ### 4.1 依赖配置

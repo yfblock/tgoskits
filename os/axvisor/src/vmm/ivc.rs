@@ -18,9 +18,9 @@ use alloc::vec::Vec;
 
 use std::sync::Mutex;
 
+use ax_hal::paging::PagingHandlerImpl;
 use axaddrspace::{GuestPhysAddr, HostPhysAddr};
 use axerrno::AxResult;
-use axhal::paging::PagingHandlerImpl;
 use page_table_multiarch::PagingHandler;
 
 /// A global btree map to store IVC channels,

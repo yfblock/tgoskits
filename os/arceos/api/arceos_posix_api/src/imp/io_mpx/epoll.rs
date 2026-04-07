@@ -8,9 +8,9 @@ use alloc::{
 };
 use core::{ffi::c_int, time::Duration};
 
+use ax_hal::time::wall_time;
 use ax_sync::Mutex;
 use axerrno::{LinuxError, LinuxResult};
-use axhal::time::wall_time;
 
 use crate::{
     ctypes,

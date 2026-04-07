@@ -52,7 +52,7 @@ graph LR
 - `axerrno`
 - `ax-feat`
 - `ax-fs`
-- `axhal`
+- `ax-hal`
 - `axio`
 - `ax-ipi`
 - `axlog`

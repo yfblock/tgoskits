@@ -14,7 +14,7 @@
 
 - 它是 x86 PC 机型的 `axplat` 实现，而不是通用 x86 抽象层。
 - 它负责把 Multiboot 入口、APIC 中断体系、TSC 时间源和 RAM/MMIO 解析组织成上层可调用的接口。
-- 它把最早期引导与后续运行期平台服务放在同一 crate 中，使 `axhal` 与 `ax-runtime` 可以通过统一接口消费。
+- 它把最早期引导与后续运行期平台服务放在同一 crate 中，使 `ax-hal` 与 `ax-runtime` 可以通过统一接口消费。
 
 因此，`axplat-x86-pc` 的价值在于“把经典 PC 平台假设精确定义出来”，而不是“适配所有 x86 机器”。
 
@@ -54,7 +54,7 @@ flowchart TD
     G --> H["trap / console / time / mem"]
     H --> I["InitIf::init_later"]
     I --> J["apic::init_primary / time::init_primary"]
-    J --> K["运行时继续进入 axhal / ax-runtime 主线"]
+    J --> K["运行时继续进入 ax-hal / ax-runtime 主线"]
 ```
 
 按实现细节看：
@@ -101,7 +101,7 @@ flowchart TD
 - 提供 x86 PC 场景下的 RAM、MMIO、SMP 和电源控制接口。
 
 ### 2.2 关键 API 与使用场景
-- `InitIfImpl`：被 `axhal` / `ax-runtime` 在启动时调用。
+- `InitIfImpl`：被 `ax-hal` / `ax-runtime` 在启动时调用。
 - `ConsoleIfImpl`：日志和控制台输出的基础。
 - `MemIfImpl`：为内核内存管理提供 RAM/MMIO 描述。
 - `TimeIfImpl`：为调度器、sleep 和 wall time 提供时间源。
@@ -116,7 +116,7 @@ flowchart TD
 axplat-x86-pc = { workspace = true, features = ["irq", "smp", "rtc"] }
 ```
 
-在 ArceOS/StarryOS 的常见 x86 构建路径里，这个选择通常由 `axhal` 的平台 feature 或 make/xtask 的平台包变量进一步驱动。
+在 ArceOS/StarryOS 的常见 x86 构建路径里，这个选择通常由 `ax-hal` 的平台 feature 或 make/xtask 的平台包变量进一步驱动。
 
 ## 3. 依赖关系图谱
 ```mermaid
@@ -128,7 +128,7 @@ graph LR
     uart["uart_16550"] --> current
     cpuid["raw-cpuid"] --> current
 
-    current --> axhal["axhal"]
+    current --> ax-hal["ax-hal"]
     current --> hello["hello-kernel / irq-kernel / smp-kernel"]
     current --> arceos["ArceOS x86 默认平台路径"]
 ```
@@ -141,12 +141,12 @@ graph LR
 - `uart_16550`、`raw-cpuid`、可选 `x86_rtc`：对应控制台、CPU 频率信息和墙钟。
 
 ### 3.2 关键直接消费者
-- `axhal`：在 x86 PC 场景下复用本 crate 的 `axplat` 实现。
+- `ax-hal`：在 x86 PC 场景下复用本 crate 的 `axplat` 实现。
 - `components/axplat_crates/examples/*`：最小平台样例。
 - ArceOS 和 StarryOS 的 x86 默认平台路径。
 
 ### 3.3 间接消费者
-- 通过 `axhal` 运行在 Standard PC 环境上的 ArceOS 样例与测试。
+- 通过 `ax-hal` 运行在 Standard PC 环境上的 ArceOS 样例与测试。
 - StarryOS 的 x86 平台 bring-up。
 - Axvisor 的依赖图中可能出现该包，但主 x86 平台更偏向 `axplat-x86-qemu-q35`。
 
@@ -246,7 +246,7 @@ graph LR
     current --> lazyinit["lazyinit"]
     current --> percpu["percpu"]
     arceos_helloworld_myplat["ax-helloworld-myplat"] --> current
-    axhal["axhal"] --> current
+    ax-hal["ax-hal"] --> current
     hello_kernel["hello-kernel"] --> current
     irq_kernel["irq-kernel"] --> current
     smp_kernel["smp-kernel"] --> current
@@ -276,7 +276,7 @@ graph LR
 
 ### 3.3 被依赖情况
 - `ax-helloworld-myplat`
-- `axhal`
+- `ax-hal`
 - `hello-kernel`
 - `irq-kernel`
 - `smp-kernel`
@@ -342,7 +342,7 @@ axplat-x86-pc = { workspace = true }
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-`axplat-x86-pc` 不在 ArceOS 目录内部，但被 `ax-helloworld-myplat`、`axhal` 等 ArceOS crate 直接依赖，说明它是该系统的共享构件或底层服务。
+`axplat-x86-pc` 不在 ArceOS 目录内部，但被 `ax-helloworld-myplat`、`ax-hal` 等 ArceOS crate 直接依赖，说明它是该系统的共享构件或底层服务。
 
 ### 6.2 StarryOS
 `axplat-x86-pc` 主要通过 `starry-kernel`、`starryos`、`starryos-test` 等上层 crate 被 StarryOS 间接复用，通常处于更底层的公共依赖层。

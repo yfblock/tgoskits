@@ -572,7 +572,7 @@ impl rsext4::BlockDevice for Disk {
     }
 
     fn current_time(&self) -> Ext4Result<Ext4Timestamp> {
-        let now = axhal::time::wall_time();
+        let now = ax_hal::time::wall_time();
         let sec =
             i64::try_from(now.as_secs()).map_err(|_| Ext4Error::from(rsext4::Errno::EOVERFLOW))?;
         Ok(Ext4Timestamp::new(sec, now.subsec_nanos()))
@@ -632,7 +632,7 @@ impl rsext4::BlockDevice for Partition {
     }
 
     fn current_time(&self) -> Ext4Result<Ext4Timestamp> {
-        let now = axhal::time::wall_time();
+        let now = ax_hal::time::wall_time();
         let sec =
             i64::try_from(now.as_secs()).map_err(|_| Ext4Error::from(rsext4::Errno::EOVERFLOW))?;
         Ok(Ext4Timestamp::new(sec, now.subsec_nanos()))

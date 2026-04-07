@@ -1,8 +1,8 @@
-use axalloc::{UsageKind, global_allocator};
-use axhal::{
+use ax_hal::{
     mem::{phys_to_virt, virt_to_phys},
     paging::{MappingFlags, PageSize, PageTable},
 };
+use axalloc::{UsageKind, global_allocator};
 use memory_addr::{PAGE_SIZE_4K, PageIter4K, PhysAddr, VirtAddr};
 
 use super::Backend;

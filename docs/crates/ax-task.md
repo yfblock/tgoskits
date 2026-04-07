@@ -121,7 +121,7 @@ let wq = ax-task::WaitQueue::new();
 ## 3. 依赖关系图谱
 ```mermaid
 graph LR
-    axhal["axhal"] --> ax-task["ax-task"]
+    ax-hal["ax-hal"] --> ax-task["ax-task"]
     axsched["axsched"] --> ax-task
     axconfig["axconfig"] --> ax-task
     kernel_guard["kernel_guard"] --> ax-task
@@ -137,7 +137,7 @@ graph LR
 ```
 
 ### 3.1 关键直接依赖
-- `axhal`：任务上下文、当前 CPU、时间、IRQ、TLS 与上下文切换能力来源。
+- `ax-hal`：任务上下文、当前 CPU、时间、IRQ、TLS 与上下文切换能力来源。
 - `axsched`：具体调度算法实现。
 - `axconfig`：任务栈大小、CPU 数量上限等静态配置来源。
 - `kernel_guard`：抢占关闭/恢复的接口桥接。
@@ -169,7 +169,7 @@ ax-task = { workspace = true }
 - `task-ext`：允许外部系统挂接扩展任务对象。
 
 ### 4.2 初始化与接入顺序
-1. 先确保上层运行时已完成 `axhal` 初始化。
+1. 先确保上层运行时已完成 `ax-hal` 初始化。
 2. 主 CPU 调 `init_scheduler()`，从 CPU 调 `init_scheduler_secondary()`。
 3. 再通过 `spawn()` 等 API 投递任务。
 4. 若启用 `irq` 与 `preempt`，需要保证 timer tick 能够进入 `on_timer_tick()`。

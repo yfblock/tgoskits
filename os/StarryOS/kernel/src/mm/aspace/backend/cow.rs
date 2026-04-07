@@ -2,12 +2,12 @@ use alloc::{collections::BTreeMap, sync::Arc};
 use core::slice;
 
 use ax_fs::FileBackend;
-use ax_sync::Mutex;
-use axerrno::{AxError, AxResult};
-use axhal::{
+use ax_hal::{
     mem::phys_to_virt,
     paging::{MappingFlags, PageSize, PageTableCursor, PagingError},
 };
+use ax_sync::Mutex;
+use axerrno::{AxError, AxResult};
 use kspin::SpinNoIrq;
 use memory_addr::{PhysAddr, VirtAddr, VirtAddrRange};
 

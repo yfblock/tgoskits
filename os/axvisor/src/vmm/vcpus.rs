@@ -23,8 +23,8 @@ use core::{
 use std::os::arceos::{
     api::task::{AxCpuMask, ax_wait_queue_wake},
     modules::{
+        ax_hal::{self, time::busy_wait},
         ax_task::{self, AxTaskExt},
-        axhal::{self, time::busy_wait},
     },
 };
 
@@ -483,7 +483,7 @@ fn vcpu_run() {
                     debug!("VM[{vm_id}] run VCpu[{vcpu_id}] get irq {vector}");
 
                     // TODO: maybe move this irq dispatcher to lower layer to accelerate the interrupt handling
-                    axhal::irq::irq_handler(vector as usize);
+                    ax_hal::irq::irq_handler(vector as usize);
                     super::timer::check_events();
                 }
                 AxVCpuExitReason::Halt => {

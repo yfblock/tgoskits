@@ -12,24 +12,24 @@ repository = "https://github.com/arceos-org/arceos/tree/main/api/axfeat"
 default = []
 
 # Multicore
-smp = ["axhal/smp", "ax-runtime/smp", "ax-task?/smp", "kspin/smp"]
+smp = ["ax-hal/smp", "ax-runtime/smp", "ax-task?/smp", "kspin/smp"]
 
 # Floating point/SIMD
-fp-simd = ["axhal/fp-simd"]
+fp-simd = ["ax-hal/fp-simd"]
 
 # User space support
-uspace = ["axhal/uspace"]
-hv = ["axhal/hv"]
+uspace = ["ax-hal/uspace"]
+hv = ["ax-hal/hv"]
 
 # Interrupts
-irq = ["axhal/irq", "ax-runtime/irq", "ax-task?/irq", "ax-driver?/irq"]
-ipi = ["irq", "dep:ax-ipi", "axhal/ipi", "ax-runtime/ipi"]
+irq = ["ax-hal/irq", "ax-runtime/irq", "ax-task?/irq", "ax-driver?/irq"]
+ipi = ["irq", "dep:ax-ipi", "ax-hal/ipi", "ax-runtime/ipi"]
 
 # Custom or default platforms
-myplat = ["axhal/myplat"]
-defplat = ["axhal/defplat"]
+myplat = ["ax-hal/myplat"]
+defplat = ["ax-hal/defplat"]
 plat-dyn = [
-    "axhal/plat-dyn",
+    "ax-hal/plat-dyn",
     "paging",
     "ax-runtime/plat-dyn",
     "axconfig/plat-dyn",
@@ -43,8 +43,8 @@ alloc-buddy = ["axalloc/buddy"]
 alloc-level-1 = ["axalloc/level-1", "alloc"]
 page-alloc-64g = ["axalloc/page-alloc-64g"]                  # up to 64G memory capacity
 page-alloc-4g = ["axalloc/page-alloc-4g"]                    # up to 4G memory capacity
-paging = ["alloc", "axhal/paging", "ax-runtime/paging"]
-tls = ["alloc", "axhal/tls", "ax-runtime/tls", "ax-task?/tls"]
+paging = ["alloc", "ax-hal/paging", "ax-runtime/paging"]
+tls = ["alloc", "ax-hal/tls", "ax-runtime/tls", "ax-task?/tls"]
 dma = ["alloc", "paging"]
 
 # Multi-threading and scheduler
@@ -96,7 +96,7 @@ input = [
 ]
 
 # Real Time Clock (RTC) Driver.
-rtc = ["axhal/rtc", "ax-runtime/rtc"]
+rtc = ["ax-hal/rtc", "ax-runtime/rtc"]
 
 # Device drivers
 bus-mmio = ["ax-driver?/bus-mmio"]
@@ -119,7 +119,7 @@ ax-display = { workspace = true, optional = true }
 ax-driver = { workspace = true, optional = true }
 ax-fs = { workspace = true, optional = true }
 ax-fs-ng = { workspace = true, optional = true }
-axhal.workspace = true
+ax-hal.workspace = true
 ax-input = { workspace = true, optional = true }
 ax-ipi = { workspace = true, optional = true }
 axlog.workspace = true

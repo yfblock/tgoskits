@@ -174,7 +174,7 @@ flowchart TD
 | `aarch64-cpu` | 目标架构依赖 | 提供 AArch64 指令级辅助能力 |
 | `tock-registers` | 可选依赖 | 为 PL011 与 GPIO MMIO 寄存器建模 |
 
-这个依赖面非常说明问题：`mingo` 不依赖 `ax-runtime`、`axhal`、`ax-driver`、`axplat-aarch64-raspi` 等 ArceOS 主线部件，它不是内核体系中的一个可插拔模块，而是一个边缘位置很清晰的独立工具程序。
+这个依赖面非常说明问题：`mingo` 不依赖 `ax-runtime`、`ax-hal`、`ax-driver`、`axplat-aarch64-raspi` 等 ArceOS 主线部件，它不是内核体系中的一个可插拔模块，而是一个边缘位置很清晰的独立工具程序。
 
 ### 4.2 仓库内真实协作方
 
@@ -283,7 +283,7 @@ make A=examples/helloworld MYPLAT=axplat-aarch64-raspi chainboot
 
 `mingo` 只处在 ArceOS 的树莓派 bring-up 边缘：
 
-- 它不属于 `ax-runtime` / `axhal` / `ax-driver` 主线层次。
+- 它不属于 `ax-runtime` / `ax-hal` / `ax-driver` 主线层次。
 - 它不参与正常的内核内部抽象。
 - 它负责的是“把内核送上板并起跳”之前的那一步。
 

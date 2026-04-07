@@ -68,7 +68,7 @@ flowchart TD
 | `axcpu` | EL 切换、MMU 打开、trap 初始化、cache flush、`halt()` | spin-table 地址、PL011/GIC 基地址、树莓派电源语义 |
 | `axplat-aarch64-peripherals` | PL011、Generic Timer、GIC 的通用 glue | 树莓派启动入口、spin-table SMP、内存保留区、电源管理 |
 | `axplat-aarch64-raspi` | 启动页表、spin-table 次核启动、`MemIf`/`PowerIf` | 设备树解析、驱动枚举、完整关机流程 |
-| `axhal` | 若上层接入，则负责更高层的 DTB、内存区域整合和运行时初始化 | 树莓派本地的启动寄存器和次核释放语义 |
+| `ax-hal` | 若上层接入，则负责更高层的 DTB、内存区域整合和运行时初始化 | 树莓派本地的启动寄存器和次核释放语义 |
 
 这里最值得写清的边界有四点：
 
@@ -196,7 +196,7 @@ extern crate axplat_aarch64_raspi;
 
 ### 4.3 一个必须牢记的事实
 
-树莓派平台在仓库里的主要定位仍然是“板卡 bring-up 路径”，不是 `axhal` 默认平台。换言之，它更适合：
+树莓派平台在仓库里的主要定位仍然是“板卡 bring-up 路径”，不是 `ax-hal` 默认平台。换言之，它更适合：
 
 - 实板启动验证
 - myplat 风格实验内核
@@ -231,7 +231,7 @@ extern crate axplat_aarch64_raspi;
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | `myplat`/实板 bring-up 路径 | 树莓派 4 板级平台包 | 当前仓库内主要通过 `ax-helloworld-myplat` 和配套调试文档使用，未进入 `axhal::defplat` 默认平台集 |
+| ArceOS | `myplat`/实板 bring-up 路径 | 树莓派 4 板级平台包 | 当前仓库内主要通过 `ax-helloworld-myplat` 和配套调试文档使用，未进入 `ax-hal::defplat` 默认平台集 |
 | StarryOS | 当前无仓库内直接接入 | 潜在宿主平台包 | 若未来接入，也更可能作为定制平台直接链接，而不是现成默认平台 |
 | Axvisor | 当前无仓库内直接接入 | 潜在宿主 bring-up 基础 | 本 crate 不提供虚拟化能力，只能承担树莓派宿主板级 bring-up；当前仓库没有直接依赖 |
 

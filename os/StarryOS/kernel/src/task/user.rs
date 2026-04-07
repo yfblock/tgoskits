@@ -1,5 +1,5 @@
+use ax_hal::uspace::{ExceptionKind, ReturnReason, UserContext};
 use ax_task::TaskInner;
-use axhal::uspace::{ExceptionKind, ReturnReason, UserContext};
 use starry_process::Pid;
 use starry_signal::{SignalInfo, Signo};
 use starry_vm::{VmMutPtr, VmPtr};

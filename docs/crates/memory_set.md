@@ -201,7 +201,7 @@ graph TD
 
 需要特别指出的是，`memory_set` 不直接依赖 `page_table_multiarch`。两者的联系发生在更上层：
 
-- `ax-mm`：把 `MemorySet` 与 `axhal::paging::PageTable` 拼起来
+- `ax-mm`：把 `MemorySet` 与 `ax-hal::paging::PageTable` 拼起来
 - `axaddrspace`：把 `MemorySet` 与嵌套页表 `NestedPageTable` 拼起来
 
 这也是它能同时服务普通内核地址空间和虚拟化地址空间的重要原因。

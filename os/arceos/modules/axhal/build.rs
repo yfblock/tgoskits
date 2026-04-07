@@ -53,12 +53,12 @@ fn gen_linker_script(arch: &str, platform: &str) -> Result<()> {
         },
     );
 
-    // target/<target_triple>/<mode>/build/axhal-xxxx/out
+    // target/<target_triple>/<mode>/build/ax-hal-xxxx/out
     let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
     println!("cargo:rustc-link-search={}", out_dir.display());
     println!("cargo:rustc-link-arg=-T{LINKER_SCRIPT_NAME}");
 
-    // target/<target_triple>/<mode>/build/axhal-xxxx/out/linker.x
+    // target/<target_triple>/<mode>/build/ax-hal-xxxx/out/linker.x
     std::fs::write(out_dir.join(LINKER_SCRIPT_NAME), &ld_content)?;
 
     // Keep a stable copy under target/<target_triple>/<mode>/ for callers

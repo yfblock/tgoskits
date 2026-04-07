@@ -24,7 +24,7 @@ ifeq ($(MYPLAT),)
   ifeq ($(ARCH), x86_64)
     PLAT_PACKAGE := axplat-x86-pc
   else ifeq ($(ARCH), aarch64)
-    PLAT_PACKAGE := axplat-aarch64-qemu-virt
+    PLAT_PACKAGE := ax-plat-aarch64-qemu-virt
   else ifeq ($(ARCH), riscv64)
     PLAT_PACKAGE := axplat-riscv64-qemu-virt
   else ifeq ($(ARCH), loongarch64)

@@ -478,11 +478,10 @@ fn resolve_platform_package(
         .collect();
 
     if let Some(dep) = package_info.dependencies.iter().find(|dep| {
-        dep.name.starts_with("axplat-")
-            || dep.name.starts_with("ax-plat-")
-                && explicit_platform_features
-                    .iter()
-                    .any(|feature| *feature == linker_platform_name(&dep.name))
+        (dep.name.starts_with("axplat-") || dep.name.starts_with("ax-plat-"))
+            && explicit_platform_features
+                .iter()
+                .any(|feature| *feature == linker_platform_name(&dep.name))
     }) {
         return Ok(dep.name.clone());
     }
@@ -1026,6 +1025,18 @@ AX_IP = "127.0.0.1"
             );
 
         assert!(cargo.to_bin);
+    }
+
+    #[test]
+    fn resolve_platform_package_prefers_matching_explicit_platform_dependency() {
+        let platform = resolve_platform_package(
+            "ax-helloworld-myplat",
+            "aarch64-unknown-none-softfloat",
+            &["aarch64-qemu-virt".to_string()],
+        )
+        .unwrap();
+
+        assert_eq!(platform, "ax-plat-aarch64-qemu-virt");
     }
 
     #[test]

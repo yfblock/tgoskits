@@ -38,7 +38,7 @@
 graph LR
     current["fxmac_rs"]
     current --> crate_interface["crate_interface"]
-    axdriver_net["axdriver_net"] --> current
+    axdriver_net["ax-driver-net"] --> current
 ```
 
 ### 3.1 直接与间接依赖

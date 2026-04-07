@@ -115,7 +115,7 @@ cfg_if::cfg_if! {
     if #[cfg(net_dev = "ixgbe")] {
         use crate::ixgbe::IxgbeHalImpl;
         pub struct IxgbeDriver;
-        register_net_driver!(IxgbeDriver, axdriver_net::ixgbe::IxgbeNic<IxgbeHalImpl, 1024, 1>);
+        register_net_driver!(IxgbeDriver, ax_driver_net::ixgbe::IxgbeNic<IxgbeHalImpl, 1024, 1>);
         impl DriverProbe for IxgbeDriver {
             #[cfg(bus = "pci")]
             fn probe_pci(
@@ -123,7 +123,7 @@ cfg_if::cfg_if! {
                 bdf: axdriver_pci::DeviceFunction,
                 dev_info: &axdriver_pci::DeviceFunctionInfo,
             ) -> Option<crate::AxDeviceEnum> {
-                use axdriver_net::ixgbe::{INTEL_82599, INTEL_VEND, IxgbeNic};
+                use ax_driver_net::ixgbe::{INTEL_82599, INTEL_VEND, IxgbeNic};
                 if dev_info.vendor_id == INTEL_VEND && dev_info.device_id == INTEL_82599 {
                     // Intel 10Gb Network
                     info!("ixgbe PCI device found at {:?}", bdf);
@@ -161,7 +161,7 @@ cfg_if::cfg_if! {
         use ax_hal::mem::PAGE_SIZE_4K;
 
         #[crate_interface::impl_interface]
-        impl axdriver_net::fxmac::KernelFunc for FXmacDriver {
+        impl ax_driver_net::fxmac::KernelFunc for FXmacDriver {
             fn virt_to_phys(addr: usize) -> usize {
                 ax_hal::mem::virt_to_phys(addr.into()).into()
             }
@@ -190,13 +190,13 @@ cfg_if::cfg_if! {
             }
         }
 
-        register_net_driver!(FXmacDriver, axdriver_net::fxmac::FXmacNic);
+        register_net_driver!(FXmacDriver, ax_driver_net::fxmac::FXmacNic);
 
         pub struct FXmacDriver;
         impl DriverProbe for FXmacDriver {
             fn probe_global() -> Option<AxDeviceEnum> {
                 info!("fxmac for phytiumpi probe global");
-                axdriver_net::fxmac::FXmacNic::init(0)
+                ax_driver_net::fxmac::FXmacNic::init(0)
                     .ok()
                     .map(AxDeviceEnum::from_net)
             }

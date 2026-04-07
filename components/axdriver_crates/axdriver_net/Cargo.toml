@@ -1,5 +1,5 @@
 [package]
-name = "axdriver_net"
+name = "ax-driver-net"
 edition.workspace = true
 version.workspace = true
 authors = [

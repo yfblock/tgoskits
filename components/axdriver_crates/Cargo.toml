@@ -31,7 +31,7 @@ axdriver_base = { path = "axdriver_base", version = "0.3.4" }
 ax-driver-block = { path = "axdriver_block", version = "0.3.4" }
 ax-driver-display = { path = "axdriver_display", version = "0.3.4" }
 ax-driver-input = { path = "axdriver_input", version = "0.3.4" }
-axdriver_net = { path = "axdriver_net", version = "0.3.4" }
+ax-driver-net = { path = "axdriver_net", version = "0.3.4" }
 axdriver_pci = { path = "axdriver_pci", version = "0.3.4" }
 ax-driver-virtio = { path = "axdriver_virtio", version = "0.3.4" }
 axdriver_vsock = { path = "axdriver_vsock", version = "0.3.4" }
@@ -42,7 +42,7 @@ log = "0.4"
 axdriver_base = { path = "axdriver_base" }
 ax-driver-block = { path = "axdriver_block" }
 ax-driver-display = { path = "axdriver_display" }
-axdriver_net = { path = "axdriver_net" }
+ax-driver-net = { path = "axdriver_net" }
 ax-driver-virtio = { path = "axdriver_virtio" }
 ax-driver-input = { path = "axdriver_input" }
 axdriver_vsock = { path = "axdriver_vsock" }

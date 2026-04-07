@@ -9,7 +9,7 @@ use super::prelude::*;
 
 cfg_if! {
     if #[cfg(net_dev = "dummy")] {
-        use axdriver_net::{EthernetAddress, NetBuf, NetBufBox, NetBufPool, NetBufPtr};
+        use ax_driver_net::{EthernetAddress, NetBuf, NetBufBox, NetBufPool, NetBufPtr};
 
         pub struct DummyNetDev;
         pub struct DummyNetDrvier;

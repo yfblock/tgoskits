@@ -211,7 +211,7 @@ axplat-dyn = { path = "platform/axplat-dyn" }
 axdriver_base = { path = "components/axdriver_crates/axdriver_base" }
 ax-driver-block = { path = "components/axdriver_crates/axdriver_block" }
 ax-driver-display = { path = "components/axdriver_crates/axdriver_display" }
-axdriver_net = { path = "components/axdriver_crates/axdriver_net" }
+ax-driver-net = { path = "components/axdriver_crates/axdriver_net" }
 axdriver_pci = { path = "components/axdriver_crates/axdriver_pci" }
 ax-driver-virtio = { path = "components/axdriver_crates/axdriver_virtio" }
 ax-driver-input = { path = "components/axdriver_crates/axdriver_input" }
@@ -360,7 +360,7 @@ axdriver_base = { version = "0.3.4", path = "components/axdriver_crates/axdriver
 ax-driver-block = { version = "0.3.4", path = "components/axdriver_crates/axdriver_block" }
 ax-driver-display = { version = "0.3.4", path = "components/axdriver_crates/axdriver_display" }
 ax-driver-input = { version = "0.3.4", path = "components/axdriver_crates/axdriver_input" }
-axdriver_net = { version = "0.3.4", path = "components/axdriver_crates/axdriver_net" }
+ax-driver-net = { version = "0.3.4", path = "components/axdriver_crates/axdriver_net" }
 axdriver_pci = { version = "0.3.4", path = "components/axdriver_crates/axdriver_pci" }
 ax-driver-virtio = { version = "0.3.4", path = "components/axdriver_crates/axdriver_virtio" }
 axdriver_vsock = { version = "0.3.4", path = "components/axdriver_crates/axdriver_vsock" }

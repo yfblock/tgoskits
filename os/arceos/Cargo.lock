@@ -502,7 +502,7 @@ dependencies = [
  "ax-driver-block",
  "ax-driver-display",
  "ax-driver-input",
- "axdriver_net",
+ "ax-driver-net",
  "axdriver_pci",
  "ax-driver-virtio",
  "axdriver_vsock",
@@ -546,7 +546,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "axdriver_net"
+name = "ax-driver-net"
 version = "0.3.4"
 dependencies = [
  "axdriver_base",
@@ -571,7 +571,7 @@ dependencies = [
  "ax-driver-block",
  "ax-driver-display",
  "ax-driver-input",
- "axdriver_net",
+ "ax-driver-net",
  "axdriver_vsock",
  "log",
  "virtio-drivers",

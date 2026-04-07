@@ -1,8 +1,8 @@
 use core::{alloc::Layout, ptr::NonNull};
 
 use ax_dma::{BusAddr, DMAInfo, alloc_coherent, dealloc_coherent};
+use ax_driver_net::ixgbe::{IxgbeHal, PhysAddr as IxgbePhysAddr};
 use ax_hal::mem::{phys_to_virt, virt_to_phys};
-use axdriver_net::ixgbe::{IxgbeHal, PhysAddr as IxgbePhysAddr};
 
 pub struct IxgbeHalImpl;
 

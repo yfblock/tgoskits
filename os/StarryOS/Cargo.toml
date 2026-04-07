@@ -30,7 +30,7 @@ ax-fs = { version = "0.5.0", package = "ax-fs-ng" }
 axhal = { version = "0.5.0" }
 ax-input = { version = "0.5.0" }
 axlog = { version = "0.5.0" }
-axmm = { version = "0.5.0" }
+ax-mm = { version = "0.5.0" }
 axnet = { version = "0.5.0", package = "ax-net-ng" }
 ax-runtime = { version = "0.5.0" }
 ax-sync = { version = "0.5.0" }

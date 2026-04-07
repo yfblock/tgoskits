@@ -6,7 +6,7 @@
 > 版本：`0.4.1`
 > 文档依据：当前仓库源码、`Cargo.toml`、`README.md`、`src/lib.rs`、`src/addr.rs`、`src/range.rs`、`src/iter.rs`
 
-`memory_addr` 是整个仓库内存子系统最底层的语义基石之一。它不做页表，不做映射策略，也不做物理页分配；它只做一件事：用类型化方式表达“地址”和“地址区间”，并提供对齐、算术和分页遍历等最基础但最容易出错的操作。`axplat`、`axmm`、`page_table_multiarch`、`axaddrspace`、虚拟化栈以及 StarryOS 的内存路径都把它当作共同语言层。
+`memory_addr` 是整个仓库内存子系统最底层的语义基石之一。它不做页表，不做映射策略，也不做物理页分配；它只做一件事：用类型化方式表达“地址”和“地址区间”，并提供对齐、算术和分页遍历等最基础但最容易出错的操作。`axplat`、`ax-mm`、`page_table_multiarch`、`axaddrspace`、虚拟化栈以及 StarryOS 的内存路径都把它当作共同语言层。
 
 ## 1. 架构设计分析
 
@@ -83,7 +83,7 @@
 - 提供包含、重叠、子区间等关系判断
 - 为更高层的 `MemoryArea` / `MemorySet` 提供底层区间语义
 
-这个设计直接决定了 `memory_set`、`axmm`、`axaddrspace` 等上层都能围绕同一套区间语义组织逻辑。
+这个设计直接决定了 `memory_set`、`ax-mm`、`axaddrspace` 等上层都能围绕同一套区间语义组织逻辑。
 
 ### 1.7 对齐与遍历
 
@@ -145,7 +145,7 @@
 3. 用 `AddrRange::from_start_size()` 表示连续区间
 4. 用 `PageIter4K` 或 `DynPageIter` 遍历区间内每个页起点
 
-这条主线在 `axmm`、`memory_set`、`page_table_multiarch` 和 `axaddrspace` 里都能看到。
+这条主线在 `ax-mm`、`memory_set`、`page_table_multiarch` 和 `axaddrspace` 里都能看到。
 
 ## 3. 依赖关系图谱
 
@@ -161,7 +161,7 @@
 - `page_table_entry`
 - `page_table_multiarch`
 - `axplat`
-- `axmm`
+- `ax-mm`
 - `axaddrspace`
 - `axvm`
 - `axvisor_api`
@@ -177,7 +177,7 @@ graph TD
     A --> C[page_table_entry]
     A --> D[page_table_multiarch]
     A --> E[axplat]
-    A --> F[axmm]
+    A --> F[ax-mm]
     A --> G[axaddrspace]
     G --> H[axvm / Axvisor]
     F --> I[ArceOS / StarryOS 地址空间]
@@ -230,14 +230,14 @@ graph TD
 ### 5.3 风险点
 
 - 地址运算属于底层公共语义，任何边界错误都会向上放大
-- 若区间构造不严谨，会直接影响 `memory_set`、`axmm`、`axaddrspace` 这类核心模块
+- 若区间构造不严谨，会直接影响 `memory_set`、`ax-mm`、`axaddrspace` 这类核心模块
 - 页级迭代若处理不当，会造成页表遍历或映射建立的 off-by-one 错误
 
 ## 6. 跨项目定位分析
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | MM 和平台层共同基础件 | 地址/区间公共语言 | 支撑 `axplat`、`axmm`、页表与物理内存布局表达 |
+| ArceOS | MM 和平台层共同基础件 | 地址/区间公共语言 | 支撑 `axplat`、`ax-mm`、页表与物理内存布局表达 |
 | StarryOS | 内核内存管理底层公共件 | 用户地址空间与区间语义基座 | 为 `mmap`、`brk`、页对齐与区间检查提供统一类型基础 |
 | Axvisor | 宿主/访客地址抽象底座 | 虚拟化地址建模出发点 | `axaddrspace` 在其上扩展出 GPA/GVA，并与嵌套页表逻辑拼接 |
 

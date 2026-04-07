@@ -125,7 +125,7 @@ graph LR
 
 ### 3.1 关键直接依赖
 - 核心基础：`axconfig`、`axerrno`、`ax-feat`、`axhal`、`axio`、`axlog`、`ax-runtime`、`ax-sync`。
-- 可选能力：`axalloc`、`ax-dma`、`axtask`、`ax-fs`、`ax-net`、`ax-display`、`ax-driver`、`ax-ipi`、`axmm`。
+- 可选能力：`axalloc`、`ax-dma`、`axtask`、`ax-fs`、`ax-net`、`ax-display`、`ax-driver`、`ax-ipi`、`ax-mm`。
 
 ### 3.2 关键直接消费者
 - `ax-std`：最重要的直接消费者，会把 `ax-api` 作为用户库的重要下层能力来源。

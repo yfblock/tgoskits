@@ -20,11 +20,11 @@ impl_trait! {
     impl Klib for KlibImpl {
         /// Map a physical region by delegating to the memory manager (`axmm`).
         ///
-        /// This function forwards the request to `axmm::iomap` and returns the
+        /// This function forwards the request to `ax_mm::iomap` and returns the
         /// resulting virtual address wrapped in an `AxResult`.
         fn mem_iomap(addr: PhysAddr, size: usize) -> AxResult<VirtAddr> {
             // Convert from AxError (struct in axerrno 0.2) to AxErrorKind (enum used by axklib)
-            axmm::iomap(addr, size)
+            ax_mm::iomap(addr, size)
         }
 
         /// Busy-wait for the given duration by calling into `axhal`.

@@ -14,7 +14,7 @@ default = []
 irq = ["ax-feat/irq"]
 ipi = ["dep:ax-ipi", "ax-feat/ipi"]
 alloc = ["dep:axalloc", "ax-feat/alloc"]
-paging = ["dep:axmm", "ax-feat/paging"]
+paging = ["dep:ax-mm", "ax-feat/paging"]
 dma = ["dep:ax-dma", "ax-feat/dma"]
 multitask = ["axtask/multitask", "ax-sync/multitask", "ax-feat/multitask"]
 fs = ["dep:ax-fs", "dep:ax-driver", "ax-feat/fs"]
@@ -38,7 +38,7 @@ axhal.workspace = true
 axio.workspace = true
 ax-ipi = { workspace = true, optional = true }
 axlog.workspace = true
-axmm = { workspace = true, optional = true }
+ax-mm = { workspace = true, optional = true }
 ax-net = { workspace = true, optional = true }
 ax-runtime.workspace = true
 ax-sync.workspace = true

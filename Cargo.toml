@@ -182,7 +182,7 @@ ax-driver = { path = "os/arceos/modules/axdriver" }
 ax-input = { path = "os/arceos/modules/axinput" }
 ax-ipi = { path = "os/arceos/modules/axipi" }
 axlog = { path = "os/arceos/modules/axlog" }
-axmm = { path = "os/arceos/modules/axmm" }
+ax-mm = { path = "os/arceos/modules/axmm" }
 ax-runtime = { path = "os/arceos/modules/axruntime" }
 ax-sync = { path = "os/arceos/modules/axsync" }
 axtask = { path = "os/arceos/modules/axtask" }
@@ -315,7 +315,7 @@ axhal = { path = "os/arceos/modules/axhal", version = "0.5.0" }
 ax-input = { path = "os/arceos/modules/axinput", version = "0.5.0" }
 ax-ipi = { path = "os/arceos/modules/axipi", version = "0.5.0" }
 axlog = { path = "os/arceos/modules/axlog", version = "0.5.0" }
-axmm = { path = "os/arceos/modules/axmm", version = "0.5.0" }
+ax-mm = { path = "os/arceos/modules/axmm", version = "0.5.0" }
 ax-net = { path = "os/arceos/modules/axnet", version = "0.5.0" }
 ax-net-ng = { path = "os/arceos/modules/axnet-ng", version = "0.5.0" }
 axplat-dyn = { path = "platform/axplat-dyn", version = "0.5.0", default-features = false }

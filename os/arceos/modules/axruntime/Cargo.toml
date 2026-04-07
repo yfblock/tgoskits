@@ -17,7 +17,7 @@ buddy-slab = ["axalloc/buddy-slab"]
 ipi = ["dep:ax-ipi"]
 irq = ["axhal/irq", "axtask?/irq", "dep:percpu"]
 multitask = ["axtask/multitask"]
-paging = ["axhal/paging", "dep:axmm", "dep:axklib"]
+paging = ["axhal/paging", "dep:ax-mm", "dep:axklib"]
 rtc = []
 smp = ["axhal/smp", "axtask?/smp"]
 tls = ["axhal/tls", "axtask?/tls"]
@@ -46,7 +46,7 @@ ax-input = { workspace = true, optional = true }
 ax-ipi = { workspace = true, optional = true }
 axklib = { workspace = true, optional = true }
 axlog = { workspace = true }
-axmm = { workspace = true, optional = true }
+ax-mm = { workspace = true, optional = true }
 ax-net = { workspace = true, optional = true }
 ax-net-ng = { workspace = true, optional = true }
 axplat = { workspace = true }

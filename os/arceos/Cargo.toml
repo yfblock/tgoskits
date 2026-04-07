@@ -89,7 +89,7 @@ axhal = { version = "0.5.0", path = "modules/axhal" }
 ax-input = { version = "0.5.0", path = "modules/axinput" }
 ax-ipi = { version = "0.5.0", path = "modules/axipi" }
 axlog = { version = "0.5.0", path = "modules/axlog" }
-axmm = { version = "0.5.0", path = "modules/axmm" }
+ax-mm = { version = "0.5.0", path = "modules/axmm" }
 ax-net = { version = "0.5.0", path = "modules/axnet" }
 ax-net-ng = { version = "0.5.0", path = "modules/axnet-ng" }
 axplat-dyn = { version = "0.5.0", default-features = false }

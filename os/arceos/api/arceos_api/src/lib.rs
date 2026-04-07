@@ -402,6 +402,8 @@ pub mod modules {
     pub use ax_fs;
     #[cfg(feature = "ipi")]
     pub use ax_ipi;
+    #[cfg(feature = "paging")]
+    pub use ax_mm;
     #[cfg(feature = "net")]
     pub use ax_net;
     pub use ax_runtime;
@@ -411,8 +413,6 @@ pub mod modules {
     pub use axconfig;
     pub use axhal;
     pub use axlog;
-    #[cfg(feature = "paging")]
-    pub use axmm;
     #[cfg(feature = "multitask")]
     pub use axtask;
 }

@@ -48,7 +48,7 @@
 - 在 `smp` 下提供真实多核互斥，在非 `smp` 下保留最小语义成本。
 
 ### 2.2 关键 API 与真实使用位置
-- `SpinNoIrq`：被 `axalloc`、`ax-ipi`、`axlog`、`axmm`、Axvisor 计时器等路径广泛使用。
+- `SpinNoIrq`：被 `axalloc`、`ax-ipi`、`axlog`、`ax-mm`、Axvisor 计时器等路径广泛使用。
 - `SpinNoPreempt`：在 `ax-fs-ng` 等需要关抢占但不一定关 IRQ 的路径使用。
 - `SpinRaw`：被 `axtask::run_queue` 用来保护已由外层 guard 保证过的就绪队列状态。
 
@@ -65,7 +65,7 @@ graph LR
     kspin --> axalloc["axalloc"]
     kspin --> ax-ipi["ax-ipi"]
     kspin --> axlog["axlog"]
-    kspin --> axmm["axmm"]
+    kspin --> ax-mm["ax-mm"]
     kspin --> axtask["axtask"]
     kspin --> ax-sync["ax-sync"]
     kspin --> axplat["axplat / platform crates"]
@@ -77,7 +77,7 @@ graph LR
 - `kernel_guard`：提供 `NoOp`、`NoPreempt`、`NoPreemptIrqSave` 这些 guard 语义。
 
 ### 3.2 关键直接消费者
-- `axalloc`、`ax-ipi`、`axlog`、`axmm`：系统运行时基础模块。
+- `axalloc`、`ax-ipi`、`axlog`、`ax-mm`：系统运行时基础模块。
 - `axtask`：任务与 run queue 路径。
 - `ax-sync`：在非 `multitask` 路径下直接把 `SpinNoIrq` 当 `Mutex`。
 - 各类平台 crate、StarryOS、Axvisor：用于平台状态和驱动共享状态保护。

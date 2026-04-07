@@ -50,7 +50,7 @@
 flowchart TD
     A["axklib::mem::iomap"] --> B["Klib::mem_iomap"]
     B --> C["ax_runtime::KlibImpl"]
-    C --> D["axmm::iomap"]
+    C --> D["ax-mm::iomap"]
 
     E["axklib::time::busy_wait"] --> F["Klib::time_busy_wait"]
     F --> G["axhal::time::busy_wait"]
@@ -74,7 +74,7 @@ flowchart TD
 - `Klib` trait：由 `os/arceos/modules/axruntime/src/klib.rs` 真实实现。
 
 ### 2.3 使用边界
-- `axklib` 不是 `axmm` 的替代品；它只暴露 `iomap` 能力，不管理地址空间对象。
+- `axklib` 不是 `ax-mm` 的替代品；它只暴露 `iomap` 能力，不管理地址空间对象。
 - `axklib` 不是 IRQ 框架；它只暴露最小 IRQ helper。
 - `axklib` 也不是驱动模型；它只是给驱动/平台层提供几项共同 helper。
 
@@ -122,7 +122,7 @@ axklib = { workspace = true }
 ### 5.1 当前测试形态
 `axklib` 本体没有独立测试；当前验证主要依赖实现方和调用方：
 
-- `ax-runtime` 对 `Klib` 的实现是否与 `axmm` / `axhal` 对齐；
+- `ax-runtime` 对 `Klib` 的实现是否与 `ax-mm` / `axhal` 对齐；
 - `axplat-dyn` 和 Axvisor 驱动是否能通过 `iomap`、`busy_wait` 正常工作。
 
 ### 5.2 单元测试重点
@@ -139,7 +139,7 @@ axklib = { workspace = true }
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-在 ArceOS 中，`axklib` 是 `ax-runtime` 对外提供的小型 helper ABI。它把 `axmm`、`axhal` 这些真实子系统收束成更容易复用的接口。
+在 ArceOS 中，`axklib` 是 `ax-runtime` 对外提供的小型 helper ABI。它把 `ax-mm`、`axhal` 这些真实子系统收束成更容易复用的接口。
 
 ### 6.2 StarryOS
 当前仓库里 StarryOS 没有把 `axklib` 作为直接主路径依赖来扩展自己的子系统，因此它在 StarryOS 侧更多是潜在共享基件，而不是现有系统层。

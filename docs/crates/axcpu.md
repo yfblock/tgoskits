@@ -128,7 +128,7 @@
 - 物理页分配
 - 地址空间区间组织
 
-因此它不是 `axmm` 或 `axaddrspace` 的替代物，而是这两者运行时必须依赖的 CPU 接口面。
+因此它不是 `ax-mm` 或 `axaddrspace` 的替代物，而是这两者运行时必须依赖的 CPU 接口面。
 
 ## 2. 核心功能说明
 
@@ -156,7 +156,7 @@
 
 1. `page_table_entry` 定义页权限语义
 2. `page_table_multiarch` 维护页表内容
-3. `axmm` / `axaddrspace` 组织地址空间
+3. `ax-mm` / `axaddrspace` 组织地址空间
 4. `axcpu::asm` 把页表根装载进 CPU，并执行 TLB 刷新
 
 这正好体现了它在内存子系统中的位置：不是页表内容层，而是页表生效层。
@@ -192,7 +192,7 @@ graph TD
     D --> E[axplat-*]
     D --> F[ArceOS]
     D --> G[StarryOS]
-    H[page_table_multiarch / axmm / axaddrspace] --> D
+    H[page_table_multiarch / ax-mm / axaddrspace] --> D
 ```
 
 ## 4. 开发指南

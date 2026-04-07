@@ -19,7 +19,7 @@ axalloc.workspace = true
 axallocator.workspace = true
 axconfig.workspace = true
 axhal.workspace = true
-axmm.workspace = true
+ax-mm.workspace = true
 buddy-slab-allocator = { workspace = true, optional = true }
 kspin.workspace = true
 log.workspace = true

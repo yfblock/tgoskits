@@ -16,7 +16,7 @@
 
 - `page_table_entry`：定义页表项格式与 flags 编码
 - `page_table_multiarch`：实现页表树、cursor、map/query/unmap
-- `axaddrspace` / `axmm`：组织地址空间与映射策略
+- `axaddrspace` / `ax-mm`：组织地址空间与映射策略
 
 因此它的核心价值是“架构相关的位级定义统一化”，而不是高层内存管理。
 
@@ -187,7 +187,7 @@ graph TD
     B --> C[page_table_multiarch]
     B --> D[axcpu]
     B --> E[axaddrspace]
-    C --> F[axmm]
+    C --> F[ax-mm]
     E --> G[axvm / Axvisor]
     B --> H[axplat-* 引导页表]
 ```
@@ -244,7 +244,7 @@ graph TD
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | 页表基础设施底层 | 多架构 PTE 统一定义层 | 为 `axcpu`、平台引导页表和 `axmm` 路径提供统一的页表项语义 |
+| ArceOS | 页表基础设施底层 | 多架构 PTE 统一定义层 | 为 `axcpu`、平台引导页表和 `ax-mm` 路径提供统一的页表项语义 |
 | StarryOS | 通过页表栈间接使用 | 底层页表项编码库 | StarryOS 多数通过 `page_table_multiarch` 间接依赖它，但权限语义与页表编码最终仍来自这里 |
 | Axvisor | 嵌套页表与虚拟化内存基础件 | 虚拟化页表项语义来源 | `axaddrspace`、`axvm`、x86/AArch64/RISC-V 虚拟化路径都复用它的 `MappingFlags` 与部分架构 PTE 实现 |
 

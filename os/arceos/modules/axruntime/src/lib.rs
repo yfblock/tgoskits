@@ -205,7 +205,7 @@ pub fn rust_main(cpu_id: usize, arg: usize) -> ! {
     );
 
     #[cfg(feature = "paging")]
-    axmm::init_memory_management();
+    ax_mm::init_memory_management();
 
     // #[cfg(feature = "plat-dyn")]
     // ax_driver::setup(arg);

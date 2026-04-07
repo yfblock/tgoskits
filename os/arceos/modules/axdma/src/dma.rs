@@ -115,7 +115,7 @@ impl DmaAllocator {
         flags: MappingFlags,
     ) -> AllocResult<()> {
         let expand_size = num_pages * PAGE_SIZE_4K;
-        axmm::kernel_aspace()
+        ax_mm::kernel_aspace()
             .lock()
             .protect(vaddr, expand_size, flags)
             .map_err(|e| {

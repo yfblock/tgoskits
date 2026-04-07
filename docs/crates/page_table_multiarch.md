@@ -211,7 +211,7 @@ flowchart TD
 ### 3.2 主要消费者
 
 - `axhal`
-- `axmm`
+- `ax-mm`
 - `axaddrspace`
 - `axvm`
 - `os/axvisor`
@@ -224,7 +224,7 @@ graph TD
     A[page_table_entry / memory_addr] --> B[page_table_multiarch]
     B --> C[axhal]
     B --> D[axaddrspace]
-    C --> E[axmm]
+    C --> E[ax-mm]
     D --> F[axvm / Axvisor]
     B --> G[StarryOS 内存子系统]
 ```
@@ -287,7 +287,7 @@ graph TD
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | 页表基础设施底座 | 内核分页引擎 | 通过 `axhal::paging` 和 `axmm` 支撑内核地址空间与映射管理 |
+| ArceOS | 页表基础设施底座 | 内核分页引擎 | 通过 `axhal::paging` 和 `ax-mm` 支撑内核地址空间与映射管理 |
 | StarryOS | 内存管理公共引擎 | 页表复制与地址空间操作底层 | 结合 `copy-from` 等能力支撑用户地址空间构建与复制 |
 | Axvisor | 嵌套页表底层引擎 | NPT/Stage-2 的通用机械部分 | 不直接决定虚拟化策略，但为 `axaddrspace`、`axvm` 等提供真正的页表数据结构和操作原语 |
 

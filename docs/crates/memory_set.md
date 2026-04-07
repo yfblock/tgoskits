@@ -135,7 +135,7 @@
 
 页错误处理通常发生在更高层，例如：
 
-- `axmm` 在自己的 `Backend` 中扩展出 fault 语义
+- `ax-mm` 在自己的 `Backend` 中扩展出 fault 语义
 - `axaddrspace` 在嵌套页表路径中处理缺页
 
 `memory_set` 本身只负责维护“区间元数据”和“区间级页表操作流程”。
@@ -190,7 +190,7 @@
 ```mermaid
 graph TD
     A[memory_addr] --> B[memory_set]
-    B --> C[axmm]
+    B --> C[ax-mm]
     B --> D[StarryOS kernel mm]
     B --> E[axaddrspace]
     E --> F[axvm / Axvisor]
@@ -201,7 +201,7 @@ graph TD
 
 需要特别指出的是，`memory_set` 不直接依赖 `page_table_multiarch`。两者的联系发生在更上层：
 
-- `axmm`：把 `MemorySet` 与 `axhal::paging::PageTable` 拼起来
+- `ax-mm`：把 `MemorySet` 与 `axhal::paging::PageTable` 拼起来
 - `axaddrspace`：把 `MemorySet` 与嵌套页表 `NestedPageTable` 拼起来
 
 这也是它能同时服务普通内核地址空间和虚拟化地址空间的重要原因。
@@ -256,13 +256,13 @@ graph TD
 
 - 区间切分错误会直接造成地址空间元数据损坏
 - 区间元数据一旦与实际页表状态不一致，问题通常会在更晚阶段才暴露
-- 因为它是高复用底层件，任何行为变化都要同时考虑 `axmm`、StarryOS 和 `axaddrspace`
+- 因为它是高复用底层件，任何行为变化都要同时考虑 `ax-mm`、StarryOS 和 `axaddrspace`
 
 ## 6. 跨项目定位分析
 
 | 项目 | 位置 | 角色 | 核心作用 |
 | --- | --- | --- | --- |
-| ArceOS | `axmm` 的底层公共件 | 地址区间元数据引擎 | 为内核/用户地址空间提供统一的区间集合、保护变更与查找逻辑 |
+| ArceOS | `ax-mm` 的底层公共件 | 地址区间元数据引擎 | 为内核/用户地址空间提供统一的区间集合、保护变更与查找逻辑 |
 | StarryOS | 进程地址空间核心底件之一 | `mmap` 风格区间操作骨架 | 支撑进程地址空间的映射区间管理与权限调整 |
 | Axvisor | `axaddrspace` 的基础容器层 | 访客地址区间集合管理器 | 让 GPA 区间也能用与普通 OS 地址空间类似的方式组织和变更 |
 

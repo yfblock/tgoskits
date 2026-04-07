@@ -47,7 +47,7 @@ ax-fs = { version = "0.5.0", package = "ax-fs-ng" }
 axhal.workspace = true
 ax-input = { workspace = true, optional = true }
 axlog.workspace = true
-axmm.workspace = true
+ax-mm.workspace = true
 axnet = { version = "0.5.0", package = "ax-net-ng" }
 ax-runtime.workspace = true
 ax-sync.workspace = true

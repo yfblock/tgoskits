@@ -178,7 +178,7 @@ CURATED_DOCS = {
     "axallocator",
     "axbacktrace",
     "axerrno",
-    "axipi",
+    "ax-ipi",
     "axklib",
     "ax-libc",
     "axlog",

@@ -54,7 +54,7 @@ graph LR
 - `ax-fs`
 - `axhal`
 - `axio`
-- `axipi`
+- `ax-ipi`
 - `axlog`
 - 另外还有 `5` 个同类项未在此展开
 

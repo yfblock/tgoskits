@@ -180,7 +180,7 @@ ax-net-ng = { path = "os/arceos/modules/axnet-ng" }
 axalloc = { path = "os/arceos/modules/axalloc" }
 ax-driver = { path = "os/arceos/modules/axdriver" }
 ax-input = { path = "os/arceos/modules/axinput" }
-axipi = { path = "os/arceos/modules/axipi" }
+ax-ipi = { path = "os/arceos/modules/axipi" }
 axlog = { path = "os/arceos/modules/axlog" }
 axmm = { path = "os/arceos/modules/axmm" }
 ax-runtime = { path = "os/arceos/modules/axruntime" }
@@ -313,7 +313,7 @@ ax-fs = { path = "os/arceos/modules/axfs", version = "0.5.0" }
 ax-fs-ng = { path = "os/arceos/modules/axfs-ng", version = "0.5.0" }
 axhal = { path = "os/arceos/modules/axhal", version = "0.5.0" }
 ax-input = { path = "os/arceos/modules/axinput", version = "0.5.0" }
-axipi = { path = "os/arceos/modules/axipi", version = "0.5.0" }
+ax-ipi = { path = "os/arceos/modules/axipi", version = "0.5.0" }
 axlog = { path = "os/arceos/modules/axlog", version = "0.5.0" }
 axmm = { path = "os/arceos/modules/axmm", version = "0.5.0" }
 ax-net = { path = "os/arceos/modules/axnet", version = "0.5.0" }

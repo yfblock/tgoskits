@@ -138,7 +138,7 @@ pub fn with_vm_and_vcpu_on_pcpu(
 
     unimplemented!();
     // use std::os::arceos::modules::axipi;
-    // Ok(axipi::send_ipi_event_to_one(pcpu_id as usize, move || {
+    // Ok(ax_ipi::send_ipi_event_to_one(pcpu_id as usize, move || {
     // with_vm_and_vcpu_on_pcpu(vm_id, vcpu_id, f);
     // }))
 }

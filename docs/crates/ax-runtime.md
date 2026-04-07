@@ -57,7 +57,7 @@ graph LR
 - `ax-fs-ng`
 - `axhal`
 - `ax-input`
-- `axipi`
+- `ax-ipi`
 - `axklib`
 - `axlog`
 - 另外还有 `8` 个同类项未在此展开

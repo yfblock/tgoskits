@@ -81,7 +81,7 @@
 | `axhvc` | 组件层 | `components/axhvc` | 1 | 1 | [查看](./axhvc.md) |
 | `ax-input` | ArceOS 层 | `os/arceos/modules/axinput` | 3 | 3 | [查看](./ax-input.md) |
 | `axio` | 组件层 | `components/axio` | 1 | 9 | [查看](./axio.md) |
-| `axipi` | ArceOS 层 | `os/arceos/modules/axipi` | 5 | 3 | [查看](./axipi.md) |
+| `ax-ipi` | ArceOS 层 | `os/arceos/modules/axipi` | 5 | 3 | [查看](./ax-ipi.md) |
 | `axklib` | 组件层 | `components/axklib` | 2 | 3 | [查看](./axklib.md) |
 | `axlog` | ArceOS 层 | `os/arceos/modules/axlog` | 2 | 5 | [查看](./axlog.md) |
 | `axmm` | ArceOS 层 | `os/arceos/modules/axmm` | 8 | 4 | [查看](./axmm.md) |

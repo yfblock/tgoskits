@@ -14,7 +14,7 @@ default = []
 alloc = ["dep:axalloc"]
 dma = ["paging"]
 buddy-slab = ["axalloc/buddy-slab"]
-ipi = ["dep:axipi"]
+ipi = ["dep:ax-ipi"]
 irq = ["axhal/irq", "axtask?/irq", "dep:percpu"]
 multitask = ["axtask/multitask"]
 paging = ["axhal/paging", "dep:axmm", "dep:axklib"]
@@ -43,7 +43,7 @@ ax-fs = { workspace = true, optional = true }
 ax-fs-ng = { workspace = true, optional = true }
 axhal = { workspace = true }
 ax-input = { workspace = true, optional = true }
-axipi = { workspace = true, optional = true }
+ax-ipi = { workspace = true, optional = true }
 axklib = { workspace = true, optional = true }
 axlog = { workspace = true }
 axmm = { workspace = true, optional = true }

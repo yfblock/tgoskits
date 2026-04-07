@@ -1,5 +1,5 @@
 [package]
-name = "axipi"
+name = "ax-ipi"
 version.workspace = true
 edition.workspace = true
 authors = ["Keyang Hu <keyang.hu@qq.com>"]

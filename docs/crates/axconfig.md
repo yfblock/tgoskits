@@ -110,7 +110,7 @@ graph LR
 ### 3.2 关键直接消费者
 - `axhal`：链接脚本和平台内存布局的关键消费者。
 - `ax-runtime`：启动日志、定时器节拍与 SMP 初始化路径的关键消费者。
-- `axtask`、`axipi`：CPU 数量、默认栈大小等调度相关消费者。
+- `axtask`、`ax-ipi`：CPU 数量、默认栈大小等调度相关消费者。
 - `ax-driver`、`ax-dma`：设备和 DMA 地址布局消费者。
 - `ax-api`、`ax-posix-api`：向上层重新导出或转译这些常量。
 

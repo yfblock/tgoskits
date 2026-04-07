@@ -400,6 +400,8 @@ pub mod modules {
     pub use ax_driver;
     #[cfg(feature = "fs")]
     pub use ax_fs;
+    #[cfg(feature = "ipi")]
+    pub use ax_ipi;
     #[cfg(feature = "net")]
     pub use ax_net;
     pub use ax_runtime;
@@ -408,8 +410,6 @@ pub mod modules {
     pub use axalloc;
     pub use axconfig;
     pub use axhal;
-    #[cfg(feature = "ipi")]
-    pub use axipi;
     pub use axlog;
     #[cfg(feature = "paging")]
     pub use axmm;

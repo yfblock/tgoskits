@@ -373,7 +373,7 @@ fn init_interrupt() {
 
     #[cfg(feature = "ipi")]
     axhal::irq::register(axhal::irq::IPI_IRQ, || {
-        axipi::ipi_handler();
+        ax_ipi::ipi_handler();
     });
 
     // Enable IRQs before starting app

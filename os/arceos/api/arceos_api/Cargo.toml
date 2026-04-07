@@ -12,7 +12,7 @@ repository = "https://github.com/arceos-org/arceos/tree/main/api/arceos_api"
 default = []
 
 irq = ["ax-feat/irq"]
-ipi = ["dep:axipi", "ax-feat/ipi"]
+ipi = ["dep:ax-ipi", "ax-feat/ipi"]
 alloc = ["dep:axalloc", "ax-feat/alloc"]
 paging = ["dep:axmm", "ax-feat/paging"]
 dma = ["dep:ax-dma", "ax-feat/dma"]
@@ -36,7 +36,7 @@ ax-feat.workspace = true
 ax-fs = { workspace = true, optional = true }
 axhal.workspace = true
 axio.workspace = true
-axipi = { workspace = true, optional = true }
+ax-ipi = { workspace = true, optional = true }
 axlog.workspace = true
 axmm = { workspace = true, optional = true }
 ax-net = { workspace = true, optional = true }

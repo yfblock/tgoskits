@@ -98,7 +98,7 @@ ArceOS 的基础骨架由四个必选模块组成：
 | `ax-display` | `display` | 图形显示（帧缓冲） |
 | `ax-input` | `input` | 输入设备管理 |
 | `ax-dma` | `dma` | DMA 内存分配与管理 |
-| `axipi` | `ipi` | 处理器间中断管理 |
+| `ax-ipi` | `ipi` | 处理器间中断管理 |
 
 ## 3. 核心设计机制
 
@@ -161,7 +161,7 @@ dma = ["dep:ax-dma"]
 multitask = ["axtask/multitask", "dep:ax-sync"]
 smp = ["axhal/smp"]
 tls = ["axhal/tls"]
-ipi = ["dep:axipi", "axhal/ipi"]
+ipi = ["dep:ax-ipi", "axhal/ipi"]
 # 中断与时间
 irq = ["axhal/irq"]
 rtc = ["axhal/rtc"]
@@ -267,7 +267,7 @@ sequenceDiagram
 | `ax-fs-ng` | `os/arceos/modules/axfs-ng` | 下一代文件系统（FAT、ext4，LRU 缓存） | `ax-driver` |
 | `ax-net-ng` | `os/arceos/modules/axnet-ng` | 下一代网络栈（异步感知，基于 starry-smoltcp） | `ax-driver` |
 | `ax-dma` | `os/arceos/modules/axdma` | DMA 内存分配与管理 | `ax-runtime`、`axmm` |
-| `axipi` | `os/arceos/modules/axipi` | 处理器间中断管理 | `axhal` |
+| `ax-ipi` | `os/arceos/modules/axipi` | 处理器间中断管理 | `axhal` |
 | `ax-input` | `os/arceos/modules/axinput` | 输入设备管理与事件分发 | `ax-driver` |
 
 ### 4.2 模块交互

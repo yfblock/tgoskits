@@ -23,7 +23,7 @@ hv = ["axhal/hv"]
 
 # Interrupts
 irq = ["axhal/irq", "ax-runtime/irq", "axtask?/irq", "ax-driver?/irq"]
-ipi = ["irq", "dep:axipi", "axhal/ipi", "ax-runtime/ipi"]
+ipi = ["irq", "dep:ax-ipi", "axhal/ipi", "ax-runtime/ipi"]
 
 # Custom or default platforms
 myplat = ["axhal/myplat"]
@@ -121,7 +121,7 @@ ax-fs = { workspace = true, optional = true }
 ax-fs-ng = { workspace = true, optional = true }
 axhal.workspace = true
 ax-input = { workspace = true, optional = true }
-axipi = { workspace = true, optional = true }
+ax-ipi = { workspace = true, optional = true }
 axlog.workspace = true
 ax-net = { workspace = true, optional = true }
 ax-runtime.workspace = true

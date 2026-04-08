@@ -44,7 +44,7 @@ members = [
     "components/int_ratio",
     "components/kernel_guard",
     "components/kspin",
-    "components/lazyinit",
+    "components/ax-lazyinit",
     "components/linked_list_r4l",
     "components/range-alloc-arceos",
     "components/riscv-h",
@@ -156,7 +156,7 @@ ax-cpu = { path = "components/axcpu" }
 ax-io = { path = "components/axio" }
 ax-sched = { path = "components/axsched" }
 axpoll = { path = "components/axpoll" }
-lazyinit = { path = "components/lazyinit" }
+ax-lazyinit = { path = "components/ax-lazyinit" }
 linked_list_r4l = { path = "components/linked_list_r4l" }
 timer_list = { path = "components/timer_list" }
 int_ratio = { path = "components/int_ratio" }
@@ -377,7 +377,7 @@ env_logger = "0.11"
 event-listener = { version = "5.4.0", default-features = false }
 ax-kernel-guard = { version = "0.3.3", path = "components/kernel_guard" }
 ax-kspin = { version = "0.3.1", path = "components/kspin" }
-lazyinit = { version = "0.4.2", path = "components/lazyinit" }
+ax-lazyinit = { version = "0.4.2", path = "components/ax-lazyinit" }
 schemars = "1.2.1"
 toml = "1"
 

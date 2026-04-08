@@ -95,6 +95,6 @@ ax-errno.workspace = true
 ax-feat.workspace = true
 ax-io.workspace = true
 ax-kspin.workspace = true
-lazyinit.workspace = true
+ax-lazyinit.workspace = true
 lock_api.workspace = true
 spin.workspace = true

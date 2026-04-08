@@ -117,7 +117,7 @@ graph LR
 - `ax-hal`：提供页表类型、地址转换、内核地址空间布局和写根页表指令。
 - `ax-memory-set`：保存虚拟区间元数据，并通过 backend trait 协作执行映射。
 - `ax-alloc`：为 `Alloc` backend 提供物理页框来源。
-- `memory_addr`、`ax-errno`、`ax-kspin`、`lazyinit`：分别提供地址类型、错误、锁和全局单例初始化。
+- `memory_addr`、`ax-errno`、`ax-kspin`、`ax-lazyinit`：分别提供地址类型、错误、锁和全局单例初始化。
 
 ### 3.2 关键直接消费者
 - `ax-runtime`：在 `paging` 路径中调用 `init_memory_management()` 和 `init_memory_management_secondary()`。

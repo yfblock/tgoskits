@@ -15,7 +15,7 @@ use ax_hal::{
     paging::MappingFlags,
 };
 use ax_kspin::SpinNoIrq;
-use lazyinit::LazyInit;
+use ax_lazyinit::LazyInit;
 use memory_addr::{MemoryAddr, PhysAddr, VirtAddr};
 
 pub use self::{aspace::AddrSpace, backend::Backend};

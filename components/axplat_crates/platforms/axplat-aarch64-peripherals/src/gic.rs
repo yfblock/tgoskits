@@ -3,7 +3,7 @@
 use arm_gic_driver::v2::{Ack, Gic, IntId, SGITarget, TargetList, TrapOp, Trigger, VirtAddr};
 use ax_kspin::SpinNoIrq;
 use ax_plat::irq::{HandlerTable, IpiTarget, IrqHandler};
-use lazyinit::LazyInit;
+use ax_lazyinit::LazyInit;
 
 /// The maximum number of IRQs.
 const MAX_IRQ_COUNT: usize = 1024;

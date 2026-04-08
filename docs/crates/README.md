@@ -137,7 +137,7 @@
 | `int_ratio` | 组件层 | `components/int_ratio` | 0 | 3 | [查看](./int_ratio.md) |
 | `irq-kernel` | 组件层 | `components/axplat_crates/examples/irq-kernel` | 7 | 0 | [查看](./irq-kernel.md) |
 | `kernel_guard` | 组件层 | `components/kernel_guard` | 1 | 6 | [查看](./kernel_guard.md) |
-| `lazyinit` | 组件层 | `components/lazyinit` | 0 | 17 | [查看](./lazyinit.md) |
+| `ax-lazyinit` | 组件层 | `components/ax-lazyinit` | 0 | 17 | [查看](./ax-lazyinit.md) |
 | `linked_list_r4l` | 组件层 | `components/linked_list_r4l` | 0 | 1 | [查看](./linked_list_r4l.md) |
 | `memory_addr` | 组件层 | `components/axmm_crates/memory_addr` | 0 | 24 | [查看](./memory_addr.md) |
 | `mingo` | ArceOS 层 | `os/arceos/tools/raspi4/chainloader` | 0 | 0 | [查看](./mingo.md) |

@@ -18,7 +18,7 @@ use core::sync::atomic::Ordering;
 use alloc::boxed::Box;
 use ax_hal;
 use ax_kspin::SpinNoIrq;
-use lazyinit::LazyInit;
+use ax_lazyinit::LazyInit;
 use timer_list::{TimeValue, TimerEvent, TimerList};
 
 static TOKEN: AtomicUsize = AtomicUsize::new(0);

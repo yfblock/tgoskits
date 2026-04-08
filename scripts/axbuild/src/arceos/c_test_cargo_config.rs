@@ -352,7 +352,7 @@ mod tests {
             "crate_interface",
             "ax-allocator",
             "axbacktrace",
-            "lazyinit",
+            "ax-lazyinit",
             "ax-sched",
             "ax-cap-access",
             "ax-cpumask",

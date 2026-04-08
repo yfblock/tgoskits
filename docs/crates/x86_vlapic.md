@@ -59,7 +59,7 @@ graph LR
 - `axvisor_api_proc`
 - `axvmconfig`
 - `crate_interface`
-- `lazyinit`
+- `ax-lazyinit`
 
 ### 3.3 被依赖情况
 - `x86_vcpu`

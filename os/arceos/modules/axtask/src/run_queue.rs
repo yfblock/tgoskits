@@ -6,8 +6,8 @@ use core::mem::MaybeUninit;
 use ax_hal::percpu::this_cpu_id;
 use ax_kernel_guard::BaseGuard;
 use ax_kspin::{SpinNoIrqGuard, SpinRaw};
+use ax_lazyinit::LazyInit;
 use ax_sched::BaseScheduler;
-use lazyinit::LazyInit;
 
 use crate::{
     AxCpuMask, AxTaskRef, Scheduler, TaskInner, WaitQueue,

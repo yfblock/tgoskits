@@ -96,7 +96,7 @@ flowchart TD
 
 | 改动位置 | 第一步验证 | 第二步验证 |
 | --- | --- | --- |
-| `components/axerrno`、`components/kspin`、`components/lazyinit` 这类基础 crate | `cargo test -p <crate>` | `cargo xtask arceos run --package ax-helloworld --arch riscv64` |
+| `components/axerrno`、`components/kspin`、`components/ax-lazyinit` 这类基础 crate | `cargo test -p <crate>` | `cargo xtask arceos run --package ax-helloworld --arch riscv64` |
 | `os/arceos/modules/*` | `cargo xtask arceos run --package ax-helloworld --arch riscv64` | 需要功能时换成 `ax-httpserver --net` 或 `ax-shell --blk` |
 | `components/starry-*`、`os/StarryOS/kernel/*` | `cargo xtask starry run --arch riscv64 --package starryos` | `cargo starry test qemu --target riscv64` |
 | `components/axvm`、`components/axvcpu`、`components/axdevice`、`os/axvisor/src/*` | `cd os/axvisor && cargo xtask build` | 准备好 Guest 后运行 `./scripts/setup_qemu.sh arceos`，再执行 `cargo xtask qemu --build-config ... --qemu-config ... --vmconfigs ...` |

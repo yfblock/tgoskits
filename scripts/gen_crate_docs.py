@@ -273,7 +273,7 @@ CURATED_DOCS = {
     "int_ratio",
     "ax-kernel-guard",
     "ax-kspin",
-    "lazyinit",
+    "ax-lazyinit",
     "linked_list_r4l",
     "mingo",
     "percpu_macros",

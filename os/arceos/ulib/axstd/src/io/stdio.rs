@@ -1,7 +1,7 @@
 #[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
 
-use lazyinit::LazyInit;
+use ax_lazyinit::LazyInit;
 
 use crate::{
     io::{self, BufReader, prelude::*},

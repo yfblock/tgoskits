@@ -250,7 +250,7 @@ graph LR
 - `axvisor_api_proc`
 - `axvmconfig`
 - `crate_interface`
-- `lazyinit`
+- `ax-lazyinit`
 - `ax-memory-set`
 - `ax-page-table-entry`
 - `ax-page-table-multiarch`

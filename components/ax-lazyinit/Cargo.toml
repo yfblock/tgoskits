@@ -1,5 +1,5 @@
 [package]
-name = "lazyinit"
+name = "ax-lazyinit"
 version = "0.4.2"
 edition = "2021"
 authors = ["Yuekai Jia <equation618@gmail.com>"]
@@ -7,7 +7,7 @@ description = "Initialize a static value lazily."
 license = "GPL-3.0-or-later OR Apache-2.0 OR MulanPSL-2.0"
 homepage = "https://github.com/arceos-org/arceos"
 repository = "https://github.com/arceos-org/lazyinit"
-documentation = "https://docs.rs/lazyinit"
+documentation = "https://docs.rs/ax-lazyinit"
 keywords = ["lazy", "initialization", "static"]
 categories = ["no-std", "rust-patterns"]
 rust-version = "1.56.1"

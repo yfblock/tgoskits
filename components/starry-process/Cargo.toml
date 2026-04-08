@@ -10,7 +10,7 @@ repository = "https://github.com/Starry-OS/starry-process"
 
 [dependencies]
 ax-kspin = "0.3.1"
-lazyinit = "0.4.2"
+ax-lazyinit = "0.4.2"
 weak-map = "0.1"
 
 [dev-dependencies]

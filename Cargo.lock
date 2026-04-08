@@ -614,12 +614,12 @@ name = "ax-cpu"
 version = "0.5.0"
 dependencies = [
  "aarch64-cpu 11.2.0",
+ "ax-lazyinit",
  "ax-page-table-entry",
  "ax-page-table-multiarch",
  "ax-percpu",
  "axbacktrace",
  "cfg-if",
- "lazyinit 0.4.2",
  "linkme",
  "log",
  "loongArch64",
@@ -642,8 +642,8 @@ name = "ax-display"
 version = "0.5.0"
 dependencies = [
  "ax-driver",
+ "ax-lazyinit",
  "ax-sync",
- "lazyinit 0.4.2",
  "log",
 ]
 
@@ -798,8 +798,8 @@ dependencies = [
  "ax-fs-vfs",
  "ax-hal",
  "ax-io",
+ "ax-lazyinit",
  "axfatfs",
- "lazyinit 0.4.2",
  "log",
  "rsext4",
  "spin 0.10.0",
@@ -924,8 +924,8 @@ name = "ax-input"
 version = "0.5.0"
 dependencies = [
  "ax-driver",
+ "ax-lazyinit",
  "ax-sync",
- "lazyinit 0.4.2",
  "log",
 ]
 
@@ -946,8 +946,8 @@ dependencies = [
  "ax-config",
  "ax-hal",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-percpu",
- "lazyinit 0.4.2",
  "log",
 ]
 
@@ -966,6 +966,10 @@ dependencies = [
  "ax-kernel-guard",
  "cfg-if",
 ]
+
+[[package]]
+name = "ax-lazyinit"
+version = "0.4.2"
 
 [[package]]
 name = "ax-libc"
@@ -1006,9 +1010,9 @@ dependencies = [
  "ax-errno",
  "ax-hal",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-memory-set",
  "ax-page-table-multiarch",
- "lazyinit 0.4.2",
  "log",
  "memory_addr 0.6.1",
 ]
@@ -1021,10 +1025,10 @@ dependencies = [
  "ax-errno",
  "ax-hal",
  "ax-io",
+ "ax-lazyinit",
  "ax-sync",
  "ax-task",
  "cfg-if",
- "lazyinit 0.4.2",
  "log",
  "spin 0.10.0",
  "starry-smoltcp",
@@ -1131,9 +1135,9 @@ dependencies = [
  "ax-arm-pl031",
  "ax-cpu",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-plat",
  "int_ratio",
- "lazyinit 0.4.2",
  "log",
  "spin 0.10.0",
 ]
@@ -1182,10 +1186,10 @@ dependencies = [
  "ax-config-macros",
  "ax-cpu",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-page-table-entry",
  "ax-plat",
  "chrono",
- "lazyinit 0.4.2",
  "log",
  "loongArch64",
  "uart_16550 0.5.0",
@@ -1207,10 +1211,10 @@ dependencies = [
  "ax-config-macros",
  "ax-cpu",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-plat",
  "axvisor_api",
  "crate_interface 0.5.0",
- "lazyinit 0.4.2",
  "log",
  "riscv 0.14.0",
  "riscv_goldfish",
@@ -1226,8 +1230,8 @@ dependencies = [
  "ax-config-macros",
  "ax-cpu",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-plat",
- "lazyinit 0.4.2",
  "log",
  "riscv 0.16.0",
  "riscv_goldfish",
@@ -1243,12 +1247,12 @@ dependencies = [
  "ax-config-macros",
  "ax-cpu",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-percpu",
  "ax-plat",
  "bitflags 2.11.0",
  "heapless 0.9.2",
  "int_ratio",
- "lazyinit 0.4.2",
  "log",
  "multiboot",
  "raw-cpuid 11.6.0",
@@ -1334,7 +1338,7 @@ dependencies = [
  "ax-feat",
  "ax-io",
  "ax-kspin",
- "lazyinit 0.4.2",
+ "ax-lazyinit",
  "lock_api",
  "spin 0.10.0",
 ]
@@ -1360,6 +1364,7 @@ dependencies = [
  "ax-hal",
  "ax-kernel-guard",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-percpu",
  "ax-sched",
  "ax-task",
@@ -1368,7 +1373,6 @@ dependencies = [
  "crate_interface 0.5.0",
  "extern-trait",
  "futures-util",
- "lazyinit 0.4.2",
  "log",
  "memory_addr 0.6.1",
  "spin 0.10.0",
@@ -1390,6 +1394,7 @@ version = "0.5.0"
 dependencies = [
  "assert_matches",
  "ax-errno",
+ "ax-lazyinit",
  "ax-memory-set",
  "ax-page-table-entry",
  "ax-page-table-multiarch",
@@ -1398,7 +1403,6 @@ dependencies = [
  "bitflags 2.11.0",
  "cfg-if",
  "lazy_static",
- "lazyinit 0.4.2",
  "log",
  "memory_addr 0.6.1",
  "numeric-enum-macro",
@@ -1492,7 +1496,7 @@ dependencies = [
  "aarch32-cpu",
  "aarch64-cpu 11.2.0",
  "cfg-if",
- "lazyinit 0.2.2",
+ "lazyinit",
  "linkme",
  "log",
  "loongArch64",
@@ -1650,7 +1654,7 @@ dependencies = [
  "axcpu",
  "axplat",
  "kspin",
- "lazyinit 0.2.2",
+ "lazyinit",
  "log",
  "riscv 0.14.0",
  "riscv_goldfish",
@@ -1666,12 +1670,12 @@ dependencies = [
  "ax-config-macros",
  "ax-cpu",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-percpu",
  "ax-plat",
  "bitflags 2.11.0",
  "heapless 0.9.2",
  "int_ratio",
- "lazyinit 0.4.2",
  "log",
  "multiboot",
  "raw-cpuid 11.6.0",
@@ -1769,6 +1773,7 @@ dependencies = [
  "ax-hal",
  "ax-kernel-guard",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-page-table-entry",
  "ax-page-table-multiarch",
  "ax-percpu",
@@ -1793,7 +1798,6 @@ dependencies = [
  "fdt-parser",
  "hashbrown 0.14.5",
  "lazy_static",
- "lazyinit 0.4.2",
  "log",
  "memory_addr 0.6.1",
  "pcie 0.5.0",
@@ -4628,10 +4632,6 @@ name = "lazyinit"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "17f03abfebdaaf0fad16790237a0348baf84886d3ade460db13bae59e614a180"
-
-[[package]]
-name = "lazyinit"
-version = "0.4.2"
 
 [[package]]
 name = "leb128fmt"
@@ -7483,8 +7483,8 @@ name = "starry-process"
 version = "0.4.0"
 dependencies = [
  "ax-kspin",
+ "ax-lazyinit",
  "ctor 0.4.3",
- "lazyinit 0.4.2",
  "weak-map",
 ]
 

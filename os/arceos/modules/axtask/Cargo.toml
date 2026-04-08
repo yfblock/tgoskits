@@ -20,7 +20,7 @@ multitask = [
     "dep:futures-util",
     "dep:ax-kernel-guard",
     "dep:ax-kspin",
-    "dep:lazyinit",
+    "dep:ax-lazyinit",
     "dep:memory_addr",
     "dep:ax-percpu",
     "dep:spin",
@@ -53,7 +53,7 @@ futures-util = { version = "0.3", default-features = false, optional = true, fea
 ] }
 ax-kernel-guard = { workspace = true, optional = true }
 ax-kspin = { workspace = true, optional = true }
-lazyinit = { workspace = true, optional = true }
+ax-lazyinit = { workspace = true, optional = true }
 log.workspace = true
 memory_addr = { workspace = true, optional = true }
 ax-percpu = { workspace = true, optional = true }

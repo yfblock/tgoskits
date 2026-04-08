@@ -260,7 +260,7 @@ CURATED_DOCS = {
     "ax-arm-pl011",
     "ax-arm-pl031",
     "ax-crate-interface",
-    "crate_interface_lite",
+    "ax-crate-interface-lite",
     "define-simple-traits",
     "define-weak-traits",
     "ctor_bare",

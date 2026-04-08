@@ -227,7 +227,7 @@ ax-page-table-multiarch = { path = "components/page_table_multiarch/page_table_m
 
 # === crate_interface ===
 ax-crate-interface = { path = "components/crate_interface" }
-crate_interface_lite = { path = "components/crate_interface/crate_interface_lite" }
+ax-crate-interface-lite = { path = "components/crate_interface/crate_interface_lite" }
 
 # === ctor_bare ===
 ctor_bare = { path = "components/ctor_bare/ctor_bare" }

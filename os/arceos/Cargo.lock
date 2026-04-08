@@ -3686,7 +3686,7 @@ name = "axvmconfig"
 version = "0.4.2"
 
 [[patch.unused]]
-name = "crate_interface_lite"
+name = "ax-crate-interface-lite"
 version = "0.3.0"
 
 [[patch.unused]]

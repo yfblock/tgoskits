@@ -15,13 +15,13 @@ use core::{
 
 use ax_errno::AxResult;
 use ax_kspin::SpinNoIrq;
+use ax_memory_addr::VirtAddr;
 use ax_sync::Mutex;
 use ax_task::{
     current,
     future::{self, block_on, interruptible},
 };
 use hashbrown::HashMap;
-use memory_addr::VirtAddr;
 
 use crate::{
     mm::{AddrSpace, Backend, SharedPages},

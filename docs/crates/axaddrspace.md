@@ -240,7 +240,7 @@ flowchart TD
 | `ax-page-table-multiarch` | 底层页表引擎与 `PagingHandler` trait |
 | `ax-errno` | 错误模型 |
 | `bitflags` / `bit_field` / `numeric-enum-macro` | 辅助标志与枚举操作 |
-| `lazyinit` / `log` | 初始化与日志 |
+| `ax-lazyinit` / `log` | 初始化与日志 |
 
 ### 3.2 主要消费者
 

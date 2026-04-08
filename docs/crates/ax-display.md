@@ -33,7 +33,7 @@ graph LR
     current["ax-display"]
     current --> ax-driver["ax-driver"]
     current --> ax-sync["ax-sync"]
-    current --> lazyinit["lazyinit"]
+    current --> ax_lazyinit["ax-lazyinit"]
     ax_api["ax-api"] --> current
     ax_feat["ax-feat"] --> current
     ax_runtime["ax-runtime"] --> current
@@ -43,7 +43,7 @@ graph LR
 ### 3.1 直接与间接依赖
 - `ax-driver`
 - `ax-sync`
-- `lazyinit`
+- `ax-lazyinit`
 
 ### 3.2 间接本地依赖
 - `ax-arm-pl011`

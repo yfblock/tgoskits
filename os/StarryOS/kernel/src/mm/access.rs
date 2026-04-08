@@ -15,9 +15,9 @@ use ax_hal::{
 };
 use ax_io::prelude::*;
 use ax_kernel_guard::IrqSave;
+use ax_memory_addr::{MemoryAddr, PAGE_SIZE_4K, VirtAddr};
 use ax_task::current;
 use extern_trait::extern_trait;
-use memory_addr::{MemoryAddr, PAGE_SIZE_4K, VirtAddr};
 use starry_vm::{VmError, VmIo, VmResult, vm_load_until_nul, vm_read_slice, vm_write_slice};
 
 use crate::{

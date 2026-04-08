@@ -68,7 +68,7 @@ heapless = "0.9"
 ax-kernel-guard.workspace = true
 linkme = { version = "0.3.33", optional = true }
 log.workspace = true
-memory_addr.workspace = true
+ax-memory-addr.workspace = true
 ax-page-table-multiarch = { workspace = true, optional = true }
 ax-percpu.workspace = true
 spin.workspace = true

@@ -5,10 +5,10 @@ use ax_alloc::{DefaultByteAllocator, UsageKind, global_allocator};
 use ax_allocator::{AllocError, AllocResult, BaseAllocator, ByteAllocator};
 use ax_hal::{mem::virt_to_phys, paging::MappingFlags};
 use ax_kspin::SpinNoIrq;
+use ax_memory_addr::{PAGE_SIZE_4K, VirtAddr, va};
 #[cfg(feature = "buddy-slab")]
 use buddy_slab_allocator::{AllocError, AllocResult, ByteAllocator};
 use log::{debug, error};
-use memory_addr::{PAGE_SIZE_4K, VirtAddr, va};
 
 use crate::{BusAddr, DMAInfo, phys_to_bus};
 
@@ -147,5 +147,5 @@ fn virt_to_bus(addr: VirtAddr) -> BusAddr {
 }
 
 const fn layout_pages(layout: &Layout) -> usize {
-    memory_addr::align_up_4k(layout.size()) / PAGE_SIZE_4K
+    ax_memory_addr::align_up_4k(layout.size()) / PAGE_SIZE_4K
 }

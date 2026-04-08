@@ -37,29 +37,29 @@
 graph LR
     current["x86_vlapic"]
     current --> ax_errno["ax-errno"]
+    current --> ax_memory_addr["ax-memory-addr"]
     current --> axaddrspace["axaddrspace"]
     current --> axdevice_base["axdevice_base"]
     current --> axvisor_api["axvisor_api"]
-    current --> memory_addr["memory_addr"]
     x86_vcpu["x86_vcpu"] --> current
 ```
 
 ### 3.1 直接与间接依赖
 - `ax-errno`
+- `ax-memory-addr`
 - `axaddrspace`
 - `axdevice_base`
 - `axvisor_api`
-- `memory_addr`
 
 ### 3.2 间接本地依赖
 - `ax-cpumask`
 - `ax-crate-interface`
+- `ax-lazyinit`
 - `ax-memory-set`
 - `ax-page-table-entry`
 - `ax-page-table-multiarch`
 - `axvisor_api_proc`
 - `axvmconfig`
-- `lazyinit`
 
 ### 3.3 被依赖情况
 - `x86_vcpu`

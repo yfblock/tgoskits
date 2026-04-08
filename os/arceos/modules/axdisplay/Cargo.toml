@@ -11,5 +11,5 @@ repository = "https://github.com/arceos-org/arceos/tree/main/modules/axdisplay"
 [dependencies]
 ax-driver = { workspace = true, features = ["display"] }
 ax-sync.workspace = true
-lazyinit.workspace = true
+ax-lazyinit.workspace = true
 log.workspace = true

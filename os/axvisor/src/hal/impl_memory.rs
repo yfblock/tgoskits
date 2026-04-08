@@ -2,9 +2,9 @@ use core::{alloc::Layout, ptr::NonNull};
 
 use std::os::arceos;
 
+use ax_memory_addr::PAGE_SIZE_4K;
 use axaddrspace::{AxMmHal, HostPhysAddr, HostVirtAddr};
 use axvisor_api::memory::MemoryIf;
-use memory_addr::PAGE_SIZE_4K;
 
 use crate::hal::AxMmHalImpl;
 

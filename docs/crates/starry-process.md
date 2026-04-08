@@ -125,7 +125,7 @@ if let Some((session, group)) = child.create_session() {
 ```mermaid
 graph LR
     ax_kspin["ax-kspin"] --> sp["starry-process"]
-    lazyinit["lazyinit"] --> sp
+    ax_lazyinit["ax-lazyinit"] --> sp
     weakmap["weak-map"] --> sp
 
     sp --> starry["starry-kernel"]
@@ -135,7 +135,7 @@ graph LR
 
 ### 3.1 关键直接依赖
 - `ax-kspin`：为 `Process`、`ProcessGroup`、`Session` 内部的可变状态提供自旋锁保护。
-- `lazyinit`：用于全局 init 进程的惰性初始化。
+- `ax-lazyinit`：用于全局 init 进程的惰性初始化。
 - `weak-map`：用于子进程表、进程组表、会话内进程组表的弱引用管理，避免对象清理后残留强引用。
 
 ### 3.2 关键直接消费者

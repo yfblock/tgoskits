@@ -11,7 +11,7 @@ use ax_hal::{
     percpu::this_cpu_id,
 };
 use ax_kspin::SpinNoIrq;
-use lazyinit::LazyInit;
+use ax_lazyinit::LazyInit;
 
 mod event;
 mod queue;

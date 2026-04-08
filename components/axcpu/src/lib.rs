@@ -7,7 +7,7 @@
 extern crate log;
 
 #[macro_use]
-extern crate memory_addr;
+extern crate ax_memory_addr;
 
 #[macro_use]
 pub mod trap;

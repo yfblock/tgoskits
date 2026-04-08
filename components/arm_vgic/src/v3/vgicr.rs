@@ -14,11 +14,11 @@
 
 use core::{cell::UnsafeCell, ptr};
 
+use ax_memory_addr::PhysAddr;
 use axaddrspace::{GuestPhysAddr, GuestPhysAddrRange, HostPhysAddr};
 use axdevice_base::BaseDeviceOps;
 use axvisor_api::memory::phys_to_virt;
 use log::{debug, trace};
-use memory_addr::PhysAddr;
 use spin::{Mutex, Once};
 
 use super::{
@@ -244,7 +244,7 @@ impl LpiPropTable {
     ) -> Self {
         let size_per_gicr = size_per_gicr.unwrap_or(DEFAULT_SIZE_PER_GICR);
         let id_bits = (host_gicd_typer >> 19) & 0x1f;
-        let page_num: usize = ((1 << (id_bits + 1)) - 8192) / memory_addr::PAGE_SIZE_4K;
+        let page_num: usize = ((1 << (id_bits + 1)) - 8192) / ax_memory_addr::PAGE_SIZE_4K;
 
         debug!(
             "Creating LPI prop table: id_bits: {id_bits}, page_num: {page_num}, size_per_gicr: \

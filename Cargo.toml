@@ -44,7 +44,7 @@ members = [
     "components/int_ratio",
     "components/kernel_guard",
     "components/kspin",
-    "components/lazyinit",
+    "components/ax-lazyinit",
     "components/linked_list_r4l",
     "components/range-alloc-arceos",
     "components/riscv-h",
@@ -156,8 +156,8 @@ ax-cpu = { path = "components/axcpu" }
 ax-io = { path = "components/axio" }
 ax-sched = { path = "components/axsched" }
 axpoll = { path = "components/axpoll" }
-lazyinit = { path = "components/lazyinit" }
-linked_list_r4l = { path = "components/linked_list_r4l" }
+ax-lazyinit = { path = "components/ax-lazyinit" }
+ax-linked-list-r4l = { path = "components/linked_list_r4l" }
 timer_list = { path = "components/timer_list" }
 ax-int-ratio = { path = "components/int_ratio" }
 ax-cap-access = { path = "components/cap_access" }
@@ -234,7 +234,7 @@ ctor_bare = { path = "components/ctor_bare/ctor_bare" }
 ctor_bare_macros = { path = "components/ctor_bare/ctor_bare_macros" }
 
 # === memory (axmm_crates) ===
-memory_addr = { path = "components/axmm_crates/memory_addr" }
+ax-memory-addr = { path = "components/axmm_crates/memory_addr" }
 ax-memory-set = { path = "components/axmm_crates/memory_set" }
 
 # === bitmap-allocator ===
@@ -377,7 +377,7 @@ env_logger = "0.11"
 event-listener = { version = "5.4.0", default-features = false }
 ax-kernel-guard = { version = "0.3.3", path = "components/kernel_guard" }
 ax-kspin = { version = "0.3.1", path = "components/kspin" }
-lazyinit = { version = "0.4.2", path = "components/lazyinit" }
+ax-lazyinit = { version = "0.4.2", path = "components/ax-lazyinit" }
 schemars = "1.2.1"
 toml = "1"
 
@@ -388,7 +388,7 @@ starry-vm = { version = "0.5.0", path = "components/starry-vm" }
 lazy_static = { version = "1.5", features = ["spin_no_std"] }
 lock_api = { version = "0.4", default-features = false }
 log = "0.4"
-memory_addr = { version = "0.6.1", path = "components/axmm_crates/memory_addr" }
+ax-memory-addr = { version = "0.6.1", path = "components/axmm_crates/memory_addr" }
 ax-page-table-multiarch = { version = "0.8.1", features = ["ax-errno"], path = "components/page_table_multiarch/page_table_multiarch" }
 ax-percpu = { version = "0.4.3", path = "components/percpu/percpu" }
 scope-local = { version = "0.3.2", path = "components/scope-local" }

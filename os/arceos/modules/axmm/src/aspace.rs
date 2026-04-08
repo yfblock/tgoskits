@@ -6,10 +6,10 @@ use ax_hal::{
     paging::{MappingFlags, PageTable},
     trap::PageFaultFlags,
 };
-use ax_memory_set::{MemoryArea, MemorySet};
-use memory_addr::{
+use ax_memory_addr::{
     MemoryAddr, PAGE_SIZE_4K, PageIter4K, PhysAddr, VirtAddr, VirtAddrRange, is_aligned_4k,
 };
+use ax_memory_set::{MemoryArea, MemorySet};
 
 use crate::backend::Backend;
 

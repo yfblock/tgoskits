@@ -8,8 +8,8 @@ use ax_hal::{
     paging::{MappingFlags, PageSize, PageTableCursor, PagingError},
 };
 use ax_kspin::SpinNoIrq;
+use ax_memory_addr::{PhysAddr, VirtAddr, VirtAddrRange};
 use ax_sync::Mutex;
-use memory_addr::{PhysAddr, VirtAddr, VirtAddrRange};
 
 use super::{
     AddrSpace, Backend, BackendOps, PopulateCallback, alloc_frame, dealloc_frame, pages_in,

@@ -34,7 +34,7 @@ use axvisor_api::{
     memory,
     vmm::{VCpuId, VMId},
 };
-use memory_addr::{AddrRange, PAGE_SIZE_4K};
+use ax_memory_addr::{AddrRange, PAGE_SIZE_4K};
 
 use axaddrspace::{
     GuestPhysAddr, HostPhysAddr, HostVirtAddr,

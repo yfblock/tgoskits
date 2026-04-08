@@ -32,7 +32,7 @@
 
 ### 1.4 三种算法的真实实现方式
 - `FifoScheduler`：
-  - 使用 `linked_list_r4l::List<Arc<FifoTask<T>>>` 维护就绪队列。
+  - 使用 `ax_linked_list_r4l::List<Arc<FifoTask<T>>>` 维护就绪队列。
   - `task_tick()` 永远返回 `false`，不会因时钟中断要求抢占。
 - `RRScheduler`：
   - 每个 `RRTask` 多一个 `time_slice: AtomicIsize`。
@@ -64,14 +64,14 @@
 ## 3. 依赖关系图谱
 ```mermaid
 graph LR
-    linked_list["linked_list_r4l"] --> axsched["ax-sched"]
+    linked_list["ax-linked-list-r4l"] --> axsched["ax-sched"]
     axsched --> ax-task["ax-task"]
     ax-task --> starry["starry-kernel"]
     ax-task --> axvisor["axvisor (indirect)"]
 ```
 
 ### 3.1 关键直接依赖
-- `linked_list_r4l`：FIFO 和 RR 使用的 intrusive 链表容器。
+- `ax-linked-list-r4l`：FIFO 和 RR 使用的 intrusive 链表容器。
 - `alloc` / `BTreeMap`：CFS 的有序队列依赖标准 `alloc` 数据结构。
 
 ### 3.2 关键直接消费者
@@ -86,7 +86,7 @@ ax-sched = { workspace = true }
 
 ### 4.2 修改时的关键约束
 1. `BaseScheduler::remove_task()` 的安全约束不能放松；调用方默认会假定待删实体确实在队列中。
-2. 修改 FIFO/RR 时，要同时检查 `linked_list_r4l` 上的节点所有权和 O(1) 删除语义是否仍成立。
+2. 修改 FIFO/RR 时，要同时检查 `ax-linked-list-r4l` 上的节点所有权和 O(1) 删除语义是否仍成立。
 3. 修改 CFS 的权重或 vruntime 逻辑时，要同步评估 `set_priority()`、`task_tick()` 和 `put_prev_task()` 的协同关系。
 4. 不要把阻塞、睡眠、退出回收等逻辑塞进 `axsched`；这会破坏它与 `ax-task` 的清晰分层。
 

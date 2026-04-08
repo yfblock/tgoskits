@@ -9,7 +9,7 @@ use core::{
 };
 
 use ax_kspin::SpinNoIrq;
-use lazyinit::LazyInit;
+use ax_lazyinit::LazyInit;
 use weak_map::StrongMap;
 
 use crate::{Pid, ProcessGroup, Session};

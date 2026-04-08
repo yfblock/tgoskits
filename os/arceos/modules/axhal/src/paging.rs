@@ -1,10 +1,10 @@
 //! Page table manipulation.
 
 use ax_alloc::{UsageKind, global_allocator};
+use ax_memory_addr::{PAGE_SIZE_4K, PhysAddr, VirtAddr};
 use ax_page_table_multiarch::PagingHandler;
 #[doc(no_inline)]
 pub use ax_page_table_multiarch::{MappingFlags, PageSize, PagingError, PagingResult};
-use memory_addr::{PAGE_SIZE_4K, PhysAddr, VirtAddr};
 
 use crate::mem::{phys_to_virt, virt_to_phys};
 

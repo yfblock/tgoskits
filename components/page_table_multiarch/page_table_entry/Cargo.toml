@@ -18,7 +18,7 @@ xuantie-c9xx = []
 
 [dependencies]
 bitflags = "2.9"
-memory_addr.workspace = true
+ax-memory-addr.workspace = true
 
 [target.'cfg(any(target_arch = "aarch64", doc, docsrs))'.dependencies]
 aarch64-cpu = "11.0"

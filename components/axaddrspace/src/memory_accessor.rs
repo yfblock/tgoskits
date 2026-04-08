@@ -18,7 +18,7 @@
 //! from VirtIO device implementations, handling address translation and
 //! memory safety concerns.
 use ax_errno::{AxError, AxResult};
-use memory_addr::PhysAddr;
+use ax_memory_addr::PhysAddr;
 
 use crate::GuestPhysAddr;
 

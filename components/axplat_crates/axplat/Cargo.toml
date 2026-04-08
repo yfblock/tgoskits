@@ -16,7 +16,7 @@ smp = ["ax-kspin/smp"]
 irq = ["dep:ax-handler-table"]
 
 [dependencies]
-memory_addr = "0.6.1"
+ax-memory-addr = "0.6.1"
 bitflags = "2.6"
 ax-crate-interface = "0.5.0"
 ax-handler-table = { version = "0.3.2", optional = true, path = "../../handler_table" }

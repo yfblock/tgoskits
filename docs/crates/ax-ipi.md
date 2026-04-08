@@ -79,7 +79,7 @@ graph LR
     ax-hal["ax-hal (ipi)"] --> ax-ipi["ax-ipi"]
     axconfig["ax-config"] --> ax-ipi
     ax_kspin["ax-kspin"] --> ax-ipi
-    lazyinit["lazyinit"] --> ax-ipi
+    ax_lazyinit["ax-lazyinit"] --> ax-ipi
     ax-percpu["ax-percpu"] --> ax-ipi
 
     ax-ipi --> ax-runtime["ax-runtime"]
@@ -91,7 +91,7 @@ graph LR
 - `ax-hal`：真正的 IPI 发送原语来自这里。
 - `axconfig`：广播时需要 `MAX_CPU_NUM`。
 - `ax-kspin`：保护每 CPU 队列。
-- `lazyinit`：按 CPU 惰性初始化队列。
+- `ax-lazyinit`：按 CPU 惰性初始化队列。
 - `ax-percpu`：声明每 CPU 静态存储。
 
 ### 3.2 关键直接消费者

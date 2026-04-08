@@ -982,7 +982,7 @@ dependencies = [
 name = "ax-sched"
 version = "0.5.1"
 dependencies = [
- "linked_list_r4l",
+ "ax-linked-list-r4l",
 ]
 
 [[package]]
@@ -2218,7 +2218,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "linked_list_r4l"
+name = "ax-linked-list-r4l"
 version = "0.5.0"
 
 [[package]]

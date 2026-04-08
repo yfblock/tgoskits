@@ -414,12 +414,12 @@ dependencies = [
  "aarch64-cpu 11.2.0",
  "aarch64_sysreg",
  "ax-errno",
+ "ax-memory-addr",
  "axaddrspace",
  "axdevice_base",
  "axvisor_api",
  "bitmaps",
  "log",
- "memory_addr 0.6.1",
  "spin 0.10.0",
  "tock-registers 0.10.1",
 ]
@@ -515,12 +515,12 @@ dependencies = [
  "ax-allocator",
  "ax-errno",
  "ax-kspin",
+ "ax-memory-addr",
  "ax-percpu",
  "axbacktrace",
  "buddy-slab-allocator",
  "cfg-if",
  "log",
- "memory_addr 0.6.1",
  "strum 0.27.2",
 ]
 
@@ -614,16 +614,16 @@ name = "ax-cpu"
 version = "0.5.0"
 dependencies = [
  "aarch64-cpu 11.2.0",
+ "ax-lazyinit",
+ "ax-memory-addr",
  "ax-page-table-entry",
  "ax-page-table-multiarch",
  "ax-percpu",
  "axbacktrace",
  "cfg-if",
- "lazyinit 0.4.2",
  "linkme",
  "log",
  "loongArch64",
- "memory_addr 0.6.1",
  "riscv 0.16.0",
  "tock-registers 0.10.1",
  "x86",
@@ -651,8 +651,8 @@ name = "ax-display"
 version = "0.5.0"
 dependencies = [
  "ax-driver",
+ "ax-lazyinit",
  "ax-sync",
- "lazyinit 0.4.2",
  "log",
 ]
 
@@ -665,10 +665,10 @@ dependencies = [
  "ax-config",
  "ax-hal",
  "ax-kspin",
+ "ax-memory-addr",
  "ax-mm",
  "buddy-slab-allocator",
  "log",
- "memory_addr 0.6.1",
 ]
 
 [[package]]
@@ -807,8 +807,8 @@ dependencies = [
  "ax-fs-vfs",
  "ax-hal",
  "ax-io",
+ "ax-lazyinit",
  "axfatfs",
- "lazyinit 0.4.2",
  "log",
  "rsext4",
  "spin 0.10.0",
@@ -875,6 +875,7 @@ dependencies = [
  "ax-config",
  "ax-cpu",
  "ax-kernel-guard",
+ "ax-memory-addr",
  "ax-page-table-multiarch",
  "ax-percpu",
  "ax-plat",
@@ -888,7 +889,6 @@ dependencies = [
  "heapless 0.9.2",
  "linkme",
  "log",
- "memory_addr 0.6.1",
  "spin 0.10.0",
 ]
 
@@ -937,8 +937,8 @@ name = "ax-input"
 version = "0.5.0"
 dependencies = [
  "ax-driver",
+ "ax-lazyinit",
  "ax-sync",
- "lazyinit 0.4.2",
  "log",
 ]
 
@@ -963,8 +963,8 @@ dependencies = [
  "ax-config",
  "ax-hal",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-percpu",
- "lazyinit 0.4.2",
  "log",
 ]
 
@@ -985,6 +985,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "ax-lazyinit"
+version = "0.4.2"
+
+[[package]]
 name = "ax-libc"
 version = "0.5.0"
 dependencies = [
@@ -994,6 +998,10 @@ dependencies = [
  "ax-posix-api",
  "bindgen",
 ]
+
+[[package]]
+name = "ax-linked-list-r4l"
+version = "0.5.0"
 
 [[package]]
 name = "ax-log"
@@ -1008,11 +1016,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ax-memory-addr"
+version = "0.6.1"
+
+[[package]]
 name = "ax-memory-set"
 version = "0.6.1"
 dependencies = [
  "ax-errno",
- "memory_addr 0.6.1",
+ "ax-memory-addr",
 ]
 
 [[package]]
@@ -1023,11 +1035,11 @@ dependencies = [
  "ax-errno",
  "ax-hal",
  "ax-kspin",
+ "ax-lazyinit",
+ "ax-memory-addr",
  "ax-memory-set",
  "ax-page-table-multiarch",
- "lazyinit 0.4.2",
  "log",
- "memory_addr 0.6.1",
 ]
 
 [[package]]
@@ -1038,10 +1050,10 @@ dependencies = [
  "ax-errno",
  "ax-hal",
  "ax-io",
+ "ax-lazyinit",
  "ax-sync",
  "ax-task",
  "cfg-if",
- "lazyinit 0.4.2",
  "log",
  "spin 0.10.0",
  "starry-smoltcp",
@@ -1080,8 +1092,8 @@ name = "ax-page-table-entry"
 version = "0.8.1"
 dependencies = [
  "aarch64-cpu 11.2.0",
+ "ax-memory-addr",
  "bitflags 2.11.0",
- "memory_addr 0.6.1",
  "x86_64",
 ]
 
@@ -1091,10 +1103,10 @@ version = "0.8.1"
 dependencies = [
  "arrayvec",
  "ax-errno",
+ "ax-memory-addr",
  "ax-page-table-entry",
  "bitmaps",
  "log",
- "memory_addr 0.6.1",
  "riscv 0.16.0",
  "x86",
 ]
@@ -1127,11 +1139,11 @@ dependencies = [
  "ax-crate-interface",
  "ax-handler-table",
  "ax-kspin",
+ "ax-memory-addr",
  "ax-percpu",
  "ax-plat-macros",
  "bitflags 2.11.0",
  "const-str",
- "memory_addr 0.6.1",
 ]
 
 [[package]]
@@ -1159,8 +1171,8 @@ dependencies = [
  "ax-cpu",
  "ax-int-ratio",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-plat",
- "lazyinit 0.4.2",
  "log",
  "spin 0.10.0",
 ]
@@ -1209,10 +1221,10 @@ dependencies = [
  "ax-config-macros",
  "ax-cpu",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-page-table-entry",
  "ax-plat",
  "chrono",
- "lazyinit 0.4.2",
  "log",
  "loongArch64",
  "uart_16550 0.5.0",
@@ -1235,9 +1247,9 @@ dependencies = [
  "ax-cpu",
  "ax-crate-interface",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-plat",
  "axvisor_api",
- "lazyinit 0.4.2",
  "log",
  "riscv 0.14.0",
  "riscv_goldfish",
@@ -1253,8 +1265,8 @@ dependencies = [
  "ax-config-macros",
  "ax-cpu",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-plat",
- "lazyinit 0.4.2",
  "log",
  "riscv 0.16.0",
  "riscv_goldfish",
@@ -1271,11 +1283,11 @@ dependencies = [
  "ax-cpu",
  "ax-int-ratio",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-percpu",
  "ax-plat",
  "bitflags 2.11.0",
  "heapless 0.9.2",
- "lazyinit 0.4.2",
  "log",
  "multiboot",
  "raw-cpuid 11.6.0",
@@ -1342,7 +1354,7 @@ dependencies = [
 name = "ax-sched"
 version = "0.5.1"
 dependencies = [
- "linked_list_r4l",
+ "ax-linked-list-r4l",
 ]
 
 [[package]]
@@ -1361,7 +1373,7 @@ dependencies = [
  "ax-feat",
  "ax-io",
  "ax-kspin",
- "lazyinit 0.4.2",
+ "ax-lazyinit",
  "lock_api",
  "spin 0.10.0",
 ]
@@ -1388,6 +1400,8 @@ dependencies = [
  "ax-hal",
  "ax-kernel-guard",
  "ax-kspin",
+ "ax-lazyinit",
+ "ax-memory-addr",
  "ax-percpu",
  "ax-sched",
  "ax-task",
@@ -1395,9 +1409,7 @@ dependencies = [
  "cfg-if",
  "extern-trait",
  "futures-util",
- "lazyinit 0.4.2",
  "log",
- "memory_addr 0.6.1",
  "spin 0.10.0",
  "timer_list",
 ]
@@ -1417,6 +1429,8 @@ version = "0.5.0"
 dependencies = [
  "assert_matches",
  "ax-errno",
+ "ax-lazyinit",
+ "ax-memory-addr",
  "ax-memory-set",
  "ax-page-table-entry",
  "ax-page-table-multiarch",
@@ -1425,9 +1439,7 @@ dependencies = [
  "bitflags 2.11.0",
  "cfg-if",
  "lazy_static",
- "lazyinit 0.4.2",
  "log",
- "memory_addr 0.6.1",
  "numeric-enum-macro",
  "spin 0.10.0",
  "x86",
@@ -1519,11 +1531,11 @@ dependencies = [
  "aarch32-cpu",
  "aarch64-cpu 11.2.0",
  "cfg-if",
- "lazyinit 0.2.2",
+ "lazyinit",
  "linkme",
  "log",
  "loongArch64",
- "memory_addr 0.4.1",
+ "memory_addr",
  "page_table_entry",
  "page_table_multiarch",
  "percpu 0.4.0",
@@ -1540,12 +1552,12 @@ version = "0.4.2"
 dependencies = [
  "arm_vgic",
  "ax-errno",
+ "ax-memory-addr",
  "axaddrspace",
  "axdevice_base",
  "axvmconfig",
  "cfg-if",
  "log",
- "memory_addr 0.6.1",
  "range-alloc-arceos",
  "riscv_vplic",
  "spin 0.10.0",
@@ -1610,7 +1622,7 @@ name = "axklib"
 version = "0.5.0"
 dependencies = [
  "ax-errno",
- "memory_addr 0.6.1",
+ "ax-memory-addr",
  "trait-ffi",
 ]
 
@@ -1626,7 +1638,7 @@ dependencies = [
  "crate_interface 0.3.0",
  "handler_table",
  "kspin",
- "memory_addr 0.4.1",
+ "memory_addr",
  "percpu 0.2.3-preview.1",
 ]
 
@@ -1642,6 +1654,7 @@ dependencies = [
  "ax-driver-block",
  "ax-driver-virtio",
  "ax-errno",
+ "ax-memory-addr",
  "ax-percpu",
  "ax-plat",
  "axklib",
@@ -1649,7 +1662,6 @@ dependencies = [
  "fdt-edit",
  "heapless 0.9.2",
  "log",
- "memory_addr 0.6.1",
  "rd-block",
  "rdrive",
  "somehal",
@@ -1677,7 +1689,7 @@ dependencies = [
  "axcpu",
  "axplat",
  "kspin",
- "lazyinit 0.2.2",
+ "lazyinit",
  "log",
  "riscv 0.14.0",
  "riscv_goldfish",
@@ -1694,11 +1706,11 @@ dependencies = [
  "ax-cpu",
  "ax-int-ratio",
  "ax-kspin",
+ "ax-lazyinit",
  "ax-percpu",
  "ax-plat",
  "bitflags 2.11.0",
  "heapless 0.9.2",
- "lazyinit 0.4.2",
  "log",
  "multiboot",
  "raw-cpuid 11.6.0",
@@ -1777,10 +1789,10 @@ name = "axvcpu"
 version = "0.5.0"
 dependencies = [
  "ax-errno",
+ "ax-memory-addr",
  "ax-percpu",
  "axaddrspace",
  "axvisor_api",
- "memory_addr 0.6.1",
 ]
 
 [[package]]
@@ -1797,6 +1809,8 @@ dependencies = [
  "ax-hal",
  "ax-kernel-guard",
  "ax-kspin",
+ "ax-lazyinit",
+ "ax-memory-addr",
  "ax-page-table-entry",
  "ax-page-table-multiarch",
  "ax-percpu",
@@ -1820,9 +1834,7 @@ dependencies = [
  "fdt-parser",
  "hashbrown 0.14.5",
  "lazy_static",
- "lazyinit 0.4.2",
  "log",
- "memory_addr 0.6.1",
  "pcie 0.5.0",
  "phytium-mci",
  "prettyplease",
@@ -1851,9 +1863,9 @@ version = "0.5.0"
 dependencies = [
  "ax-cpumask",
  "ax-crate-interface",
+ "ax-memory-addr",
  "axaddrspace",
  "axvisor_api_proc",
- "memory_addr 0.6.1",
 ]
 
 [[package]]
@@ -1874,6 +1886,7 @@ dependencies = [
  "arm_vgic",
  "ax-cpumask",
  "ax-errno",
+ "ax-memory-addr",
  "ax-page-table-entry",
  "ax-page-table-multiarch",
  "ax-percpu",
@@ -1885,7 +1898,6 @@ dependencies = [
  "axvmconfig",
  "cfg-if",
  "log",
- "memory_addr 0.6.1",
  "riscv_vcpu",
  "spin 0.10.0",
  "x86_vcpu",
@@ -4640,10 +4652,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "17f03abfebdaaf0fad16790237a0348baf84886d3ade460db13bae59e614a180"
 
 [[package]]
-name = "lazyinit"
-version = "0.4.2"
-
-[[package]]
 name = "leb128fmt"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4745,10 +4753,6 @@ checksum = "3f50e8f47623268b5407192d26876c4d7f89d686ca130fdc53bced4814cd29f8"
 dependencies = [
  "bitflags 2.11.0",
 ]
-
-[[package]]
-name = "linked_list_r4l"
-version = "0.5.0"
 
 [[package]]
 name = "linkme"
@@ -4934,10 +4938,6 @@ name = "memory_addr"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1f0625c50adb5f6aaf47f05cae3c4dbc13a74c659241b06c4576f3d7e1da940"
-
-[[package]]
-name = "memory_addr"
-version = "0.6.1"
 
 [[package]]
 name = "micromath"
@@ -5345,7 +5345,7 @@ checksum = "8e9a63b9b86d32f64c3874a90936939281d045ef1751d0aca3d82d5e4e06b2ef"
 dependencies = [
  "aarch64-cpu 11.2.0",
  "bitflags 2.11.0",
- "memory_addr 0.4.1",
+ "memory_addr",
  "x86_64",
 ]
 
@@ -5357,7 +5357,7 @@ checksum = "42c5b75d5d9bdbee44c827b0dd2766fa3d478a76b9c6735419228089d1b24536"
 dependencies = [
  "arrayvec",
  "log",
- "memory_addr 0.4.1",
+ "memory_addr",
  "page_table_entry",
  "riscv 0.16.0",
  "x86",
@@ -6465,6 +6465,7 @@ version = "0.5.0"
 dependencies = [
  "ax-crate-interface",
  "ax-errno",
+ "ax-memory-addr",
  "ax-page-table-entry",
  "axaddrspace",
  "axvcpu",
@@ -6474,7 +6475,6 @@ dependencies = [
  "cfg-if",
  "log",
  "memoffset",
- "memory_addr 0.6.1",
  "riscv 0.14.0",
  "riscv-decode",
  "riscv-h",
@@ -7427,6 +7427,7 @@ dependencies = [
  "ax-kernel-guard",
  "ax-kspin",
  "ax-log",
+ "ax-memory-addr",
  "ax-memory-set",
  "ax-mm",
  "ax-net-ng",
@@ -7457,7 +7458,6 @@ dependencies = [
  "linkme",
  "linux-raw-sys 0.12.1",
  "lock_api",
- "memory_addr 0.6.1",
  "num_enum",
  "ouroboros",
  "rand 0.10.0",
@@ -7483,8 +7483,8 @@ name = "starry-process"
 version = "0.4.0"
 dependencies = [
  "ax-kspin",
+ "ax-lazyinit",
  "ctor 0.4.3",
- "lazyinit 0.4.2",
  "weak-map",
 ]
 
@@ -9425,6 +9425,7 @@ version = "0.5.0"
 dependencies = [
  "ax-crate-interface",
  "ax-errno",
+ "ax-memory-addr",
  "ax-page-table-entry",
  "axaddrspace",
  "axdevice_base",
@@ -9434,7 +9435,6 @@ dependencies = [
  "bitflags 2.11.0",
  "cfg-if",
  "log",
- "memory_addr 0.6.1",
  "numeric-enum-macro",
  "paste",
  "raw-cpuid 11.6.0",
@@ -9449,12 +9449,12 @@ name = "x86_vlapic"
 version = "0.4.2"
 dependencies = [
  "ax-errno",
+ "ax-memory-addr",
  "axaddrspace",
  "axdevice_base",
  "axvisor_api",
  "bit",
  "log",
- "memory_addr 0.6.1",
  "paste",
  "tock-registers 0.10.1",
 ]

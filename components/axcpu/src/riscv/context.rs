@@ -1,6 +1,6 @@
 use core::arch::naked_asm;
 
-use memory_addr::VirtAddr;
+use ax_memory_addr::VirtAddr;
 use riscv::register::sstatus::{self, FS};
 
 /// General registers of RISC-V.
@@ -287,7 +287,7 @@ pub struct TaskContext {
     pub tp: usize,
     /// The `satp` register value, i.e., the page table root.
     #[cfg(feature = "uspace")]
-    pub satp: memory_addr::PhysAddr,
+    pub satp: ax_memory_addr::PhysAddr,
     #[cfg(feature = "fp-simd")]
     pub fp_state: FpState,
 }
@@ -321,7 +321,7 @@ impl TaskContext {
     /// The hardware register for page table root (`satp` for riscv64) will be
     /// updated to the next task's after [`Self::switch_to`].
     #[cfg(feature = "uspace")]
-    pub fn set_page_table_root(&mut self, satp: memory_addr::PhysAddr) {
+    pub fn set_page_table_root(&mut self, satp: ax_memory_addr::PhysAddr) {
         self.satp = satp;
     }
 

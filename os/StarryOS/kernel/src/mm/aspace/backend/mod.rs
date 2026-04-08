@@ -7,10 +7,10 @@ use ax_hal::{
     mem::{phys_to_virt, virt_to_phys},
     paging::{MappingFlags, PageSize, PageTable, PageTableCursor},
 };
+use ax_memory_addr::{DynPageIter, PAGE_SIZE_4K, PhysAddr, VirtAddr, VirtAddrRange};
 use ax_memory_set::MappingBackend;
 use ax_sync::Mutex;
 use enum_dispatch::enum_dispatch;
-use memory_addr::{DynPageIter, PAGE_SIZE_4K, PhysAddr, VirtAddr, VirtAddrRange};
 
 mod cow;
 mod file;

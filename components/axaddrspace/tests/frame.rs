@@ -19,9 +19,9 @@ mod test_utils;
 use alloc::vec::Vec;
 
 use assert_matches::assert_matches;
+use ax_memory_addr::PAGE_SIZE_4K as PAGE_SIZE;
 use axaddrspace::PhysFrame;
 use axin::axin;
-use memory_addr::PAGE_SIZE_4K as PAGE_SIZE;
 use test_utils::{BASE_PADDR, MockHal, mock_hal_test, test_dealloc_count};
 
 #[test]

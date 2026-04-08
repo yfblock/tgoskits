@@ -23,7 +23,7 @@ spin = "0.10"
 ax-errno = "0.4.2"
 ax-cpumask = "0.3.0"
 # ax-kspin = "0.1.0"
-memory_addr = "0.6.1"
+ax-memory-addr = "0.6.1"
 ax-page-table-entry = { version = "0.8.1", features = ["arm-el2"] }
 ax-page-table-multiarch = "0.8.1"
 ax-percpu = { version = "0.4.3", features = ["arm-el2"] }

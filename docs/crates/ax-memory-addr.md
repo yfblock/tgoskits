@@ -1,4 +1,4 @@
-# `memory_addr` 技术文档
+# `ax-memory-addr` 技术文档
 
 > 路径：`components/axmm_crates/memory_addr`
 > 类型：库 crate
@@ -6,7 +6,7 @@
 > 版本：`0.4.1`
 > 文档依据：当前仓库源码、`Cargo.toml`、`README.md`、`src/lib.rs`、`src/addr.rs`、`src/range.rs`、`src/iter.rs`
 
-`memory_addr` 是整个仓库内存子系统最底层的语义基石之一。它不做页表，不做映射策略，也不做物理页分配；它只做一件事：用类型化方式表达“地址”和“地址区间”，并提供对齐、算术和分页遍历等最基础但最容易出错的操作。`axplat`、`ax-mm`、`ax-page-table-multiarch`、`axaddrspace`、虚拟化栈以及 StarryOS 的内存路径都把它当作共同语言层。
+`ax-memory-addr` 是整个仓库内存子系统最底层的语义基石之一。它不做页表，不做映射策略，也不做物理页分配；它只做一件事：用类型化方式表达“地址”和“地址区间”，并提供对齐、算术和分页遍历等最基础但最容易出错的操作。`axplat`、`ax-mm`、`ax-page-table-multiarch`、`axaddrspace`、虚拟化栈以及 StarryOS 的内存路径都把它当作共同语言层。
 
 ## 1. 架构设计分析
 
@@ -87,7 +87,7 @@
 
 ### 1.7 对齐与遍历
 
-`memory_addr` 在最常见、也最容易写错的两个问题上给出统一实现：
+`ax-memory-addr` 在最常见、也最容易写错的两个问题上给出统一实现：
 
 #### 对齐
 
@@ -151,7 +151,7 @@
 
 ### 3.1 直接依赖
 
-`memory_addr` 几乎没有外部依赖，核心只依赖标准 `core` 语义。`Cargo.toml` 中没有显式第三方依赖，这意味着它本身就是一个极度轻量、适合作为底座复用的 crate。
+`ax-memory-addr` 几乎没有外部依赖，核心只依赖标准 `core` 语义。`Cargo.toml` 中没有显式第三方依赖，这意味着它本身就是一个极度轻量、适合作为底座复用的 crate。
 
 ### 3.2 主要消费者
 
@@ -172,7 +172,7 @@
 
 ```mermaid
 graph TD
-    A[memory_addr]
+    A[ax-memory-addr]
     A --> B[ax-memory-set]
     A --> C[ax-page-table-entry]
     A --> D[ax-page-table-multiarch]
@@ -243,4 +243,4 @@ graph TD
 
 ## 7. 总结
 
-`memory_addr` 看起来简单，但它解决的是整个代码库最不适合分散实现的一类问题：地址与区间的基本语义。通过统一类型、统一对齐逻辑、统一区间模型和统一扩展宏，它把内存管理、平台支持和虚拟化组件都拉到了同一套地址语言上，是所有上层内存子系统真正共享的第一层基础设施。
+`ax-memory-addr` 看起来简单，但它解决的是整个代码库最不适合分散实现的一类问题：地址与区间的基本语义。通过统一类型、统一对齐逻辑、统一区间模型和统一扩展宏，它把内存管理、平台支持和虚拟化组件都拉到了同一套地址语言上，是所有上层内存子系统真正共享的第一层基础设施。

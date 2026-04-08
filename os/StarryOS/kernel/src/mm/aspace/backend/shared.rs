@@ -3,8 +3,8 @@ use core::ops::Deref;
 
 use ax_errno::AxResult;
 use ax_hal::paging::{MappingFlags, PageSize, PageTableCursor};
+use ax_memory_addr::{MemoryAddr, PhysAddr, VirtAddr, VirtAddrRange};
 use ax_sync::Mutex;
-use memory_addr::{MemoryAddr, PhysAddr, VirtAddr, VirtAddrRange};
 
 use super::{AddrSpace, Backend, BackendOps, alloc_frame, dealloc_frame, divide_page, pages_in};
 

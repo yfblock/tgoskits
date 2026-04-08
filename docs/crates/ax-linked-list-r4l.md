@@ -1,4 +1,4 @@
-# `linked_list_r4l` 技术文档
+# `ax-linked-list-r4l` 技术文档
 
 > 路径：`components/linked_list_r4l`
 > 类型：库 crate
@@ -6,11 +6,11 @@
 > 版本：`0.3.0`
 > 文档依据：`Cargo.toml`、`README.md`、`src/lib.rs`、`src/raw_list.rs`、`src/linked_list.rs`、`tests/cursor.rs`
 
-`linked_list_r4l` 提供一套来自 Rust-for-Linux 思路的 intrusive 双向链表实现，重点能力是“任意节点 O(1) 删除”。它属于容器叶子基础件：不是调度器、不是任务队列框架，也不是通用对象生命周期系统。
+`ax-linked-list-r4l` 提供一套来自 Rust-for-Linux 思路的 intrusive 双向链表实现，重点能力是“任意节点 O(1) 删除”。它属于容器叶子基础件：不是调度器、不是任务队列框架，也不是通用对象生命周期系统。
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
-普通 `LinkedList` 很难在持有节点句柄时做到 O(1) 任意删除，而内核调度队列、等待队列常常需要“节点自己带着链表指针”。`linked_list_r4l` 就是为这种场景准备的：
+普通 `LinkedList` 很难在持有节点句柄时做到 O(1) 任意删除，而内核调度队列、等待队列常常需要“节点自己带着链表指针”。`ax-linked-list-r4l` 就是为这种场景准备的：
 
 - 节点把 `Links<Self>` 内嵌到对象里。
 - 链表只串接这些 links，不额外分配节点壳。
@@ -61,14 +61,14 @@
 - `def_node!`：为简单节点类型提供低样板定义方式。
 
 ### 2.3 使用边界
-- `linked_list_r4l` 只提供容器语义，不提供调度、公平性或优先级逻辑。
+- `ax-linked-list-r4l` 只提供容器语义，不提供调度、公平性或优先级逻辑。
 - 它也不是通用“安全集合”；`RawList` 暴露了大量 `unsafe`，使用者必须自己保证节点生命周期。
 - 若元素需要同时挂多条链，必须由调用方自己建多组 `Links`，这不是链表内部自动完成的事。
 
 ## 3. 依赖关系图谱
 ```mermaid
 graph LR
-    linked_list_r4l["linked_list_r4l"] --> axsched["axsched FIFO / RR"]
+    ax_linked_list_r4l["ax-linked-list-r4l"] --> axsched["axsched FIFO / RR"]
     axsched --> ax-task["ax-task"]
 ```
 
@@ -83,7 +83,7 @@ graph LR
 ### 4.1 依赖配置
 ```toml
 [dependencies]
-linked_list_r4l = { workspace = true }
+ax-linked-list-r4l = { workspace = true }
 ```
 
 ### 4.2 修改时的关键约束
@@ -99,7 +99,7 @@ linked_list_r4l = { workspace = true }
 
 ## 5. 测试策略
 ### 5.1 当前测试形态
-`linked_list_r4l` 具备比较完整的本地测试：
+`ax-linked-list-r4l` 具备比较完整的本地测试：
 
 - `src/raw_list.rs`：覆盖底层链表插入、移除、游标与遍历。
 - `src/linked_list.rs`：覆盖拥有型封装与正反向迭代。
@@ -120,10 +120,10 @@ linked_list_r4l = { workspace = true }
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-在 ArceOS 中，`linked_list_r4l` 主要通过 `axsched` 服务于 FIFO 和 RR ready queue。它是调度器底层容器，不是调度器本体。
+在 ArceOS 中，`ax-linked-list-r4l` 主要通过 `axsched` 服务于 FIFO 和 RR ready queue。它是调度器底层容器，不是调度器本体。
 
 ### 6.2 StarryOS
 StarryOS 若复用同一任务/调度栈，也会间接受益于该链表。但其分层角色仍然只是 intrusive 容器。
 
 ### 6.3 Axvisor
-当前仓库里 Axvisor 没有把 `linked_list_r4l` 作为核心容器直接使用；即便未来复用，它也仍应保持为低层数据结构，而不是虚拟化事件框架。
+当前仓库里 Axvisor 没有把 `ax-linked-list-r4l` 作为核心容器直接使用；即便未来复用，它也仍应保持为低层数据结构，而不是虚拟化事件框架。

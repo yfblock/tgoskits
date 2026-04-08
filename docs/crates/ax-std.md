@@ -44,7 +44,7 @@ graph LR
     current --> ax-feat["ax-feat"]
     current --> axio["ax-io"]
     current --> ax_kspin["ax-kspin"]
-    current --> lazyinit["lazyinit"]
+    current --> ax_lazyinit["ax-lazyinit"]
     arceos_affinity["arceos-affinity"] --> current
     arceos_display["arceos-display"] --> current
     arceos_exception["arceos-exception"] --> current
@@ -61,7 +61,7 @@ graph LR
 - `ax-feat`
 - `axio`
 - `ax-kspin`
-- `lazyinit`
+- `ax-lazyinit`
 
 ### 3.2 间接本地依赖
 - `ax-arm-pl011`

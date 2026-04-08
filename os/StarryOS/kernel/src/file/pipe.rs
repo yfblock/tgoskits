@@ -6,6 +6,7 @@ use core::{
 };
 
 use ax_errno::{AxError, AxResult};
+use ax_memory_addr::PAGE_SIZE_4K;
 use ax_sync::Mutex;
 use ax_task::{
     current,
@@ -13,7 +14,6 @@ use ax_task::{
 };
 use axpoll::{IoEvents, PollSet, Pollable};
 use linux_raw_sys::{general::S_IFIFO, ioctl::FIONREAD};
-use memory_addr::PAGE_SIZE_4K;
 use ringbuf::{
     HeapRb,
     traits::{Consumer, Observer, Producer},

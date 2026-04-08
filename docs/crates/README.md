@@ -68,17 +68,22 @@
 | `ax-fs-ramfs` | 组件层 | `components/axfs_crates/axfs_ramfs` | 1 | 2 | [查看](./ax-fs-ramfs.md) |
 | `ax-fs-vfs` | 组件层 | `components/axfs_crates/axfs_vfs` | 1 | 4 | [查看](./ax-fs-vfs.md) |
 | `ax-hal` | ArceOS 层 | `os/arceos/modules/axhal` | 13 | 15 | [查看](./ax-hal.md) |
+| `ax-handler-table` | 组件层 | `components/handler_table` | 0 | 1 | [查看](./ax-handler-table.md) |
 | `ax-helloworld` | ArceOS 层 | `os/arceos/examples/helloworld` | 1 | 0 | [查看](./ax-helloworld.md) |
 | `ax-helloworld-myplat` | ArceOS 层 | `os/arceos/examples/helloworld-myplat` | 8 | 0 | [查看](./ax-helloworld-myplat.md) |
 | `ax-httpclient` | ArceOS 层 | `os/arceos/examples/httpclient` | 1 | 0 | [查看](./ax-httpclient.md) |
 | `ax-httpserver` | ArceOS 层 | `os/arceos/examples/httpserver` | 1 | 0 | [查看](./ax-httpserver.md) |
 | `ax-input` | ArceOS 层 | `os/arceos/modules/axinput` | 3 | 3 | [查看](./ax-input.md) |
+| `ax-int-ratio` | 组件层 | `components/int_ratio` | 0 | 3 | [查看](./ax-int-ratio.md) |
 | `ax-io` | 组件层 | `components/axio` | 1 | 9 | [查看](./ax-io.md) |
 | `ax-ipi` | ArceOS 层 | `os/arceos/modules/axipi` | 5 | 3 | [查看](./ax-ipi.md) |
 | `ax-kernel-guard` | 组件层 | `components/kernel_guard` | 1 | 6 | [查看](./ax-kernel-guard.md) |
 | `ax-kspin` | 组件层 | `components/kspin` | 1 | 21 | [查看](./ax-kspin.md) |
+| `ax-lazyinit` | 组件层 | `components/ax-lazyinit` | 0 | 17 | [查看](./ax-lazyinit.md) |
 | `ax-libc` | ArceOS 层 | `os/arceos/ulib/axlibc` | 4 | 0 | [查看](./ax-libc.md) |
+| `ax-linked-list-r4l` | 组件层 | `components/linked_list_r4l` | 0 | 1 | [查看](./ax-linked-list-r4l.md) |
 | `ax-log` | ArceOS 层 | `os/arceos/modules/axlog` | 2 | 5 | [查看](./ax-log.md) |
+| `ax-memory-addr` | 组件层 | `components/axmm_crates/memory_addr` | 0 | 24 | [查看](./ax-memory-addr.md) |
 | `ax-memory-set` | 组件层 | `components/axmm_crates/memory_set` | 2 | 3 | [查看](./ax-memory-set.md) |
 | `ax-mm` | ArceOS 层 | `os/arceos/modules/axmm` | 8 | 4 | [查看](./ax-mm.md) |
 | `ax-net` | ArceOS 层 | `os/arceos/modules/axnet` | 8 | 4 | [查看](./ax-net.md) |
@@ -130,16 +135,11 @@
 | `define-weak-traits` | 组件层 | `components/crate_interface/test_crates/define-weak-traits` | 1 | 4 | [查看](./define-weak-traits.md) |
 | `deptool` | ArceOS 层 | `os/arceos/tools/deptool` | 0 | 0 | [查看](./deptool.md) |
 | `fxmac_rs` | 组件层 | `components/fxmac_rs` | 1 | 1 | [查看](./fxmac_rs.md) |
-| `ax-handler-table` | 组件层 | `components/handler_table` | 0 | 1 | [查看](./ax-handler-table.md) |
 | `hello-kernel` | 组件层 | `components/axplat_crates/examples/hello-kernel` | 5 | 0 | [查看](./hello-kernel.md) |
 | `impl-simple-traits` | 组件层 | `components/crate_interface/test_crates/impl-simple-traits` | 2 | 1 | [查看](./impl-simple-traits.md) |
 | `impl-weak-partial` | 组件层 | `components/crate_interface/test_crates/impl-weak-partial` | 2 | 1 | [查看](./impl-weak-partial.md) |
 | `impl-weak-traits` | 组件层 | `components/crate_interface/test_crates/impl-weak-traits` | 2 | 1 | [查看](./impl-weak-traits.md) |
-| `ax-int-ratio` | 组件层 | `components/int_ratio` | 0 | 3 | [查看](./ax-int-ratio.md) |
 | `irq-kernel` | 组件层 | `components/axplat_crates/examples/irq-kernel` | 7 | 0 | [查看](./irq-kernel.md) |
-| `lazyinit` | 组件层 | `components/lazyinit` | 0 | 17 | [查看](./lazyinit.md) |
-| `linked_list_r4l` | 组件层 | `components/linked_list_r4l` | 0 | 1 | [查看](./linked_list_r4l.md) |
-| `memory_addr` | 组件层 | `components/axmm_crates/memory_addr` | 0 | 24 | [查看](./memory_addr.md) |
 | `mingo` | ArceOS 层 | `os/arceos/tools/raspi4/chainloader` | 0 | 0 | [查看](./mingo.md) |
 | `ax-percpu-macros` | 组件层 | `components/percpu/percpu_macros` | 0 | 1 | [查看](./ax-percpu-macros.md) |
 | `range-alloc-arceos` | 组件层 | `components/range-alloc-arceos` | 0 | 1 | [查看](./range-alloc-arceos.md) |

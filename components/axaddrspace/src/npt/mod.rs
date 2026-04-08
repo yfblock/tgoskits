@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use ax_errno::{ax_err, ax_err_type};
+use ax_memory_addr::PhysAddr;
 use ax_memory_set::MappingError;
 use ax_page_table_entry::MappingFlags;
 use ax_page_table_multiarch::{PageSize, PagingHandler};
-use memory_addr::PhysAddr;
 
 use crate::GuestPhysAddr;
 

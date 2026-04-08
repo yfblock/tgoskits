@@ -37,6 +37,6 @@ buddy-slab-allocator = { workspace = true, optional = true }
 cfg-if.workspace = true
 ax-kspin.workspace = true
 log.workspace = true
-memory_addr.workspace = true
+ax-memory-addr.workspace = true
 ax-percpu = { workspace = true, optional = true }
 strum = { version = "0.27.2", default-features = false, features = ["derive"] }

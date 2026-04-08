@@ -62,15 +62,15 @@ impl MemIf for DummyMem {
         &[]
     }
 
-    fn phys_to_virt(_paddr: memory_addr::PhysAddr) -> memory_addr::VirtAddr {
+    fn phys_to_virt(_paddr: ax_memory_addr::PhysAddr) -> ax_memory_addr::VirtAddr {
         va!(0)
     }
 
-    fn virt_to_phys(_vaddr: memory_addr::VirtAddr) -> memory_addr::PhysAddr {
+    fn virt_to_phys(_vaddr: ax_memory_addr::VirtAddr) -> ax_memory_addr::PhysAddr {
         pa!(0)
     }
 
-    fn kernel_aspace() -> (memory_addr::VirtAddr, usize) {
+    fn kernel_aspace() -> (ax_memory_addr::VirtAddr, usize) {
         (va!(0), 0)
     }
 }

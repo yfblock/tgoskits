@@ -1,7 +1,7 @@
-# lazyinit
+# ax-lazyinit
 
-[![Crates.io](https://img.shields.io/crates/v/lazyinit)](https://crates.io/crates/lazyinit)
-[![Docs.rs](https://docs.rs/lazyinit/badge.svg)](https://docs.rs/lazyinit)
+[![Crates.io](https://img.shields.io/crates/v/ax-lazyinit)](https://crates.io/crates/ax-lazyinit)
+[![Docs.rs](https://docs.rs/ax-lazyinit/badge.svg)](https://docs.rs/ax-lazyinit)
 [![CI](https://github.com/arceos-org/lazyinit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/lazyinit/actions/workflows/ci.yml)
 
 Initialize a static value lazily.
@@ -25,7 +25,7 @@ The core abstraction is a struct that wraps a value and manages its initializati
 ## Examples
 
 ```rust
-use lazyinit::LazyInit;
+use ax_lazyinit::LazyInit;
 
 static VALUE: LazyInit<u32> = LazyInit::new();
 assert!(!VALUE.is_inited());
@@ -42,7 +42,7 @@ assert_eq!(VALUE.get(), Some(&233));
 Only one of the multiple initializations can succeed:
 
 ```rust
-use lazyinit::LazyInit;
+use ax_lazyinit::LazyInit;
 use std::time::Duration;
 
 const N: usize = 16;

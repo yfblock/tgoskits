@@ -32,7 +32,7 @@ axaddrspace = "0.5.0"
 # Interface definition tools
 ax-crate-interface = "0.5.0"
 # Physical/virtual address types
-memory_addr = "0.6.1"
+ax-memory-addr = "0.6.1"
 # CPU mask
 ax-cpumask = "0.3.0"
 

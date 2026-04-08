@@ -37,7 +37,7 @@ memoffset = { version = ">=0.6.5", features = ["unstable_const"] }
 
 ax-errno = "0.4.2"
 ax-page-table-entry = "0.8.1"
-memory_addr = "0.6.1"
+ax-memory-addr = "0.6.1"
 
 axaddrspace = "0.5.0"
 axvcpu = "0.5.0"

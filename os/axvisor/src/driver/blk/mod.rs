@@ -34,7 +34,7 @@ pub struct DmaImpl;
 #[cfg(any(feature = "sdmmc", feature = "phytium-blk"))]
 impl rdif_block::dma_api::DmaOp for DmaImpl {
     fn page_size(&self) -> usize {
-        memory_addr::PAGE_SIZE_4K
+        ax_memory_addr::PAGE_SIZE_4K
     }
 
     unsafe fn map_single(

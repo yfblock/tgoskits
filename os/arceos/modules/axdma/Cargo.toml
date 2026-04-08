@@ -23,4 +23,4 @@ ax-mm.workspace = true
 buddy-slab-allocator = { workspace = true, optional = true }
 ax-kspin.workspace = true
 log.workspace = true
-memory_addr.workspace = true
+ax-memory-addr.workspace = true

@@ -43,7 +43,7 @@
 use core::time::Duration;
 
 pub use ax_errno::AxResult;
-pub use memory_addr::{PhysAddr, VirtAddr};
+pub use ax_memory_addr::{PhysAddr, VirtAddr};
 use trait_ffi::*;
 
 /// A simple IRQ handler function pointer type.

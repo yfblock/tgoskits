@@ -10,8 +10,8 @@ use core::{cell::RefCell, ops::DerefMut};
 
 use ax_driver::prelude::*;
 use ax_hal::time::{NANOS_PER_MICROS, wall_time_nanos};
+use ax_lazyinit::LazyInit;
 use ax_sync::Mutex;
-use lazyinit::LazyInit;
 use smoltcp::{
     iface::{Config, Interface, SocketHandle, SocketSet},
     phy::{Device, DeviceCapabilities, Medium, RxToken, TxToken},

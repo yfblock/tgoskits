@@ -243,7 +243,7 @@ graph LR
     current --> axplat["ax-plat"]
     current --> ax_int_ratio["ax-int-ratio"]
     current --> ax_kspin["ax-kspin"]
-    current --> lazyinit["lazyinit"]
+    current --> ax_lazyinit["ax-lazyinit"]
     current --> ax-percpu["ax-percpu"]
     arceos_helloworld_myplat["ax-helloworld-myplat"] --> current
     ax-hal["ax-hal"] --> current
@@ -258,7 +258,7 @@ graph LR
 - `axplat`
 - `ax-int-ratio`
 - `ax-kspin`
-- `lazyinit`
+- `ax-lazyinit`
 - `ax-percpu`
 
 ### 3.2 间接本地依赖

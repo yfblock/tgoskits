@@ -5,7 +5,7 @@ use core::{
     ops::{Deref, DerefMut, Range},
 };
 
-pub use memory_addr::{PAGE_SIZE_4K, PhysAddr, VirtAddr, pa, va};
+pub use ax_memory_addr::{PAGE_SIZE_4K, PhysAddr, VirtAddr, pa, va};
 
 bitflags::bitflags! {
     /// The flags of a physical memory region.

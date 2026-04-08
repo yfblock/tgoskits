@@ -4,8 +4,8 @@ use core::{any::Any, slice};
 use ax_driver::prelude::DisplayDriverOps;
 use ax_errno::AxError;
 use ax_hal::mem::virt_to_phys;
+use ax_memory_addr::{PhysAddrRange, VirtAddr};
 use axfs_ng_vfs::{NodeFlags, VfsError, VfsResult};
-use memory_addr::{PhysAddrRange, VirtAddr};
 use starry_vm::VmMutPtr;
 
 use crate::pseudofs::{DeviceMmap, DeviceOps};

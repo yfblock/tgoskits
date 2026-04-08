@@ -31,6 +31,6 @@ aarch64_sysreg = "0.3.1"
 ax-errno = "0.4.2"
 bitmaps = {version = "3.2", default-features = false}
 log = "0.4"
-memory_addr = "0.6.1"
+ax-memory-addr = "0.6.1"
 spin = "0.10"
 tock-registers = "0.10"

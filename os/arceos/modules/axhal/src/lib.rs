@@ -36,7 +36,7 @@ extern crate log;
 
 #[allow(unused_imports)]
 #[macro_use]
-extern crate memory_addr;
+extern crate ax_memory_addr;
 
 cfg_if::cfg_if! {
     if #[cfg(feature = "myplat")] {

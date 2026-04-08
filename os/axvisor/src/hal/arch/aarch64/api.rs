@@ -58,7 +58,7 @@ impl ArchIf for ArchImpl {
         panic!("No GIC driver found");
     }
 
-    fn get_host_gicd_base() -> memory_addr::PhysAddr {
+    fn get_host_gicd_base() -> ax_memory_addr::PhysAddr {
         let mut gic = rdrive::get_one::<rdif_intc::Intc>()
             .expect("Failed to get GIC driver")
             .lock()
@@ -76,7 +76,7 @@ impl ArchIf for ArchImpl {
         panic!("No GIC driver found");
     }
 
-    fn get_host_gicr_base() -> memory_addr::PhysAddr {
+    fn get_host_gicr_base() -> ax_memory_addr::PhysAddr {
         let mut gic = rdrive::get_one::<rdif_intc::Intc>()
             .expect("Failed to get GIC driver")
             .lock()

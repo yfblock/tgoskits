@@ -1,4 +1,4 @@
-# `crate_interface_lite` 技术文档
+# `ax-crate-interface-lite` 技术文档
 
 > 路径：`components/crate_interface/crate_interface_lite`
 > 类型：库 crate
@@ -6,7 +6,7 @@
 > 版本：`0.1.0`
 > 文档依据：当前仓库源码、`Cargo.toml`、`README.md`、`src/lib.rs`、`tests/test_crate_interface.rs`、同仓库 `components/crate_interface/*`
 
-`crate_interface_lite` 的定位很明确：它是 `crate_interface` 的一个**轻量替代实现**，用声明宏而不是过程宏来建立“在一个 crate 定义 trait、在另一个 crate 提供实现、再在任意地方静态调用”的桥接关系。它不是服务发现框架，不是运行时插件系统，也不是依赖注入容器。
+`ax-crate-interface-lite` 的定位很明确：它是 `crate_interface` 的一个**轻量替代实现**，用声明宏而不是过程宏来建立“在一个 crate 定义 trait、在另一个 crate 提供实现、再在任意地方静态调用”的桥接关系。它不是服务发现框架，不是运行时插件系统，也不是依赖注入容器。
 
 ## 1. 架构设计分析
 
@@ -97,11 +97,11 @@
 
 从当前仓库的真实调用关系看：
 
-- `crate_interface_lite` 主要在自己的测试里使用
+- `ax-crate-interface-lite` 主要在自己的测试里使用
 - 真实系统组件更常使用完整的 `crate_interface`
 - 例如 `axvisor_api` 通过 `crate_interface` 生成更复杂的 API 桥接
 
-因此在本仓库里，`crate_interface_lite` 更像一个“低依赖备用实现”或“最小语义验证版本”，而不是主流接口桥接底座。
+因此在本仓库里，`ax-crate-interface-lite` 更像一个“低依赖备用实现”或“最小语义验证版本”，而不是主流接口桥接底座。
 
 ## 2. 核心功能说明
 
@@ -126,7 +126,7 @@ README 与宏定义共同表明，它当前刻意保留了几个限制：
 
 ### 2.3 最关键的边界澄清
 
-`crate_interface_lite` 不是：
+`ax-crate-interface-lite` 不是：
 
 - 运行时注册中心
 - 可热插拔插件机制
@@ -150,13 +150,13 @@ README 与宏定义共同表明，它当前刻意保留了几个限制：
 与之对照的真实现象是：
 
 - 主工作区其他组件目前主要使用完整版 `crate_interface`
-- 尚未看到 ArceOS / StarryOS / Axvisor 主线直接依赖 `crate_interface_lite`
+- 尚未看到 ArceOS / StarryOS / Axvisor 主线直接依赖 `ax-crate-interface-lite`
 
 ### 3.3 关系解读
 
 | 关系 | 说明 |
 | --- | --- |
-| `crate_interface_lite` -> 自测用例 | 验证 define/impl/call 的最小闭环 |
+| `ax-crate-interface-lite` -> 自测用例 | 验证 define/impl/call 的最小闭环 |
 | 完整版 `crate_interface` -> 系统主线组件 | 当前仓库里更常见的实际接线方式 |
 
 ## 4. 开发指南
@@ -170,7 +170,7 @@ README 与宏定义共同表明，它当前刻意保留了几个限制：
 - 接口全是静态函数风格
 - 单一实现就够用
 
-可以优先考虑 `crate_interface_lite`。
+可以优先考虑 `ax-crate-interface-lite`。
 
 当你需要：
 
@@ -229,4 +229,4 @@ README 与宏定义共同表明，它当前刻意保留了几个限制：
 
 ## 7. 总结
 
-`crate_interface_lite` 的价值在于“够小、够直接、够静态”。它把跨 crate 接口桥接压缩成三组声明宏和一套链接符号协议，适合做低依赖的接口适配层。理解它时最重要的边界是：它是**静态链接层面的接口桥**，不是完整的接口管理框架。
+`ax-crate-interface-lite` 的价值在于“够小、够直接、够静态”。它把跨 crate 接口桥接压缩成三组声明宏和一套链接符号协议，适合做低依赖的接口适配层。理解它时最重要的边界是：它是**静态链接层面的接口桥**，不是完整的接口管理框架。

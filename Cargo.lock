@@ -647,6 +647,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ax-ctor-bare-macros"
+version = "0.4.1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
 name = "ax-display"
 version = "0.5.0"
 dependencies = [
@@ -2801,16 +2810,7 @@ checksum = "52560adf09603e58c9a7ee1fe1dcb95a16927b17c127f0ac02d6e768a0e25bc1"
 name = "ctor_bare"
 version = "0.4.1"
 dependencies = [
- "ctor_bare_macros",
-]
-
-[[package]]
-name = "ctor_bare_macros"
-version = "0.4.1"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.117",
+ "ax-ctor-bare-macros",
 ]
 
 [[package]]

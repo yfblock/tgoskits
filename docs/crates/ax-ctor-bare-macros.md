@@ -1,4 +1,4 @@
-# `ctor_bare_macros` 技术文档
+# `ax-ctor-bare-macros` 技术文档
 
 > 路径：`components/ctor_bare/ctor_bare_macros`
 > 类型：过程宏库
@@ -6,7 +6,7 @@
 > 版本：`0.2.1`
 > 文档依据：当前仓库源码、`components/ctor_bare/Cargo.toml`、`components/ctor_bare/README.md`、`components/ctor_bare/ctor_bare_macros/Cargo.toml`、`components/ctor_bare/ctor_bare_macros/src/lib.rs`、`components/ctor_bare/ctor_bare/tests/*`
 
-`ctor_bare_macros` 是 `ctor_bare` 的编译期搭档。它的职责只有一个：把一个普通 Rust 函数改写成“可被放进 `.init_array` 的构造函数入口”。它不是初始化运行时，也不负责遍历 `.init_array`，更不是完整的启动编排框架。
+`ax-ctor-bare-macros` 是 `ctor_bare` 的编译期搭档。它的职责只有一个：把一个普通 Rust 函数改写成“可被放进 `.init_array` 的构造函数入口”。它不是初始化运行时，也不负责遍历 `.init_array`，更不是完整的启动编排框架。
 
 ## 1. 架构设计分析
 
@@ -59,7 +59,7 @@
 - 让符号名稳定
 - 让构造函数调用约定尽可能简单
 
-因此 `ctor_bare_macros` 实际上还承担了一个“小型 ABI 规整器”的角色。
+因此 `ax-ctor-bare-macros` 实际上还承担了一个“小型 ABI 规整器”的角色。
 
 ### 1.4 错误诊断策略
 
@@ -78,9 +78,9 @@
 
 - `ctor_bare::register_ctor`
 
-来使用这个宏，而不是直接依赖 `ctor_bare_macros`。这说明它是一个典型的“内部辅助宏 crate”：
+来使用这个宏，而不是直接依赖 `ax-ctor-bare-macros`。这说明它是一个典型的“内部辅助宏 crate”：
 
-- `ctor_bare_macros` 负责登记
+- `ax-ctor-bare-macros` 负责登记
 - `ctor_bare` 负责运行时遍历执行
 
 ## 2. 核心功能说明
@@ -98,14 +98,14 @@
 当前真实链路是：
 
 1. 用户代码写 `#[register_ctor] fn foo() { ... }`
-2. `ctor_bare_macros` 生成 `.init_array` 静态项和 `extern "C"` 函数
+2. `ax-ctor-bare-macros` 生成 `.init_array` 静态项和 `extern "C"` 函数
 3. `ctor_bare::call_ctors()` 运行时遍历并执行这些函数
 
 因此这个 crate 只参与第 1 到第 2 步，且完全属于编译期。
 
 ### 2.3 最关键的边界澄清
 
-`ctor_bare_macros` 不负责：
+`ax-ctor-bare-macros` 不负责：
 
 - 何时调用构造函数
 - 调用多少次
@@ -132,13 +132,13 @@
 
 通过 `ctor_bare` 间接接入的链路：
 
-- `ctor_bare_macros` -> `ctor_bare` -> `ax-runtime` -> 上层系统启动路径
+- `ax-ctor-bare-macros` -> `ctor_bare` -> `ax-runtime` -> 上层系统启动路径
 
 ### 3.3 关系解读
 
 | 层级 | 角色 |
 | --- | --- |
-| `ctor_bare_macros` | 编译期注册器 |
+| `ax-ctor-bare-macros` | 编译期注册器 |
 | `ctor_bare` | 运行时执行器 |
 | `ax-runtime` | 决定调用时机的系统启动层 |
 
@@ -202,4 +202,4 @@
 
 ## 7. 总结
 
-`ctor_bare_macros` 是一个非常纯粹的过程宏辅助 crate。它做的事情只有“把函数登记到 `.init_array` 并规整成可调用入口”，既不执行这些函数，也不管理启动流程。最重要的边界是：它是**注册器**，不是运行时。
+`ax-ctor-bare-macros` 是一个非常纯粹的过程宏辅助 crate。它做的事情只有“把函数登记到 `.init_array` 并规整成可调用入口”，既不执行这些函数，也不管理启动流程。最重要的边界是：它是**注册器**，不是运行时。

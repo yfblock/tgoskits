@@ -1,7 +1,7 @@
 #![no_std]
 #![doc = include_str!("../README.md")]
 
-pub use ctor_bare_macros::register_ctor;
+pub use ax_ctor_bare_macros::register_ctor;
 
 /// Placeholder for the `.init_array` section, so that
 /// the `__init_array_start` and `__init_array_end` symbols can be generated.

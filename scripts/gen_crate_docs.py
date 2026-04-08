@@ -264,7 +264,7 @@ CURATED_DOCS = {
     "define-simple-traits",
     "define-weak-traits",
     "ctor_bare",
-    "ctor_bare_macros",
+    "ax-ctor-bare-macros",
     "ax-cap-access",
     "bitmap-allocator",
     "ax-cpumask",

@@ -28,7 +28,7 @@
 
 | 项目 | 作用 |
 | --- | --- |
-| `pub use ctor_bare_macros::register_ctor` | 向外重新导出注册宏 |
+| `pub use ax_ctor_bare_macros::register_ctor` | 向外重新导出注册宏 |
 | `_SECTION_PLACE_HOLDER` | 放在 `.init_array` 的零长度占位，保证起止符号可生成 |
 | `call_ctors()` | 遍历 `.init_array` 并调用其中的构造函数 |
 
@@ -119,7 +119,7 @@ README 已经说明了两种使用模式：
 
 | 依赖 | 作用 |
 | --- | --- |
-| `ctor_bare_macros` | 提供 `#[register_ctor]` 属性宏 |
+| `ax-ctor-bare-macros` | 提供 `#[register_ctor]` 属性宏 |
 
 ### 3.2 主要消费者
 
@@ -135,7 +135,7 @@ README 已经说明了两种使用模式：
 
 | 层级 | 角色 |
 | --- | --- |
-| `ctor_bare_macros` | 编译期登记函数指针 |
+| `ax-ctor-bare-macros` | 编译期登记函数指针 |
 | `ctor_bare` | 运行时遍历 `.init_array` |
 | `ax-runtime` | 在系统启动序列中选择何时执行这些函数 |
 
@@ -167,7 +167,7 @@ README 已经说明了两种使用模式：
 ### 4.3 如果要扩展能力，应该放在哪一层
 
 - 分阶段启动、依赖排序：放在上层运行时
-- 注册函数的编译期约束：放在 `ctor_bare_macros`
+- 注册函数的编译期约束：放在 `ax-ctor-bare-macros`
 - 遍历 `.init_array` 的底层逻辑：保留在 `ctor_bare`
 
 ## 5. 测试策略

@@ -219,7 +219,7 @@ ax-driver-vsock = { path = "components/axdriver_crates/axdriver_vsock" }
 
 # === ax-percpu ===
 ax-percpu = { path = "components/percpu/percpu" }
-percpu_macros = { path = "components/percpu/percpu_macros" }
+ax-percpu-macros = { path = "components/percpu/percpu_macros" }
 
 # === page_table ===
 ax-page-table-entry = { path = "components/page_table_multiarch/page_table_entry" }

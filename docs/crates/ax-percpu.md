@@ -34,7 +34,7 @@
 
 | 模块 | 作用 |
 | --- | --- |
-| `percpu_macros` | `#[def_percpu]`、符号偏移与架构汇编生成 |
+| `ax-percpu-macros` | `#[def_percpu]`、符号偏移与架构汇编生成 |
 | `custom/tp.rs` | custom-base 模式下的线程指针/基址辅助 |
 
 ### 1.3 `#[def_percpu]`：最核心的接口
@@ -161,7 +161,7 @@
 
 | 依赖 | 作用 |
 | --- | --- |
-| `percpu_macros` | 生成 per-CPU 静态变量与访问代码 |
+| `ax-percpu-macros` | 生成 per-CPU 静态变量与访问代码 |
 | `cfg-if` | 选择不同实现路径 |
 | `kernel_guard`（可选） | `preempt` 模式下提供抢占保护 |
 | `x86`（x86_64） | x86 per-CPU 基址相关辅助 |
@@ -186,7 +186,7 @@
 
 ```mermaid
 graph TD
-    A[percpu_macros] --> B[ax-percpu]
+    A[ax-percpu-macros] --> B[ax-percpu]
     B --> C[axplat]
     C --> D[ax-hal]
     D --> E[ax-runtime]

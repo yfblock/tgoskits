@@ -2,7 +2,7 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![doc = include_str!("../README.md")]
 
-extern crate percpu_macros;
+extern crate ax_percpu_macros;
 
 cfg_if::cfg_if! {
     if #[cfg(feature = "sp-naive")] {
@@ -16,7 +16,7 @@ cfg_if::cfg_if! {
     }
 }
 
-pub use percpu_macros::def_percpu;
+pub use ax_percpu_macros::def_percpu;
 
 pub use self::imp::*;
 

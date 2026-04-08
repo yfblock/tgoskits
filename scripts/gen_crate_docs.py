@@ -276,7 +276,7 @@ CURATED_DOCS = {
     "lazyinit",
     "linked_list_r4l",
     "mingo",
-    "percpu_macros",
+    "ax-percpu-macros",
     "impl-simple-traits",
     "impl-weak-partial",
     "impl-weak-traits",

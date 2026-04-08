@@ -1,4 +1,4 @@
-# `percpu_macros` 技术文档
+# `ax-percpu-macros` 技术文档
 
 > 路径：`components/percpu/percpu_macros`
 > 类型：过程宏 crate
@@ -6,7 +6,7 @@
 > 版本：`0.2.3-preview.1`
 > 文档依据：当前仓库源码、`Cargo.toml`、`README.md`、`src/lib.rs`、`src/arch.rs`、`src/naive.rs`
 
-`percpu_macros` 是 `ax-percpu` 运行时体系的编译期一半。它不直接提供 per-CPU 存储区、也不负责初始化每核基址寄存器；它的职责是在编译期把 `#[def_percpu]` 声明展开成 `.percpu` 段内的真实符号、包装类型以及当前 CPU 访问函数。可以把它理解为“per-CPU 数据模型的代码生成器”，而 `ax-percpu` 本体则是“per-CPU 数据模型的运行时承载层”。
+`ax-percpu-macros` 是 `ax-percpu` 运行时体系的编译期一半。它不直接提供 per-CPU 存储区、也不负责初始化每核基址寄存器；它的职责是在编译期把 `#[def_percpu]` 声明展开成 `.percpu` 段内的真实符号、包装类型以及当前 CPU 访问函数。可以把它理解为“per-CPU 数据模型的代码生成器”，而 `ax-percpu` 本体则是“per-CPU 数据模型的运行时承载层”。
 
 ## 1. 架构设计分析
 
@@ -53,7 +53,7 @@
 - `read_current()`
 - `write_current()`
 
-这说明 `percpu_macros` 不是简单把变量加个属性，而是为每个 per-CPU 变量生成一整套访问 API。
+这说明 `ax-percpu-macros` 不是简单把变量加个属性，而是为每个 per-CPU 变量生成一整套访问 API。
 
 ### 1.4 架构相关代码生成
 
@@ -93,7 +93,7 @@
 
 #### `sp-naive`
 
-在单核或测试场景下，`percpu_macros` 可以完全放弃 per-CPU 语义，把变量当成普通全局量访问。这时：
+在单核或测试场景下，`ax-percpu-macros` 可以完全放弃 per-CPU 语义，把变量当成普通全局量访问。这时：
 
 - `mod arch` 切换到 `naive.rs`
 - `offset`/`current_ptr` 本质上都退化为对原始静态地址的访问
@@ -120,7 +120,7 @@
 
 ### 2.2 典型使用场景
 
-`percpu_macros` 并不建议业务代码直接依赖，典型场景都是通过 `ax-percpu` 间接使用：
+`ax-percpu-macros` 并不建议业务代码直接依赖，典型场景都是通过 `ax-percpu` 间接使用：
 
 - 平台层定义 `CPU_ID`、`IS_BSP`
 - `ax-hal` 定义当前任务指针
@@ -131,7 +131,7 @@
 
 需要明确：
 
-- `percpu_macros`：生成代码
+- `ax-percpu-macros`：生成代码
 - `ax-percpu`：提供 section 布局、初始化、每核基址寄存器操作和运行时 API
 
 只有两者组合起来，整个 per-CPU 机制才成立。
@@ -167,7 +167,7 @@
 
 ```mermaid
 graph TD
-    A[percpu_macros] --> B[ax-percpu]
+    A[ax-percpu-macros] --> B[ax-percpu]
     B --> C[axplat]
     C --> D[ax-hal]
     D --> E[ax-task]
@@ -181,7 +181,7 @@ graph TD
 
 ### 4.1 新增 per-CPU 变量时的建议
 
-推荐通过 `ax_percpu::def_percpu` 间接使用本宏，而不是直接依赖 `percpu_macros`。这样可以避免上层代码和运行时实现细节耦合。
+推荐通过 `ax_percpu::def_percpu` 间接使用本宏，而不是直接依赖 `ax-percpu-macros`。这样可以避免上层代码和运行时实现细节耦合。
 
 ### 4.2 维护宏展开时需要重点核对
 
@@ -229,4 +229,4 @@ graph TD
 
 ## 7. 总结
 
-`percpu_macros` 的价值不在于“定义了一个方便的宏”，而在于它把 per-CPU 变量从“一个普通静态量”提升成了“链接布局、基址寄存器和架构快路径共同驱动的局部状态对象”。它是 `ax-percpu` 机制的编译期前半段，也是 ArceOS、StarryOS 和 Axvisor 多核运行时模型能高效落地的关键一环。
+`ax-percpu-macros` 的价值不在于“定义了一个方便的宏”，而在于它把 per-CPU 变量从“一个普通静态量”提升成了“链接布局、基址寄存器和架构快路径共同驱动的局部状态对象”。它是 `ax-percpu` 机制的编译期前半段，也是 ArceOS、StarryOS 和 Axvisor 多核运行时模型能高效落地的关键一环。

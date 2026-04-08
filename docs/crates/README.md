@@ -141,7 +141,7 @@
 | `linked_list_r4l` | 组件层 | `components/linked_list_r4l` | 0 | 1 | [查看](./linked_list_r4l.md) |
 | `memory_addr` | 组件层 | `components/axmm_crates/memory_addr` | 0 | 24 | [查看](./memory_addr.md) |
 | `mingo` | ArceOS 层 | `os/arceos/tools/raspi4/chainloader` | 0 | 0 | [查看](./mingo.md) |
-| `percpu_macros` | 组件层 | `components/percpu/percpu_macros` | 0 | 1 | [查看](./percpu_macros.md) |
+| `ax-percpu-macros` | 组件层 | `components/percpu/percpu_macros` | 0 | 1 | [查看](./ax-percpu-macros.md) |
 | `range-alloc-arceos` | 组件层 | `components/range-alloc-arceos` | 0 | 1 | [查看](./range-alloc-arceos.md) |
 | `riscv-h` | 组件层 | `components/riscv-h` | 0 | 2 | [查看](./riscv-h.md) |
 | `riscv_plic` | 组件层 | `components/riscv_plic` | 0 | 1 | [查看](./riscv_plic.md) |

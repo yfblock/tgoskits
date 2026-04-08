@@ -1,6 +1,6 @@
 use core::sync::atomic::{AtomicBool, Ordering};
 
-use percpu_macros::percpu_symbol_vma;
+use ax_percpu_macros::percpu_symbol_vma;
 
 static IS_INIT: AtomicBool = AtomicBool::new(false);
 
@@ -213,5 +213,5 @@ use crate as ax_percpu;
 /// On x86, we use `gs:SELF_PTR` to store the address of the per-CPU data area base.
 #[cfg(target_arch = "x86_64")]
 #[no_mangle]
-#[percpu_macros::def_percpu]
+#[ax_percpu_macros::def_percpu]
 static SELF_PTR: usize = 0;

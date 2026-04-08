@@ -772,9 +772,9 @@ dependencies = [
 name = "ax-percpu"
 version = "0.4.3"
 dependencies = [
+ "ax-percpu-macros",
  "cfg-if",
  "kernel_guard",
- "percpu_macros",
  "spin 0.10.0",
  "x86",
 ]
@@ -2443,7 +2443,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "percpu_macros"
+name = "ax-percpu-macros"
 version = "0.4.3"
 dependencies = [
  "cfg-if",

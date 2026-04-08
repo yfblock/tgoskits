@@ -52,12 +52,12 @@ graph LR
 - `memory_addr`
 
 ### 3.2 间接本地依赖
+- `ax-cpumask`
 - `ax-memory-set`
 - `ax-page-table-entry`
 - `ax-page-table-multiarch`
 - `axvisor_api_proc`
 - `axvmconfig`
-- `cpumask`
 - `crate_interface`
 - `lazyinit`
 

@@ -20,7 +20,7 @@ axvm
 axvmconfig
 bitmap-allocator
 ax-cap-access
-cpumask
+ax-cpumask
 handler_table
 int_ratio
 kernel_guard

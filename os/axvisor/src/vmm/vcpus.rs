@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use alloc::{collections::BTreeMap, vec::Vec};
-use cpumask::CpuMask;
+use ax_cpumask::CpuMask;
 
 use core::{
     cell::UnsafeCell,

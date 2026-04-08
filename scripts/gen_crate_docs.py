@@ -267,7 +267,7 @@ CURATED_DOCS = {
     "ctor_bare_macros",
     "ax-cap-access",
     "bitmap-allocator",
-    "cpumask",
+    "ax-cpumask",
     "deptool",
     "handler_table",
     "int_ratio",

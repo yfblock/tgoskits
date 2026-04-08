@@ -280,7 +280,7 @@ axvisor_api_proc = { path = "components/axvisor_api/axvisor_api_proc" }
 axhvc = { path = "components/axhvc" }
 axklib = { path = "components/axklib" }
 range-alloc-arceos = { path = "components/range-alloc-arceos" }
-cpumask = { path = "components/cpumask" }
+ax-cpumask = { path = "components/cpumask" }
 ax-config-gen = { path = "components/axconfig-gen/axconfig-gen" }
 ax-config-macros = { path = "components/axconfig-gen/axconfig-macros" }
 

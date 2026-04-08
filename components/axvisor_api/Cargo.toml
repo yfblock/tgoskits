@@ -34,7 +34,7 @@ crate_interface = "0.5.0"
 # Physical/virtual address types
 memory_addr = "0.6.1"
 # CPU mask
-cpumask = "0.3.0"
+ax-cpumask = "0.3.0"
 
 
 [package.metadata.docs.rs]

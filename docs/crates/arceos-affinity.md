@@ -98,7 +98,7 @@ graph LR
 
 ### 3.3 主要消费者
 - `cargo arceos test qemu` 自动发现的任务回归集合。
-- 调整 `ax-task`、`cpumask`、SMP 调度逻辑后的定向回归。
+- 调整 `ax-task`、`ax-cpumask`、SMP 调度逻辑后的定向回归。
 
 ## 4. 开发指南
 ### 4.1 推荐运行方式

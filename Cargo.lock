@@ -631,6 +631,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "ax-cpumask"
+version = "0.3.0"
+dependencies = [
+ "bitmaps",
+]
+
+[[package]]
 name = "ax-display"
 version = "0.5.0"
 dependencies = [
@@ -1340,6 +1347,7 @@ name = "ax-task"
 version = "0.5.0"
 dependencies = [
  "ax-config",
+ "ax-cpumask",
  "ax-errno",
  "ax-hal",
  "ax-kspin",
@@ -1348,7 +1356,6 @@ dependencies = [
  "ax-task",
  "axpoll",
  "cfg-if",
- "cpumask",
  "crate_interface 0.5.0",
  "extern-trait",
  "futures-util",
@@ -1749,6 +1756,7 @@ dependencies = [
  "anyhow",
  "arm-gic-driver 0.17.0",
  "ax-config",
+ "ax-cpumask",
  "ax-errno",
  "ax-hal",
  "ax-kspin",
@@ -1771,7 +1779,6 @@ dependencies = [
  "byte-unit",
  "cfg-if",
  "clap",
- "cpumask",
  "crate_interface 0.5.0",
  "extern-trait",
  "fdt-parser",
@@ -1807,9 +1814,9 @@ dependencies = [
 name = "axvisor_api"
 version = "0.5.0"
 dependencies = [
+ "ax-cpumask",
  "axaddrspace",
  "axvisor_api_proc",
- "cpumask",
  "crate_interface 0.5.0",
  "memory_addr 0.6.1",
 ]
@@ -1830,6 +1837,7 @@ version = "0.5.0"
 dependencies = [
  "arm_vcpu",
  "arm_vgic",
+ "ax-cpumask",
  "ax-errno",
  "ax-page-table-entry",
  "ax-page-table-multiarch",
@@ -1841,7 +1849,6 @@ dependencies = [
  "axvisor_api",
  "axvmconfig",
  "cfg-if",
- "cpumask",
  "log",
  "memory_addr 0.6.1",
  "riscv_vcpu",
@@ -2518,13 +2525,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b2a41393f66f16b0823bb79094d54ac5fbd34ab292ddafb9a0456ac9f87d201"
 dependencies = [
  "libc",
-]
-
-[[package]]
-name = "cpumask"
-version = "0.3.0"
-dependencies = [
- "bitmaps",
 ]
 
 [[package]]

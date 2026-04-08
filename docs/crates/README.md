@@ -41,10 +41,12 @@
 | `ax-api` | ArceOS 层 | `os/arceos/api/arceos_api` | 17 | 1 | [查看](./ax-api.md) |
 | `ax-arm-pl011` | 组件层 | `components/arm_pl011` | 0 | 1 | [查看](./ax-arm-pl011.md) |
 | `ax-arm-pl031` | 组件层 | `components/arm_pl031` | 0 | 1 | [查看](./ax-arm-pl031.md) |
+| `ax-cap-access` | 组件层 | `components/cap_access` | 0 | 1 | [查看](./ax-cap-access.md) |
 | `ax-config` | ArceOS 层 | `os/arceos/modules/axconfig` | 1 | 12 | [查看](./ax-config.md) |
 | `ax-config-gen` | 组件层 | `components/axconfig-gen/axconfig-gen` | 0 | 1 | [查看](./ax-config-gen.md) |
 | `ax-config-macros` | 组件层 | `components/axconfig-gen/axconfig-macros` | 1 | 12 | [查看](./ax-config-macros.md) |
 | `ax-cpu` | 组件层 | `components/axcpu` | 6 | 14 | [查看](./ax-cpu.md) |
+| `ax-cpumask` | 组件层 | `components/cpumask` | 0 | 4 | [查看](./ax-cpumask.md) |
 | `ax-display` | ArceOS 层 | `os/arceos/modules/axdisplay` | 3 | 4 | [查看](./ax-display.md) |
 | `ax-dma` | ArceOS 层 | `os/arceos/modules/axdma` | 7 | 2 | [查看](./ax-dma.md) |
 | `ax-driver` | ArceOS 层 | `os/arceos/modules/axdriver` | 15 | 10 | [查看](./ax-driver.md) |
@@ -118,9 +120,7 @@
 | `axvmconfig` | 组件层 | `components/axvmconfig` | 1 | 4 | [查看](./axvmconfig.md) |
 | `bitmap-allocator` | 组件层 | `components/bitmap-allocator` | 0 | 1 | [查看](./bitmap-allocator.md) |
 | `bwbench-client` | ArceOS 层 | `os/arceos/tools/bwbench_client` | 0 | 0 | [查看](./bwbench-client.md) |
-| `ax-cap-access` | 组件层 | `components/cap_access` | 0 | 1 | [查看](./ax-cap-access.md) |
 | `cargo-axplat` | 组件层 | `components/axplat_crates/cargo-axplat` | 0 | 0 | [查看](./cargo-axplat.md) |
-| `cpumask` | 组件层 | `components/cpumask` | 0 | 4 | [查看](./cpumask.md) |
 | `crate_interface` | 组件层 | `components/crate_interface` | 0 | 22 | [查看](./crate_interface.md) |
 | `crate_interface_lite` | 组件层 | `components/crate_interface/crate_interface_lite` | 0 | 0 | [查看](./crate_interface_lite.md) |
 | `ctor_bare` | 组件层 | `components/ctor_bare/ctor_bare` | 1 | 1 | [查看](./ctor_bare.md) |

@@ -355,7 +355,7 @@ mod tests {
             "lazyinit",
             "ax-sched",
             "ax-cap-access",
-            "cpumask",
+            "ax-cpumask",
             "rsext4",
         ] {
             assert!(

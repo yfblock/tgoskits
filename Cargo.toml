@@ -235,7 +235,7 @@ ctor_bare_macros = { path = "components/ctor_bare/ctor_bare_macros" }
 
 # === memory (axmm_crates) ===
 memory_addr = { path = "components/axmm_crates/memory_addr" }
-memory_set = { path = "components/axmm_crates/memory_set" }
+ax-memory-set = { path = "components/axmm_crates/memory_set" }
 
 # === bitmap-allocator ===
 bitmap-allocator = { path = "components/bitmap-allocator" }

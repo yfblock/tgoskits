@@ -83,7 +83,7 @@
 - 提供包含、重叠、子区间等关系判断
 - 为更高层的 `MemoryArea` / `MemorySet` 提供底层区间语义
 
-这个设计直接决定了 `memory_set`、`ax-mm`、`axaddrspace` 等上层都能围绕同一套区间语义组织逻辑。
+这个设计直接决定了 `ax-memory-set`、`ax-mm`、`axaddrspace` 等上层都能围绕同一套区间语义组织逻辑。
 
 ### 1.7 对齐与遍历
 
@@ -145,7 +145,7 @@
 3. 用 `AddrRange::from_start_size()` 表示连续区间
 4. 用 `PageIter4K` 或 `DynPageIter` 遍历区间内每个页起点
 
-这条主线在 `ax-mm`、`memory_set`、`page_table_multiarch` 和 `axaddrspace` 里都能看到。
+这条主线在 `ax-mm`、`ax-memory-set`、`page_table_multiarch` 和 `axaddrspace` 里都能看到。
 
 ## 3. 依赖关系图谱
 
@@ -157,7 +157,7 @@
 
 仓库内直接或间接依赖它的关键模块包括：
 
-- `memory_set`
+- `ax-memory-set`
 - `page_table_entry`
 - `page_table_multiarch`
 - `axplat`
@@ -173,7 +173,7 @@
 ```mermaid
 graph TD
     A[memory_addr]
-    A --> B[memory_set]
+    A --> B[ax-memory-set]
     A --> C[page_table_entry]
     A --> D[page_table_multiarch]
     A --> E[axplat]
@@ -203,7 +203,7 @@ graph TD
 
 ### 4.3 与上层集成
 
-- 与 `memory_set` 集成时，`AddrRange` 是 `MemoryArea` 的直接区间载体
+- 与 `ax-memory-set` 集成时，`AddrRange` 是 `MemoryArea` 的直接区间载体
 - 与 `page_table_entry` / `page_table_multiarch` 集成时，`PhysAddr` 是页表项和页表页操作的基础地址类型
 - 与 `axaddrspace` 集成时，宏扩展机制可直接派生出 GPA/GVA 类型
 
@@ -230,7 +230,7 @@ graph TD
 ### 5.3 风险点
 
 - 地址运算属于底层公共语义，任何边界错误都会向上放大
-- 若区间构造不严谨，会直接影响 `memory_set`、`ax-mm`、`axaddrspace` 这类核心模块
+- 若区间构造不严谨，会直接影响 `ax-memory-set`、`ax-mm`、`axaddrspace` 这类核心模块
 - 页级迭代若处理不当，会造成页表遍历或映射建立的 off-by-one 错误
 
 ## 6. 跨项目定位分析

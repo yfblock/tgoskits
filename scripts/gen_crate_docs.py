@@ -229,7 +229,7 @@ CURATED_DOCS = {
     "page_table_multiarch",
     "page_table_entry",
     "memory_addr",
-    "memory_set",
+    "ax-memory-set",
     "ax-sync",
     "ax-sched",
     "ax-cpu",

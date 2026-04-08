@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use ax_errno::{ax_err, ax_err_type};
+use ax_memory_set::MappingError;
 use memory_addr::PhysAddr;
-use memory_set::MappingError;
 use page_table_entry::MappingFlags;
 use page_table_multiarch::{PageSize, PagingHandler};
 
@@ -83,7 +83,7 @@ impl<H: PagingHandler> NestedPageTable<H> {
         paddr: PhysAddr,
         size: PageSize,
         flags: page_table_entry::MappingFlags,
-    ) -> memory_set::MappingResult {
+    ) -> ax_memory_set::MappingResult {
         match self {
             #[cfg(not(target_arch = "x86_64"))]
             NestedPageTable::L3(pt) => pt
@@ -102,7 +102,7 @@ impl<H: PagingHandler> NestedPageTable<H> {
     pub fn unmap(
         &mut self,
         vaddr: GuestPhysAddr,
-    ) -> memory_set::MappingResult<(PhysAddr, MappingFlags, PageSize)> {
+    ) -> ax_memory_set::MappingResult<(PhysAddr, MappingFlags, PageSize)> {
         match self {
             #[cfg(not(target_arch = "x86_64"))]
             NestedPageTable::L3(pt) => pt.cursor().unmap(vaddr).map_err(|_| MappingError::BadState),
@@ -118,7 +118,7 @@ impl<H: PagingHandler> NestedPageTable<H> {
         size: usize,
         flags: MappingFlags,
         allow_huge: bool,
-    ) -> memory_set::MappingResult {
+    ) -> ax_memory_set::MappingResult {
         match self {
             #[cfg(not(target_arch = "x86_64"))]
             NestedPageTable::L3(pt) => pt
@@ -134,7 +134,11 @@ impl<H: PagingHandler> NestedPageTable<H> {
     }
 
     /// Unmaps a region.
-    pub fn unmap_region(&mut self, start: GuestPhysAddr, size: usize) -> memory_set::MappingResult {
+    pub fn unmap_region(
+        &mut self,
+        start: GuestPhysAddr,
+        size: usize,
+    ) -> ax_memory_set::MappingResult {
         match self {
             #[cfg(not(target_arch = "x86_64"))]
             NestedPageTable::L3(pt) => pt

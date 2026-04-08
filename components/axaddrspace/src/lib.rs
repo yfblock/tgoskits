@@ -32,10 +32,10 @@ mod npt;
 pub use addr::*;
 pub use address_space::*;
 use ax_errno::AxError;
+use ax_memory_set::MappingError;
 pub use frame::PhysFrame;
 pub use hal::AxMmHal;
 pub use memory_accessor::GuestMemoryAccessor;
-use memory_set::MappingError;
 
 /// Information about nested page faults.
 #[derive(Debug)]

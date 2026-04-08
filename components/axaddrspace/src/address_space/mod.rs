@@ -16,8 +16,8 @@ use alloc::vec::Vec;
 use core::fmt;
 
 use ax_errno::{AxResult, ax_err};
+use ax_memory_set::{MemoryArea, MemorySet};
 use memory_addr::{MemoryAddr, PhysAddr, is_aligned_4k};
-use memory_set::{MemoryArea, MemorySet};
 use page_table_multiarch::PagingHandler;
 
 use crate::{

@@ -36,28 +36,28 @@
 ```mermaid
 graph LR
     current["x86_vlapic"]
+    current --> ax_errno["ax-errno"]
     current --> axaddrspace["axaddrspace"]
     current --> axdevice_base["axdevice_base"]
-    current --> ax_errno["ax-errno"]
     current --> axvisor_api["axvisor_api"]
     current --> memory_addr["memory_addr"]
     x86_vcpu["x86_vcpu"] --> current
 ```
 
 ### 3.1 直接与间接依赖
+- `ax-errno`
 - `axaddrspace`
 - `axdevice_base`
-- `ax-errno`
 - `axvisor_api`
 - `memory_addr`
 
 ### 3.2 间接本地依赖
+- `ax-cpumask`
+- `ax-memory-set`
 - `axvisor_api_proc`
 - `axvmconfig`
-- `ax-cpumask`
 - `crate_interface`
 - `lazyinit`
-- `memory_set`
 - `page_table_entry`
 - `page_table_multiarch`
 

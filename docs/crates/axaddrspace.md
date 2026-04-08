@@ -235,7 +235,7 @@ flowchart TD
 | 依赖 | 作用 |
 | --- | --- |
 | `memory_addr` | 地址类型、对齐和范围基础设施 |
-| `memory_set` | 区域集合与后端映射框架 |
+| `ax-memory-set` | 区域集合与后端映射框架 |
 | `page_table_entry` | `MappingFlags` 与各架构页表项定义 |
 | `page_table_multiarch` | 底层页表引擎与 `PagingHandler` trait |
 | `ax-errno` | 错误模型 |
@@ -259,7 +259,7 @@ flowchart TD
 
 ```mermaid
 graph TD
-    A[memory_addr / memory_set] --> B[axaddrspace]
+    A[memory_addr / ax-memory-set] --> B[axaddrspace]
     C[page_table_entry / page_table_multiarch] --> B
     B --> D[axvm]
     B --> E[axdevice]

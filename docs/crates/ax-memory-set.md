@@ -1,12 +1,12 @@
-# `memory_set` 技术文档
+# `ax-memory-set` 技术文档
 
 > 路径：`components/axmm_crates/memory_set`
 > 类型：库 crate
 > 分层：组件层 / 地址区间集合与映射元数据层
-> 版本：`0.4.1`
+> 版本：`0.6.1`
 > 文档依据：当前仓库源码、`Cargo.toml`、`README.md`、`src/lib.rs`、`src/area.rs`、`src/backend.rs`、`src/set.rs`
 
-`memory_set` 是 ArceOS/StarryOS/Axvisor 这条内存管理链上的“区间集合与操作骨架”。它不直接实现页表，也不直接决定物理页如何分配，而是围绕“若干不重叠地址区间”和“这些区间应如何映射”提供统一的数据结构与操作流程。可以把它理解为一层抽象的 `mmap`/`munmap`/`mprotect` 元数据引擎：上层负责地址空间语义，下层 `Backend` 负责真正操作页表。
+`ax-memory-set` 是 ArceOS/StarryOS/Axvisor 这条内存管理链上的“区间集合与操作骨架”。它不直接实现页表，也不直接决定物理页如何分配，而是围绕“若干不重叠地址区间”和“这些区间应如何映射”提供统一的数据结构与操作流程。可以把它理解为一层抽象的 `mmap`/`munmap`/`mprotect` 元数据引擎：上层负责地址空间语义，下层 `Backend` 负责真正操作页表。
 
 ## 1. 架构设计分析
 
@@ -44,7 +44,7 @@
 - `Flags`
 - `PageTable`
 
-这意味着 `memory_set` 完全不需要知道：
+这意味着 `ax-memory-set` 完全不需要知道：
 
 - 地址究竟是 `VirtAddr` 还是 `GuestPhysAddr`
 - flags 究竟是普通页权限还是嵌套页表权限
@@ -124,13 +124,13 @@
 - 中间替换成新权限
 - 右侧保留原权限
 
-这说明 `memory_set` 并不是简单“存个区间表”，而是明确承担了区间切分与重组算法。
+这说明 `ax-memory-set` 并不是简单“存个区间表”，而是明确承担了区间切分与重组算法。
 
 ### 1.7 一个重要边界：不处理页错误
 
 这点必须明确：
 
-- `memory_set` 不包含 `handle_page_fault`
+- `ax-memory-set` 不包含 `handle_page_fault`
 - `MappingBackend` 也不要求实现页错误处理
 
 页错误处理通常发生在更高层，例如：
@@ -138,7 +138,7 @@
 - `ax-mm` 在自己的 `Backend` 中扩展出 fault 语义
 - `axaddrspace` 在嵌套页表路径中处理缺页
 
-`memory_set` 本身只负责维护“区间元数据”和“区间级页表操作流程”。
+`ax-memory-set` 本身只负责维护“区间元数据”和“区间级页表操作流程”。
 
 ## 2. 核心功能说明
 
@@ -189,7 +189,7 @@
 
 ```mermaid
 graph TD
-    A[memory_addr] --> B[memory_set]
+    A[memory_addr] --> B[ax-memory-set]
     B --> C[ax-mm]
     B --> D[StarryOS kernel mm]
     B --> E[axaddrspace]
@@ -199,7 +199,7 @@ graph TD
 
 ### 3.4 与页表库的边界
 
-需要特别指出的是，`memory_set` 不直接依赖 `page_table_multiarch`。两者的联系发生在更上层：
+需要特别指出的是，`ax-memory-set` 不直接依赖 `page_table_multiarch`。两者的联系发生在更上层：
 
 - `ax-mm`：把 `MemorySet` 与 `ax-hal::paging::PageTable` 拼起来
 - `axaddrspace`：把 `MemorySet` 与嵌套页表 `NestedPageTable` 拼起来
@@ -222,7 +222,7 @@ graph TD
 
 - 区间进入 `MemorySet` 前应保证上层语义已经明确，例如匿名映射、文件映射、设备映射等
 - 权限更新优先走 `protect`，不要用“删掉再重建”替代
-- 若需要懒分配或缺页建图，建议把逻辑实现在后端或更高层，而不是试图把 fault 逻辑塞进 `memory_set`
+- 若需要懒分配或缺页建图，建议把逻辑实现在后端或更高层，而不是试图把 fault 逻辑塞进 `ax-memory-set`
 
 ### 4.3 维护时的关注点
 
@@ -268,4 +268,4 @@ graph TD
 
 ## 7. 总结
 
-`memory_set` 不是一个完整的虚拟内存子系统，但它把“区间集合管理”这件事抽象得非常干净。它一边通过 `MappingBackend` 与页表后端解耦，一边通过 `MemoryArea` 和 `MemorySet` 提供稳定的区间切分、保护和查找逻辑，因此能同时服务于 ArceOS、StarryOS 和 Axvisor 这三条不同但又相通的地址空间实现路径。
+`ax-memory-set` 不是一个完整的虚拟内存子系统，但它把“区间集合管理”这件事抽象得非常干净。它一边通过 `MappingBackend` 与页表后端解耦，一边通过 `MemoryArea` 和 `MemorySet` 提供稳定的区间切分、保护和查找逻辑，因此能同时服务于 ArceOS、StarryOS 和 Axvisor 这三条不同但又相通的地址空间实现路径。

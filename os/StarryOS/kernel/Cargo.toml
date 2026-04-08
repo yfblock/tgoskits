@@ -88,7 +88,7 @@ linux-raw-sys = { version = "0.12", default-features = false, features = [
 ] }
 lock_api = { version = "0.4", features = ["arc_lock"] }
 memory_addr = "0.6.1"
-memory_set = "0.6.1"
+ax-memory-set = "0.6.1"
 num_enum = { version = "0.7", default-features = false }
 ouroboros = { version = "0.18", default-features = false }
 percpu = "0.4.3"

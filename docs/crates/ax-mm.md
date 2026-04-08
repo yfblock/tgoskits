@@ -6,7 +6,7 @@
 > 版本：`0.3.0-preview.3`
 > 文档依据：`Cargo.toml`、`src/lib.rs`、`src/aspace.rs`、`src/backend/mod.rs`、`src/backend/linear.rs`、`src/backend/alloc.rs`
 
-`ax-mm` 是 ArceOS 的虚拟内存管理模块。它把 `ax-hal::paging::PageTable` 提供的页表能力、`memory_set` 提供的区间元数据管理，以及 `ax-alloc` 提供的物理页框分配整合成统一的地址空间抽象 `AddrSpace`，负责建立和维护宿主内核自己的虚拟地址空间。
+`ax-mm` 是 ArceOS 的虚拟内存管理模块。它把 `ax-hal::paging::PageTable` 提供的页表能力、`ax-memory-set` 提供的区间元数据管理，以及 `ax-alloc` 提供的物理页框分配整合成统一的地址空间抽象 `AddrSpace`，负责建立和维护宿主内核自己的虚拟地址空间。
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
@@ -21,7 +21,7 @@
 ### 1.2 内部模块划分
 - `src/lib.rs`：对外 API 入口。负责全局 `KERNEL_ASPACE`、`init_memory_management()`、`iomap()`、`new_user_aspace()` 以及 `MemRegionFlags` 到 `MappingFlags` 的转换。
 - `src/aspace.rs`：核心类型 `AddrSpace` 所在文件，封装映射、取消映射、权限更新、跨地址空间读写和缺页处理逻辑。
-- `src/backend/mod.rs`：定义 `Backend` 枚举，并把 `Linear` 与 `Alloc` 两类映射后端统一到 `memory_set::MappingBackend` 契约上。
+- `src/backend/mod.rs`：定义 `Backend` 枚举，并把 `Linear` 与 `Alloc` 两类映射后端统一到 `ax_memory_set::MappingBackend` 契约上。
 - `src/backend/linear.rs`：线性映射实现，适用于虚拟地址与物理地址存在固定偏移的场景。
 - `src/backend/alloc.rs`：分配式映射实现，支持 eager populate 和按需缺页分配两种模式。
 
@@ -103,7 +103,7 @@ aspace.protect(va.into(), mmio_size, flags)?;
 ```mermaid
 graph LR
     ax-hal["ax-hal::paging / mem / asm"] --> ax-mm["ax-mm"]
-    memory_set["memory_set"] --> ax-mm
+    ax_memory_set["ax-memory-set"] --> ax-mm
     ax-alloc["ax-alloc"] --> ax-mm
     memory_addr["memory_addr"] --> ax-mm
 
@@ -115,7 +115,7 @@ graph LR
 
 ### 3.1 关键直接依赖
 - `ax-hal`：提供页表类型、地址转换、内核地址空间布局和写根页表指令。
-- `memory_set`：保存虚拟区间元数据，并通过 backend trait 协作执行映射。
+- `ax-memory-set`：保存虚拟区间元数据，并通过 backend trait 协作执行映射。
 - `ax-alloc`：为 `Alloc` backend 提供物理页框来源。
 - `memory_addr`、`ax-errno`、`ax-kspin`、`lazyinit`：分别提供地址类型、错误、锁和全局单例初始化。
 

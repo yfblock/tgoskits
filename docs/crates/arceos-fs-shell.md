@@ -33,15 +33,15 @@
 graph LR
     current["arceos-fs-shell"]
     current --> ax_fs_ramfs["ax-fs-ramfs"]
+    current --> ax_fs_vfs["ax-fs-vfs"]
     current --> ax_std["ax-std"]
-    current --> axfs_vfs["ax-fs-vfs"]
     current --> crate_interface["crate_interface"]
 ```
 
 ### 3.1 直接与间接依赖
 - `ax-fs-ramfs`
+- `ax-fs-vfs`
 - `ax-std`
-- `axfs_vfs`
 - `crate_interface`
 
 ### 3.2 间接本地依赖
@@ -51,12 +51,12 @@ graph LR
 - `ax-allocator`
 - `ax-api`
 - `ax-config`
+- `ax-config-gen`
 - `ax-config-macros`
 - `ax-cpu`
+- `ax-cpumask`
 - `ax-display`
 - `ax-dma`
-- `ax-driver`
-- `ax-driver-virtio`
 - 另外还有 `63` 个同类项未在此展开
 
 ### 3.3 被依赖情况

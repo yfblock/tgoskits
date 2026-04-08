@@ -13,4 +13,4 @@ categories.workspace = true
 readme = "README.md"
 
 [dependencies]
-ctor_bare_macros = "0.4.1"
+ax-ctor-bare-macros = { version = "0.4.1", path = "../ctor_bare_macros" }

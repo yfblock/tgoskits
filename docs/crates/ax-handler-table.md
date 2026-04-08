@@ -1,12 +1,12 @@
-# `handler_table` 技术文档
+# `ax-handler-table` 技术文档
 
 > 路径：`components/handler_table`
 > 类型：库 crate
 > 分层：组件层 / 处理器表基础件
-> 版本：`0.1.2`
+> 版本：`0.3.2`
 > 文档依据：`Cargo.toml`、`README.md`、`src/lib.rs`
 
-`handler_table` 是一个固定大小、无锁、仅存函数指针的处理器表。它用 `AtomicUsize` 数组保存 `fn()` 处理函数，支持按槽位注册、注销和调用。它是非常典型的叶子基础件：不是中断控制器、不是事件总线、也不是通用回调注册中心。
+`ax-handler-table` 是一个固定大小、无锁、仅存函数指针的处理器表。它用 `AtomicUsize` 数组保存 `fn()` 处理函数，支持按槽位注册、注销和调用。它是非常典型的叶子基础件：不是中断控制器、不是事件总线、也不是通用回调注册中心。
 
 ## 1. 架构设计分析
 ### 1.1 设计定位
@@ -58,14 +58,14 @@ flowchart TD
 - `handle()`：由平台 IRQ 处理路径在拿到实际 IRQ 号后调用。
 
 ### 2.3 使用边界
-- `handler_table` 不负责从硬件拿 IRQ 号，也不负责 EOI/ACK。
-- `handler_table` 不区分设备中断、IPI 或软中断类型；它只管“编号 -> 函数”的映射。
-- `handler_table` 也不是通用事件系统，过于复杂的回调模型不适合塞进来。
+- `ax-handler-table` 不负责从硬件拿 IRQ 号，也不负责 EOI/ACK。
+- `ax-handler-table` 不区分设备中断、IPI 或软中断类型；它只管“编号 -> 函数”的映射。
+- `ax-handler-table` 也不是通用事件系统，过于复杂的回调模型不适合塞进来。
 
 ## 3. 依赖关系图谱
 ```mermaid
 graph LR
-    handler_table["handler_table"] --> axplat["ax_plat::irq"]
+    ax_handler_table["ax-handler-table"] --> axplat["ax_plat::irq"]
     axplat --> x86["ax-plat-x86-pc / x86-q35"]
     axplat --> riscv["ax-plat-riscv64-qemu-virt"]
     axplat --> aarch64["ax-plat-aarch64-peripherals"]
@@ -83,7 +83,7 @@ graph LR
 ### 4.1 依赖配置
 ```toml
 [dependencies]
-handler_table = { workspace = true }
+ax-handler-table = { workspace = true }
 ```
 
 ### 4.2 修改时的关键约束
@@ -94,12 +94,12 @@ handler_table = { workspace = true }
 
 ### 4.3 开发建议
 - 需要复杂回调上下文时，外层应自己维护状态再注册一个静态跳板函数。
-- 需要多处理器链或共享对象时，应新建专门结构，而不是强行扩展 `handler_table`。
-- 平台层如果想做 IRQ 抽象，应把 `handler_table` 作为内部数据结构，而不是把所有控制逻辑下沉到这里。
+- 需要多处理器链或共享对象时，应新建专门结构，而不是强行扩展 `ax-handler-table`。
+- 平台层如果想做 IRQ 抽象，应把 `ax-handler-table` 作为内部数据结构，而不是把所有控制逻辑下沉到这里。
 
 ## 5. 测试策略
 ### 5.1 当前测试形态
-`handler_table` 本体没有单独测试，当前验证主要依赖平台 IRQ 集成路径。
+`ax-handler-table` 本体没有单独测试，当前验证主要依赖平台 IRQ 集成路径。
 
 ### 5.2 单元测试重点
 - 空槽注册、重复注册、注销空槽、越界索引。
@@ -111,15 +111,15 @@ handler_table = { workspace = true }
 - IPI 或设备中断路径是否能正确查表并调用处理器。
 
 ### 5.4 覆盖率要求
-- 对 `handler_table`，原子语义和边界条件覆盖最重要。
+- 对 `ax-handler-table`，原子语义和边界条件覆盖最重要。
 - 凡是改动存储表示或注册语义的提交，都应补并发测试和平台集成验证。
 
 ## 6. 跨项目定位分析
 ### 6.1 ArceOS
-在 ArceOS 体系里，`handler_table` 主要通过 `axplat` 平台层参与 IRQ 分发。它承担的是“处理器表”角色，不是中断子系统本体。
+在 ArceOS 体系里，`ax-handler-table` 主要通过 `axplat` 平台层参与 IRQ 分发。它承担的是“处理器表”角色，不是中断子系统本体。
 
 ### 6.2 StarryOS
-StarryOS 若复用相同平台栈，也会间接受用 `handler_table`。但在分层上，它仍只是一个低层表结构。
+StarryOS 若复用相同平台栈，也会间接受用 `ax-handler-table`。但在分层上，它仍只是一个低层表结构。
 
 ### 6.3 Axvisor
-Axvisor 若复用 `axplat` 平台 IRQ 路径，也会间接受用 `handler_table`。它提供的是最底层的编号到函数映射，不是 VMM 事件分发层。
+Axvisor 若复用 `axplat` 平台 IRQ 路径，也会间接受用 `ax-handler-table`。它提供的是最底层的编号到函数映射，不是 VMM 事件分发层。

@@ -21,8 +21,8 @@ axvmconfig
 bitmap-allocator
 ax-cap-access
 ax-cpumask
-handler_table
-int_ratio
+ax-handler-table
+ax-int-ratio
 ax-kernel-guard
 ax-kspin
 lazyinit

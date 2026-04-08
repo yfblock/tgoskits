@@ -13,13 +13,13 @@ repository.workspace = true
 
 [features]
 smp = ["ax-kspin/smp"]
-irq = ["dep:handler_table"]
+irq = ["dep:ax-handler-table"]
 
 [dependencies]
 memory_addr = "0.6.1"
 bitflags = "2.6"
 ax-crate-interface = "0.5.0"
-handler_table = { version = "0.3.2", optional = true }
+ax-handler-table = { version = "0.3.2", optional = true, path = "../../handler_table" }
 const-str = "1.0"
 ax-plat-macros = { workspace = true }
 ax-kspin = "0.3.1"

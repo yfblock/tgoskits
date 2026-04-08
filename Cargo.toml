@@ -159,9 +159,9 @@ axpoll = { path = "components/axpoll" }
 lazyinit = { path = "components/lazyinit" }
 linked_list_r4l = { path = "components/linked_list_r4l" }
 timer_list = { path = "components/timer_list" }
-int_ratio = { path = "components/int_ratio" }
+ax-int-ratio = { path = "components/int_ratio" }
 ax-cap-access = { path = "components/cap_access" }
-handler_table = { path = "components/handler_table" }
+ax-handler-table = { path = "components/handler_table" }
 riscv_plic = { path = "components/riscv_plic" }
 rsext4 = { path = "components/rsext4" }
 ax-arm-pl011 = { path = "components/arm_pl011" }
@@ -227,7 +227,7 @@ ax-page-table-multiarch = { path = "components/page_table_multiarch/page_table_m
 
 # === crate_interface ===
 ax-crate-interface = { path = "components/crate_interface" }
-crate_interface_lite = { path = "components/crate_interface/crate_interface_lite" }
+ax-crate-interface-lite = { path = "components/crate_interface/crate_interface_lite" }
 
 # === ctor_bare ===
 ctor_bare = { path = "components/ctor_bare/ctor_bare" }

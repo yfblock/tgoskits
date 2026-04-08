@@ -148,7 +148,7 @@ components/crate_interface/test_crates/run_tests.sh simple
 以下场景更适合放到别处：
 
 - 同 crate 级别的宏行为回归：放到 `components/crate_interface/tests/test_crate_interface.rs`
-- `crate_interface_lite` 的轻量语法覆盖：放到 `components/crate_interface/crate_interface_lite/tests/test_crate_interface.rs`
+- `ax-crate-interface-lite` 的轻量语法覆盖：放到 `components/crate_interface/crate_interface_lite/tests/test_crate_interface.rs`
 - `weak_default`、弱符号优先级、默认回退：放到 `test-weak` 与 `test-weak-partial`
 
 ## 5. 测试策略

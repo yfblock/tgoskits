@@ -5,6 +5,6 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
-crate_interface.workspace = true
+ax-crate-interface.workspace = true
 define-simple-traits.workspace = true
 impl-simple-traits.workspace = true

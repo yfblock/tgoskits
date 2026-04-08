@@ -14,15 +14,15 @@ pub mod percpu;
 pub mod power;
 pub mod time;
 
+pub use ax_crate_interface::impl_interface as impl_plat_interface;
 pub use ax_plat_macros::main;
 #[cfg(feature = "smp")]
 pub use ax_plat_macros::secondary_main;
-pub use crate_interface::impl_interface as impl_plat_interface;
 
 #[doc(hidden)]
 pub mod __priv {
+    pub use ax_crate_interface::{call_interface, def_interface};
     pub use const_str::equal as const_str_eq;
-    pub use crate_interface::{call_interface, def_interface};
 }
 
 /// Checks that two strings are equal. If they are not equal, it will cause a compile-time

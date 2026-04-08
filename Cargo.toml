@@ -226,7 +226,7 @@ ax-page-table-entry = { path = "components/page_table_multiarch/page_table_entry
 ax-page-table-multiarch = { path = "components/page_table_multiarch/page_table_multiarch" }
 
 # === crate_interface ===
-crate_interface = { path = "components/crate_interface" }
+ax-crate-interface = { path = "components/crate_interface" }
 crate_interface_lite = { path = "components/crate_interface/crate_interface_lite" }
 
 # === ctor_bare ===
@@ -364,7 +364,7 @@ ax-driver-net = { version = "0.3.4", path = "components/axdriver_crates/axdriver
 ax-driver-pci = { version = "0.3.4", path = "components/axdriver_crates/axdriver_pci" }
 ax-driver-virtio = { version = "0.3.4", path = "components/axdriver_crates/axdriver_virtio" }
 ax-driver-vsock = { version = "0.3.4", path = "components/axdriver_crates/axdriver_vsock" }
-crate_interface = {version = "0.5.0", path = "components/crate_interface" }
+ax-crate-interface = {version = "0.5.0", path = "components/crate_interface" }
 
 # === Other external crates ===
 anyhow = "1.0"

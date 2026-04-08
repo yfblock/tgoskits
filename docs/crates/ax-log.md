@@ -13,7 +13,7 @@
 `ax-log` 的核心设计思路很克制：
 
 - 复用 `log` crate 作为上层日志语义，不自造一套新的日志 facade。
-- 用 `crate_interface` 定义 `LogIf`，把“时间、CPU ID、任务 ID、字符输出”这些平台相关能力交给外部实现。
+- 用 `ax-crate-interface` 定义 `LogIf`，把“时间、CPU ID、任务 ID、字符输出”这些平台相关能力交给外部实现。
 - 在打印时自行做串行化，避免多 CPU/多任务日志交叉。
 
 因此，`ax-log` 解决的是“日志长什么样、如何输出”，不是“设备如何发字符”或“日志如何持久化”。
@@ -78,7 +78,7 @@ flowchart TD
 ```mermaid
 graph LR
     log["log"] --> ax-log["ax-log"]
-    crate_interface["crate_interface"] --> ax-log
+    ax_crate_interface["ax-crate-interface"] --> ax-log
     ax_kspin["ax-kspin"] --> ax-log
     chrono["chrono (std)"] --> ax-log
 
@@ -91,7 +91,7 @@ graph LR
 
 ### 3.1 关键直接依赖
 - `log`：标准日志 facade。
-- `crate_interface`：`no_std` 路径下的后端接口桥。
+- `ax-crate-interface`：`no_std` 路径下的后端接口桥。
 - `ax-kspin`：输出串行化。
 - `chrono`：只在 `std` 下使用。
 

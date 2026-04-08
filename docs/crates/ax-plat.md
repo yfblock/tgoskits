@@ -6,7 +6,7 @@
 > 版本：`0.3.1-pre.6`
 > 文档依据：当前仓库源码、`Cargo.toml` 与 `components/axplat_crates/axplat/README.md`
 
-`ax-plat` 不是某个具体板级平台的驱动集合，而是 ArceOS 平台层对上层内核暴露的统一契约包。它把“平台初始化、物理内存描述、控制台、时间、中断、电源、每核上下文”等能力拆成稳定接口；具体 `ax-plat-*` 平台包通过 `crate_interface` 机制填充实现，内核只面向 `ax-plat` 编程，而不直接依赖某个 UART、GIC、APIC 或 PSCI/SBI 实现。
+`ax-plat` 不是某个具体板级平台的驱动集合，而是 ArceOS 平台层对上层内核暴露的统一契约包。它把“平台初始化、物理内存描述、控制台、时间、中断、电源、每核上下文”等能力拆成稳定接口；具体 `ax-plat-*` 平台包通过 `ax-crate-interface` 机制填充实现，内核只面向 `ax-plat` 编程，而不直接依赖某个 UART、GIC、APIC 或 PSCI/SBI 实现。
 
 ## 1. 架构设计分析
 
@@ -89,11 +89,11 @@
 
 ### 1.4 核心机制：接口定义、宏导出与动态分发
 
-`ax-plat` 的关键机制不是 Rust trait 对象，而是 `crate_interface` 生成的“接口调用面”：
+`ax-plat` 的关键机制不是 Rust trait 对象，而是 `ax-crate-interface` 生成的“接口调用面”：
 
 1. 各模块用 `#[def_plat_interface]` 定义平台 trait。
 2. 具体平台包用 `#[impl_plat_interface]` 为本地零大小类型实现该 trait。
-3. 上层调用 `ax_plat::init::init_early()`、`ax_plat::time::current_ticks()` 这类函数时，实际会被 `crate_interface` 路由到具体平台实现。
+3. 上层调用 `ax_plat::init::init_early()`、`ax_plat::time::current_ticks()` 这类函数时，实际会被 `ax-crate-interface` 路由到具体平台实现。
 
 这套设计的优势是：
 
@@ -187,7 +187,7 @@ impl ax_plat::init::InitIf for InitIfImpl {
 | 依赖 | 作用 |
 | --- | --- |
 | `ax-plat-macros` | 提供 `main`、`secondary_main` 以及平台接口相关宏的过程宏实现 |
-| `crate_interface` | 生成接口定义与实现绑定代码，是平台抽象的核心连接层 |
+| `ax-crate-interface` | 生成接口定义与实现绑定代码，是平台抽象的核心连接层 |
 | `memory_addr` | 提供 `PhysAddr`、`VirtAddr`、地址转换辅助类型 |
 | `bitflags` | 定义 `MemRegionFlags` |
 | `handler_table` | 在 `irq` feature 下提供 IRQ 处理函数表 |
@@ -206,7 +206,7 @@ impl ax_plat::init::InitIf for InitIfImpl {
 ```mermaid
 graph TD
     A[ax-plat-macros] --> B[ax-plat]
-    C[crate_interface] --> B
+    C[ax-crate-interface] --> B
     D[memory_addr] --> B
     E[ax-kspin / ax-percpu / bitflags] --> B
 
@@ -265,7 +265,7 @@ cargo build -p ax-plat --all-features
 ### 5.2 建议的测试分层
 
 - 单元测试：继续覆盖 `mem` 模块边界条件，如完全覆盖、相邻区间、空保留区等。
-- 契约测试：为每个接口提供最小 mock 平台实现，验证 `crate_interface` 分发语义没有回归。
+- 契约测试：为每个接口提供最小 mock 平台实现，验证 `ax-crate-interface` 分发语义没有回归。
 - 集成测试：在示例内核中验证 `call_main()`、`init_early()`、`console_println!()`、`system_off()` 能贯通。
 - 多核测试：在启用 `smp` 的平台上验证 `call_secondary_main()` 和 `ax-percpu` 状态一致性。
 

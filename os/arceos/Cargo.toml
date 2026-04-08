@@ -126,7 +126,7 @@ bindgen = "0.72"
 buddy-slab-allocator = "0.2"
 cfg-if = "1.0"
 chrono = { version = "0.4", default-features = false }
-crate_interface = "0.5.0"
+ax-crate-interface = "0.5.0"
 ctor_bare = "0.4.1"
 event-listener = { version = "5.4.0", default-features = false }
 ax-kernel-guard = "0.3.3"

@@ -66,7 +66,7 @@ unsafe extern "C" {
 
 struct LogIfImpl;
 
-#[crate_interface::impl_interface]
+#[ax_crate_interface::impl_interface]
 impl ax_log::LogIf for LogIfImpl {
     fn console_write_str(s: &str) {
         ax_hal::console::write_bytes(s.as_bytes());

@@ -349,7 +349,7 @@ mod tests {
         let patches = discover_patch_paths(&root, &root.join("os/arceos")).unwrap();
 
         for crate_name in [
-            "crate_interface",
+            "ax-crate-interface",
             "ax-allocator",
             "axbacktrace",
             "lazyinit",

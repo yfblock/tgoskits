@@ -49,7 +49,7 @@ use core::{
 };
 
 #[cfg(not(feature = "std"))]
-use crate_interface::call_interface;
+use ax_crate_interface::call_interface;
 use log::{Level, LevelFilter, Log, Metadata, Record};
 pub use log::{debug, error, info, trace, warn};
 
@@ -101,7 +101,7 @@ enum ColorCode {
 }
 
 /// Extern interfaces that must be implemented in other crates.
-#[crate_interface::def_interface]
+#[ax_crate_interface::def_interface]
 pub trait LogIf {
     /// Writes a string to the console.
     fn console_write_str(s: &str);

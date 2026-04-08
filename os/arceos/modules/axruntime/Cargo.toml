@@ -53,7 +53,7 @@ ax-plat = { workspace = true }
 ax-task = { workspace = true, optional = true }
 cfg-if = { workspace = true }
 chrono = { version = "0.4", default-features = false }
-crate_interface = { workspace = true }
+ax-crate-interface = { workspace = true }
 ctor_bare = "0.4.1"
 indoc = "2"
 ax-percpu = { workspace = true, optional = true }

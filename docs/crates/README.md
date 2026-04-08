@@ -47,6 +47,7 @@
 | `ax-config-macros` | 组件层 | `components/axconfig-gen/axconfig-macros` | 1 | 12 | [查看](./ax-config-macros.md) |
 | `ax-cpu` | 组件层 | `components/axcpu` | 6 | 14 | [查看](./ax-cpu.md) |
 | `ax-cpumask` | 组件层 | `components/cpumask` | 0 | 4 | [查看](./ax-cpumask.md) |
+| `ax-crate-interface` | 组件层 | `components/crate_interface` | 0 | 22 | [查看](./ax-crate-interface.md) |
 | `ax-display` | ArceOS 层 | `os/arceos/modules/axdisplay` | 3 | 4 | [查看](./ax-display.md) |
 | `ax-dma` | ArceOS 层 | `os/arceos/modules/axdma` | 7 | 2 | [查看](./ax-dma.md) |
 | `ax-driver` | ArceOS 层 | `os/arceos/modules/axdriver` | 15 | 10 | [查看](./ax-driver.md) |
@@ -73,6 +74,7 @@
 | `ax-input` | ArceOS 层 | `os/arceos/modules/axinput` | 3 | 3 | [查看](./ax-input.md) |
 | `ax-io` | 组件层 | `components/axio` | 1 | 9 | [查看](./ax-io.md) |
 | `ax-ipi` | ArceOS 层 | `os/arceos/modules/axipi` | 5 | 3 | [查看](./ax-ipi.md) |
+| `ax-kernel-guard` | 组件层 | `components/kernel_guard` | 1 | 6 | [查看](./ax-kernel-guard.md) |
 | `ax-kspin` | 组件层 | `components/kspin` | 1 | 21 | [查看](./ax-kspin.md) |
 | `ax-libc` | ArceOS 层 | `os/arceos/ulib/axlibc` | 4 | 0 | [查看](./ax-libc.md) |
 | `ax-log` | ArceOS 层 | `os/arceos/modules/axlog` | 2 | 5 | [查看](./ax-log.md) |
@@ -121,7 +123,6 @@
 | `bitmap-allocator` | 组件层 | `components/bitmap-allocator` | 0 | 1 | [查看](./bitmap-allocator.md) |
 | `bwbench-client` | ArceOS 层 | `os/arceos/tools/bwbench_client` | 0 | 0 | [查看](./bwbench-client.md) |
 | `cargo-axplat` | 组件层 | `components/axplat_crates/cargo-axplat` | 0 | 0 | [查看](./cargo-axplat.md) |
-| `crate_interface` | 组件层 | `components/crate_interface` | 0 | 22 | [查看](./crate_interface.md) |
 | `crate_interface_lite` | 组件层 | `components/crate_interface/crate_interface_lite` | 0 | 0 | [查看](./crate_interface_lite.md) |
 | `ctor_bare` | 组件层 | `components/ctor_bare/ctor_bare` | 1 | 1 | [查看](./ctor_bare.md) |
 | `ctor_bare_macros` | 组件层 | `components/ctor_bare/ctor_bare_macros` | 0 | 1 | [查看](./ctor_bare_macros.md) |
@@ -136,7 +137,6 @@
 | `impl-weak-traits` | 组件层 | `components/crate_interface/test_crates/impl-weak-traits` | 2 | 1 | [查看](./impl-weak-traits.md) |
 | `int_ratio` | 组件层 | `components/int_ratio` | 0 | 3 | [查看](./int_ratio.md) |
 | `irq-kernel` | 组件层 | `components/axplat_crates/examples/irq-kernel` | 7 | 0 | [查看](./irq-kernel.md) |
-| `kernel_guard` | 组件层 | `components/kernel_guard` | 1 | 6 | [查看](./kernel_guard.md) |
 | `lazyinit` | 组件层 | `components/lazyinit` | 0 | 17 | [查看](./lazyinit.md) |
 | `linked_list_r4l` | 组件层 | `components/linked_list_r4l` | 0 | 1 | [查看](./linked_list_r4l.md) |
 | `memory_addr` | 组件层 | `components/axmm_crates/memory_addr` | 0 | 24 | [查看](./memory_addr.md) |

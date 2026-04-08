@@ -160,7 +160,7 @@ cfg_if::cfg_if! {
         use ax_alloc::{UsageKind, global_allocator};
         use ax_hal::mem::PAGE_SIZE_4K;
 
-        #[crate_interface::impl_interface]
+        #[ax_crate_interface::impl_interface]
         impl ax_driver_net::fxmac::KernelFunc for FXmacDriver {
             fn virt_to_phys(addr: usize) -> usize {
                 ax_hal::mem::virt_to_phys(addr.into()).into()

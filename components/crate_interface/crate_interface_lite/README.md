@@ -1,10 +1,10 @@
 # crate_interface_lite
 
 [![Crates.io](https://img.shields.io/crates/v/crate_interface_lite)](https://crates.io/crates/crate_interface_lite)
-[![Docs.rs](https://docs.rs/crate_interface/badge.svg)](https://docs.rs/crate_interface_lite)
+[![Docs.rs](https://docs.rs/ax-crate-interface/badge.svg)](https://docs.rs/crate_interface_lite)
 [![CI](https://github.com/arceos-org/crate_interface/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/crate_interface/actions/workflows/ci.yml)
 
-A lightweight version of [crate_interface](https://crates.io/crates/crate_interface)
+A lightweight version of [ax-crate-interface](https://crates.io/crates/ax-crate-interface)
 written with declarative macros.
 
 ## Example
@@ -39,16 +39,16 @@ assert_eq!(
 );
 ```
 
-## Comparison with [crate_interface](https://crates.io/crates/crate_interface)
+## Comparison with [ax-crate-interface](https://crates.io/crates/ax-crate-interface)
 
 ### Similar: APIs
 
-The public APIs are almost the same as crate_interface. One major difference is
+The public APIs are almost the same as ax-crate-interface. One major difference is
 that you cannot use the exported macros as attributes.
 
 ```rust,ignore
-// With crate_interface...
-#[crate_interface::def_interface]
+// With ax-crate-interface...
+#[ax_crate_interface::def_interface]
 pub trait HelloIf {
     fn hello(name: &str, id: usize) -> String;
 }
@@ -69,7 +69,7 @@ graph, there is almost no benefit from using this crate.
 
 ### Different: No support for method receivers
 
-Unlike `crate_interface::def_interface`, the macro in this crate does not support
+Unlike `ax_crate_interface::def_interface`, the macro in this crate does not support
 method receivers, namely `self`, `&self`, `&mut self`, etc. But in most cases, you
 don't need them, since the `impl_interface` is often applied to an unit struct.
 

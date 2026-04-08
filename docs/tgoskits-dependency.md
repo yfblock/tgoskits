@@ -12,9 +12,9 @@
 | 内部有向边 | **533** |
 | 最大层级 | **16** |
 | SCC 数 | **148** |
-| Lock 总包块 | **923** |
+| Lock 总包块 | **922** |
 | Lock 内工作区包（与扫描交集） | **132** |
-| Lock 外部依赖条目 | **791** |
+| Lock 外部依赖条目 | **790** |
 
 ### 1.1 分类
 
@@ -125,6 +125,7 @@ flowchart TB
         ax_config_macros["ax-config-macros\nv0.4.1"]
         ax_cpu["ax-cpu\nv0.5.0"]
         ax_cpumask["ax-cpumask\nv0.3.0"]
+        ax_crate_interface["ax-crate-interface\nv0.5.0"]
         ax_driver_base["ax-driver-base\nv0.3.4"]
         ax_driver_block["ax-driver-block\nv0.3.4"]
         ax_driver_display["ax-driver-display\nv0.3.4"]
@@ -138,6 +139,7 @@ flowchart TB
         ax_fs_ramfs["ax-fs-ramfs\nv0.3.2"]
         ax_fs_vfs["ax-fs-vfs\nv0.3.2"]
         ax_io["ax-io\nv0.5.0"]
+        ax_kernel_guard["ax-kernel-guard\nv0.3.3"]
         ax_kspin["ax-kspin\nv0.3.1"]
         ax_memory_set["ax-memory-set\nv0.6.1"]
         ax_page_table_entry["ax-page-table-entry\nv0.8.1"]
@@ -169,7 +171,6 @@ flowchart TB
         axvmconfig["axvmconfig\nv0.4.2"]
         bitmap_allocator["bitmap-allocator\nv0.4.1"]
         cargo_axplat["cargo-axplat\nv0.4.5"]
-        crate_interface["crate_interface\nv0.5.0"]
         crate_interface_lite["crate_interface_lite\nv0.3.0"]
         ctor_bare["ctor_bare\nv0.4.1"]
         ctor_bare_macros["ctor_bare_macros\nv0.4.1"]
@@ -183,7 +184,6 @@ flowchart TB
         impl_weak_traits["impl-weak-traits\nv0.3.0"]
         int_ratio["int_ratio\nv0.3.2"]
         irq_kernel["irq-kernel\nv0.3.0"]
-        kernel_guard["kernel_guard\nv0.3.3"]
         lazyinit["lazyinit\nv0.4.2"]
         linked_list_r4l["linked_list_r4l\nv0.5.0"]
         memory_addr["memory_addr\nv0.6.1"]
@@ -211,10 +211,10 @@ flowchart TB
     arceos_affinity --> ax_std
     arceos_display --> ax_std
     arceos_exception --> ax_std
+    arceos_fs_shell --> ax_crate_interface
     arceos_fs_shell --> ax_fs_ramfs
     arceos_fs_shell --> ax_fs_vfs
     arceos_fs_shell --> ax_std
-    arceos_fs_shell --> crate_interface
     arceos_irq --> ax_std
     arceos_memtest --> ax_std
     arceos_net_echoserver --> ax_std
@@ -284,6 +284,7 @@ flowchart TB
     ax_dma --> memory_addr
     ax_driver --> ax_alloc
     ax_driver --> ax_config
+    ax_driver --> ax_crate_interface
     ax_driver --> ax_dma
     ax_driver --> ax_driver_base
     ax_driver --> ax_driver_block
@@ -296,7 +297,6 @@ flowchart TB
     ax_driver --> ax_errno
     ax_driver --> ax_hal
     ax_driver --> axplat_dyn
-    ax_driver --> crate_interface
     ax_driver_block --> ax_driver_base
     ax_driver_display --> ax_driver_base
     ax_driver_input --> ax_driver_base
@@ -351,6 +351,7 @@ flowchart TB
     ax_hal --> ax_alloc
     ax_hal --> ax_config
     ax_hal --> ax_cpu
+    ax_hal --> ax_kernel_guard
     ax_hal --> ax_page_table_multiarch
     ax_hal --> ax_percpu
     ax_hal --> ax_plat
@@ -359,7 +360,6 @@ flowchart TB
     ax_hal --> ax_plat_riscv64_qemu_virt
     ax_hal --> ax_plat_x86_pc
     ax_hal --> axplat_dyn
-    ax_hal --> kernel_guard
     ax_hal --> memory_addr
     ax_helloworld --> ax_std
     ax_helloworld_myplat --> ax_plat_aarch64_bsta1000b
@@ -381,13 +381,14 @@ flowchart TB
     ax_ipi --> ax_kspin
     ax_ipi --> ax_percpu
     ax_ipi --> lazyinit
-    ax_kspin --> kernel_guard
+    ax_kernel_guard --> ax_crate_interface
+    ax_kspin --> ax_kernel_guard
     ax_libc --> ax_errno
     ax_libc --> ax_feat
     ax_libc --> ax_io
     ax_libc --> ax_posix_api
+    ax_log --> ax_crate_interface
     ax_log --> ax_kspin
-    ax_log --> crate_interface
     ax_memory_set --> ax_errno
     ax_memory_set --> memory_addr
     ax_mm --> ax_alloc
@@ -421,12 +422,12 @@ flowchart TB
     ax_page_table_multiarch --> ax_errno
     ax_page_table_multiarch --> ax_page_table_entry
     ax_page_table_multiarch --> memory_addr
-    ax_percpu --> kernel_guard
+    ax_percpu --> ax_kernel_guard
     ax_percpu --> percpu_macros
+    ax_plat --> ax_crate_interface
     ax_plat --> ax_kspin
     ax_plat --> ax_percpu
     ax_plat --> ax_plat_macros
-    ax_plat --> crate_interface
     ax_plat --> handler_table
     ax_plat --> memory_addr
     ax_plat_aarch64_bsta1000b --> ax_config_macros
@@ -463,13 +464,13 @@ flowchart TB
     ax_plat_loongarch64_qemu_virt --> ax_page_table_entry
     ax_plat_loongarch64_qemu_virt --> ax_plat
     ax_plat_loongarch64_qemu_virt --> lazyinit
-    ax_plat_macros --> crate_interface
+    ax_plat_macros --> ax_crate_interface
     ax_plat_riscv64_qemu_virt --> ax_config_macros
     ax_plat_riscv64_qemu_virt --> ax_cpu
+    ax_plat_riscv64_qemu_virt --> ax_crate_interface
     ax_plat_riscv64_qemu_virt --> ax_kspin
     ax_plat_riscv64_qemu_virt --> ax_plat
     ax_plat_riscv64_qemu_virt --> axvisor_api
-    ax_plat_riscv64_qemu_virt --> crate_interface
     ax_plat_riscv64_qemu_virt --> lazyinit
     ax_plat_riscv64_qemu_virt --> riscv_plic
     ax_plat_x86_pc --> ax_config_macros
@@ -494,6 +495,7 @@ flowchart TB
     ax_posix_api --> scope_local
     ax_runtime --> ax_alloc
     ax_runtime --> ax_config
+    ax_runtime --> ax_crate_interface
     ax_runtime --> ax_display
     ax_runtime --> ax_driver
     ax_runtime --> ax_fs
@@ -510,7 +512,6 @@ flowchart TB
     ax_runtime --> ax_task
     ax_runtime --> axbacktrace
     ax_runtime --> axklib
-    ax_runtime --> crate_interface
     ax_runtime --> ctor_bare
     ax_sched --> linked_list_r4l
     ax_shell --> ax_std
@@ -524,14 +525,14 @@ flowchart TB
     ax_sync --> ax_task
     ax_task --> ax_config
     ax_task --> ax_cpumask
+    ax_task --> ax_crate_interface
     ax_task --> ax_errno
     ax_task --> ax_hal
+    ax_task --> ax_kernel_guard
     ax_task --> ax_kspin
     ax_task --> ax_percpu
     ax_task --> ax_sched
     ax_task --> axpoll
-    ax_task --> crate_interface
-    ax_task --> kernel_guard
     ax_task --> lazyinit
     ax_task --> memory_addr
     ax_task --> timer_list
@@ -583,8 +584,10 @@ flowchart TB
     axvcpu --> memory_addr
     axvisor --> ax_config
     axvisor --> ax_cpumask
+    axvisor --> ax_crate_interface
     axvisor --> ax_errno
     axvisor --> ax_hal
+    axvisor --> ax_kernel_guard
     axvisor --> ax_kspin
     axvisor --> ax_page_table_entry
     axvisor --> ax_page_table_multiarch
@@ -601,17 +604,15 @@ flowchart TB
     axvisor --> axvcpu
     axvisor --> axvisor_api
     axvisor --> axvm
-    axvisor --> crate_interface
-    axvisor --> kernel_guard
     axvisor --> lazyinit
     axvisor --> memory_addr
     axvisor --> riscv_vcpu
     axvisor --> riscv_vplic
     axvisor --> timer_list
     axvisor_api --> ax_cpumask
+    axvisor_api --> ax_crate_interface
     axvisor_api --> axaddrspace
     axvisor_api --> axvisor_api_proc
-    axvisor_api --> crate_interface
     axvisor_api --> memory_addr
     axvm --> arm_vcpu
     axvm --> arm_vgic
@@ -631,19 +632,19 @@ flowchart TB
     axvm --> x86_vcpu
     axvmconfig --> ax_errno
     ctor_bare --> ctor_bare_macros
-    define_simple_traits --> crate_interface
-    define_weak_traits --> crate_interface
-    fxmac_rs --> crate_interface
+    define_simple_traits --> ax_crate_interface
+    define_weak_traits --> ax_crate_interface
+    fxmac_rs --> ax_crate_interface
     hello_kernel --> ax_plat
     hello_kernel --> ax_plat_aarch64_qemu_virt
     hello_kernel --> ax_plat_loongarch64_qemu_virt
     hello_kernel --> ax_plat_riscv64_qemu_virt
     hello_kernel --> ax_plat_x86_pc
-    impl_simple_traits --> crate_interface
+    impl_simple_traits --> ax_crate_interface
     impl_simple_traits --> define_simple_traits
-    impl_weak_partial --> crate_interface
+    impl_weak_partial --> ax_crate_interface
     impl_weak_partial --> define_weak_traits
-    impl_weak_traits --> crate_interface
+    impl_weak_traits --> ax_crate_interface
     impl_weak_traits --> define_weak_traits
     irq_kernel --> ax_config_macros
     irq_kernel --> ax_cpu
@@ -652,13 +653,12 @@ flowchart TB
     irq_kernel --> ax_plat_loongarch64_qemu_virt
     irq_kernel --> ax_plat_riscv64_qemu_virt
     irq_kernel --> ax_plat_x86_pc
-    kernel_guard --> crate_interface
+    riscv_vcpu --> ax_crate_interface
     riscv_vcpu --> ax_errno
     riscv_vcpu --> ax_page_table_entry
     riscv_vcpu --> axaddrspace
     riscv_vcpu --> axvcpu
     riscv_vcpu --> axvisor_api
-    riscv_vcpu --> crate_interface
     riscv_vcpu --> memory_addr
     riscv_vcpu --> riscv_h
     riscv_vplic --> ax_errno
@@ -687,6 +687,7 @@ flowchart TB
     starry_kernel --> ax_hal
     starry_kernel --> ax_input
     starry_kernel --> ax_io
+    starry_kernel --> ax_kernel_guard
     starry_kernel --> ax_kspin
     starry_kernel --> ax_log
     starry_kernel --> ax_memory_set
@@ -700,7 +701,6 @@ flowchart TB
     starry_kernel --> axbacktrace
     starry_kernel --> axfs_ng_vfs
     starry_kernel --> axpoll
-    starry_kernel --> kernel_guard
     starry_kernel --> memory_addr
     starry_kernel --> scope_local
     starry_kernel --> starry_process
@@ -717,23 +717,23 @@ flowchart TB
     starryos --> starry_kernel
     starryos_test --> ax_feat
     starryos_test --> starry_kernel
-    test_simple --> crate_interface
+    test_simple --> ax_crate_interface
     test_simple --> define_simple_traits
     test_simple --> impl_simple_traits
-    test_weak --> crate_interface
+    test_weak --> ax_crate_interface
     test_weak --> define_weak_traits
     test_weak --> impl_weak_traits
-    test_weak_partial --> crate_interface
+    test_weak_partial --> ax_crate_interface
     test_weak_partial --> define_weak_traits
     test_weak_partial --> impl_weak_partial
     tg_xtask --> axbuild
+    x86_vcpu --> ax_crate_interface
     x86_vcpu --> ax_errno
     x86_vcpu --> ax_page_table_entry
     x86_vcpu --> axaddrspace
     x86_vcpu --> axdevice_base
     x86_vcpu --> axvcpu
     x86_vcpu --> axvisor_api
-    x86_vcpu --> crate_interface
     x86_vcpu --> memory_addr
     x86_vcpu --> x86_vlapic
     x86_vlapic --> ax_errno
@@ -781,6 +781,7 @@ flowchart TB
     class ax_config_macros cat_comp
     class ax_cpu cat_comp
     class ax_cpumask cat_comp
+    class ax_crate_interface cat_comp
     class ax_display cat_arceos
     class ax_dma cat_arceos
     class ax_driver cat_arceos
@@ -807,6 +808,7 @@ flowchart TB
     class ax_input cat_arceos
     class ax_io cat_comp
     class ax_ipi cat_arceos
+    class ax_kernel_guard cat_comp
     class ax_kspin cat_comp
     class ax_libc cat_arceos
     class ax_log cat_arceos
@@ -855,7 +857,6 @@ flowchart TB
     class bitmap_allocator cat_comp
     class bwbench_client cat_arceos
     class cargo_axplat cat_comp
-    class crate_interface cat_comp
     class crate_interface_lite cat_comp
     class ctor_bare cat_comp
     class ctor_bare_macros cat_comp
@@ -870,7 +871,6 @@ flowchart TB
     class impl_weak_traits cat_comp
     class int_ratio cat_comp
     class irq_kernel cat_comp
-    class kernel_guard cat_comp
     class lazyinit cat_comp
     class linked_list_r4l cat_comp
     class memory_addr cat_comp
@@ -953,10 +953,10 @@ flowchart TB
     L2["<b>层级 2</b><br/>堆叠层（依赖更底层 crate）<br/>`ax-config`、`ax-driver-net`、`ax-fs-devfs`、`ax-fs-ramfs`、`ax-kspin`、`ax-page-table-multiarch`、`ax-percpu`、`axbuild`、`impl-simple-traits`、`impl-weak-partial`、`impl-weak-traits`"]
     classDef ls2 fill:#fff9c4,stroke:#f9a825,stroke-width:2px,color:#000
     class L2 ls2
-    L1["<b>层级 1</b><br/>堆叠层（依赖更底层 crate）<br/>`ax-allocator`、`ax-config-macros`、`ax-driver-block`、`ax-driver-display`、`ax-driver-input`、`ax-driver-vsock`、`ax-fs-vfs`、`ax-io`、`ax-memory-set`、`ax-page-table-entry`、`ax-plat-macros`、`ax-sched`、`axfs-ng-vfs`、`axhvc`、`axklib`、`axvmconfig`、`ctor_bare`、`define-simple-traits`、`define-weak-traits`、`fxmac_rs` …共23个"]
+    L1["<b>层级 1</b><br/>堆叠层（依赖更底层 crate）<br/>`ax-allocator`、`ax-config-macros`、`ax-driver-block`、`ax-driver-display`、`ax-driver-input`、`ax-driver-vsock`、`ax-fs-vfs`、`ax-io`、`ax-kernel-guard`、`ax-memory-set`、`ax-page-table-entry`、`ax-plat-macros`、`ax-sched`、`axfs-ng-vfs`、`axhvc`、`axklib`、`axvmconfig`、`ctor_bare`、`define-simple-traits`、`define-weak-traits` …共23个"]
     classDef ls1 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
     class L1 ls1
-    L0["<b>层级 0</b><br/>基础层（无仓库内直接依赖）<br/>`aarch64_sysreg`、`ax-arm-pl011`、`ax-arm-pl031`、`ax-cap-access`、`ax-config-gen`、`ax-cpumask`、`ax-driver-base`、`ax-driver-pci`、`ax-errno`、`axbacktrace`、`axpoll`、`axvisor_api_proc`、`bitmap-allocator`、`bwbench-client`、`cargo-axplat`、`crate_interface`、`crate_interface_lite`、`ctor_bare_macros`、`deptool`、`handler_table` …共33个"]
+    L0["<b>层级 0</b><br/>基础层（无仓库内直接依赖）<br/>`aarch64_sysreg`、`ax-arm-pl011`、`ax-arm-pl031`、`ax-cap-access`、`ax-config-gen`、`ax-cpumask`、`ax-crate-interface`、`ax-driver-base`、`ax-driver-pci`、`ax-errno`、`axbacktrace`、`axpoll`、`axvisor_api_proc`、`bitmap-allocator`、`bwbench-client`、`cargo-axplat`、`crate_interface_lite`、`ctor_bare_macros`、`deptool`、`handler_table` …共33个"]
     classDef ls0 fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000
     class L0 ls0
     L16 --> L15
@@ -991,6 +991,7 @@ flowchart TB
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `ax-cap-access` | `0.3.0` | `components/cap_access` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `ax-config-gen` | `0.4.1` | `components/axconfig-gen/axconfig-gen` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `ax-cpumask` | `0.3.0` | `components/cpumask` |
+| 0 | 基础层（无仓库内直接依赖） | 组件层 | `ax-crate-interface` | `0.5.0` | `components/crate_interface` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `ax-driver-base` | `0.3.4` | `components/axdriver_crates/axdriver_base` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `ax-driver-pci` | `0.3.4` | `components/axdriver_crates/axdriver_pci` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `ax-errno` | `0.4.2` | `components/axerrno` |
@@ -999,7 +1000,6 @@ flowchart TB
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `axvisor_api_proc` | `0.5.0` | `components/axvisor_api/axvisor_api_proc` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `bitmap-allocator` | `0.4.1` | `components/bitmap-allocator` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `cargo-axplat` | `0.4.5` | `components/axplat_crates/cargo-axplat` |
-| 0 | 基础层（无仓库内直接依赖） | 组件层 | `crate_interface` | `0.5.0` | `components/crate_interface` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `crate_interface_lite` | `0.3.0` | `components/crate_interface/crate_interface_lite` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `ctor_bare_macros` | `0.4.1` | `components/ctor_bare/ctor_bare_macros` |
 | 0 | 基础层（无仓库内直接依赖） | 组件层 | `handler_table` | `0.3.2` | `components/handler_table` |
@@ -1022,6 +1022,7 @@ flowchart TB
 | 1 | 堆叠层 | 组件层 | `ax-driver-vsock` | `0.3.4` | `components/axdriver_crates/axdriver_vsock` |
 | 1 | 堆叠层 | 组件层 | `ax-fs-vfs` | `0.3.2` | `components/axfs_crates/axfs_vfs` |
 | 1 | 堆叠层 | 组件层 | `ax-io` | `0.5.0` | `components/axio` |
+| 1 | 堆叠层 | 组件层 | `ax-kernel-guard` | `0.3.3` | `components/kernel_guard` |
 | 1 | 堆叠层 | 组件层 | `ax-memory-set` | `0.6.1` | `components/axmm_crates/memory_set` |
 | 1 | 堆叠层 | 组件层 | `ax-page-table-entry` | `0.8.1` | `components/page_table_multiarch/page_table_entry` |
 | 1 | 堆叠层 | 组件层 | `ax-plat-macros` | `0.3.0` | `components/axplat_crates/axplat-macros` |
@@ -1034,7 +1035,6 @@ flowchart TB
 | 1 | 堆叠层 | 组件层 | `define-simple-traits` | `0.3.0` | `components/crate_interface/test_crates/define-simple-traits` |
 | 1 | 堆叠层 | 组件层 | `define-weak-traits` | `0.3.0` | `components/crate_interface/test_crates/define-weak-traits` |
 | 1 | 堆叠层 | 组件层 | `fxmac_rs` | `0.4.1` | `components/fxmac_rs` |
-| 1 | 堆叠层 | 组件层 | `kernel_guard` | `0.3.3` | `components/kernel_guard` |
 | 1 | 堆叠层 | 组件层 | `smoltcp-fuzz` | `0.2.1` | `components/starry-smoltcp/fuzz` |
 | 1 | 堆叠层 | 组件层 | `starry-vm` | `0.5.0` | `components/starry-vm` |
 | 2 | 堆叠层 | ArceOS 层 | `ax-config` | `0.5.0` | `os/arceos/modules/axconfig` |
@@ -1135,8 +1135,8 @@ flowchart TB
 
 | 层级 | 数 | 成员 |
 |------|-----|------|
-| 0 | 33 | `aarch64_sysreg` `ax-arm-pl011` `ax-arm-pl031` `ax-cap-access` `ax-config-gen` `ax-cpumask` `ax-driver-base` `ax-driver-pci` `ax-errno` `axbacktrace` `axpoll` `axvisor_api_proc` `bitmap-allocator` `bwbench-client` `cargo-axplat` `crate_interface` `crate_interface_lite` `ctor_bare_macros` `deptool` `handler_table` `int_ratio` `lazyinit` `linked_list_r4l` `memory_addr` `mingo` `percpu_macros` `range-alloc-arceos` `riscv-h` `riscv_plic` `rsext4` `smoltcp` `tgmath` `timer_list` |
-| 1 | 23 | `ax-allocator` `ax-config-macros` `ax-driver-block` `ax-driver-display` `ax-driver-input` `ax-driver-vsock` `ax-fs-vfs` `ax-io` `ax-memory-set` `ax-page-table-entry` `ax-plat-macros` `ax-sched` `axfs-ng-vfs` `axhvc` `axklib` `axvmconfig` `ctor_bare` `define-simple-traits` `define-weak-traits` `fxmac_rs` `kernel_guard` `smoltcp-fuzz` `starry-vm` |
+| 0 | 33 | `aarch64_sysreg` `ax-arm-pl011` `ax-arm-pl031` `ax-cap-access` `ax-config-gen` `ax-cpumask` `ax-crate-interface` `ax-driver-base` `ax-driver-pci` `ax-errno` `axbacktrace` `axpoll` `axvisor_api_proc` `bitmap-allocator` `bwbench-client` `cargo-axplat` `crate_interface_lite` `ctor_bare_macros` `deptool` `handler_table` `int_ratio` `lazyinit` `linked_list_r4l` `memory_addr` `mingo` `percpu_macros` `range-alloc-arceos` `riscv-h` `riscv_plic` `rsext4` `smoltcp` `tgmath` `timer_list` |
+| 1 | 23 | `ax-allocator` `ax-config-macros` `ax-driver-block` `ax-driver-display` `ax-driver-input` `ax-driver-vsock` `ax-fs-vfs` `ax-io` `ax-kernel-guard` `ax-memory-set` `ax-page-table-entry` `ax-plat-macros` `ax-sched` `axfs-ng-vfs` `axhvc` `axklib` `axvmconfig` `ctor_bare` `define-simple-traits` `define-weak-traits` `fxmac_rs` `smoltcp-fuzz` `starry-vm` |
 | 2 | 11 | `ax-config` `ax-driver-net` `ax-fs-devfs` `ax-fs-ramfs` `ax-kspin` `ax-page-table-multiarch` `ax-percpu` `axbuild` `impl-simple-traits` `impl-weak-partial` `impl-weak-traits` |
 | 3 | 12 | `ax-alloc` `ax-cpu` `ax-driver-virtio` `ax-log` `ax-plat` `axaddrspace` `scope-local` `starry-process` `test-simple` `test-weak` `test-weak-partial` `tg-xtask` |
 | 4 | 8 | `ax-plat-aarch64-peripherals` `ax-plat-loongarch64-qemu-virt` `ax-plat-x86-pc` `axdevice_base` `axplat-dyn` `axplat-x86-qemu-q35` `axvisor_api` `starry-signal` |
@@ -1164,7 +1164,7 @@ flowchart TB
 | `arceos-affinity` | 16 | A simple demo to test the cpu affinity of tasks u… | `ax-std` | — |
 | `arceos-display` | 16 | 系统级测试与回归入口 | `ax-std` | — |
 | `arceos-exception` | 16 | 系统级测试与回归入口 | `ax-std` | — |
-| `arceos-fs-shell` | 16 | 系统级测试与回归入口 | `ax-fs-ramfs` `ax-fs-vfs` `ax-std` `crate_interface` | — |
+| `arceos-fs-shell` | 16 | 系统级测试与回归入口 | `ax-crate-interface` `ax-fs-ramfs` `ax-fs-vfs` `ax-std` | — |
 | `arceos-irq` | 16 | A simple demo to test the irq state of tasks unde… | `ax-std` | — |
 | `arceos-memtest` | 16 | 系统级测试与回归入口 | `ax-std` | — |
 | `arceos-net-echoserver` | 16 | 系统级测试与回归入口 | `ax-std` | — |
@@ -1190,9 +1190,10 @@ flowchart TB
 | `ax-config-macros` | 1 | Procedural macros for converting TOML format conf… | `ax-config-gen` | `ax-config` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `axplat-dyn` `axplat-x86-qemu-q35` `irq-kernel` `smp-kernel` |
 | `ax-cpu` | 3 | Privileged instruction and structure abstractions… | `ax-page-table-entry` `ax-page-table-multiarch` `ax-percpu` `axbacktrace` `lazyinit` `memory_addr` | `ax-hal` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-peripherals` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `axplat-dyn` `axplat-x86-qemu-q35` `irq-kernel` `smp-kernel` `starry-signal` |
 | `ax-cpumask` | 0 | CPU mask library in Rust | — | `ax-task` `axvisor` `axvisor_api` `axvm` |
+| `ax-crate-interface` | 0 | Provides a way to define an interface (trait) in … | — | `arceos-fs-shell` `ax-driver` `ax-kernel-guard` `ax-log` `ax-plat` `ax-plat-macros` `ax-plat-riscv64-qemu-virt` `ax-runtime` `ax-task` `axvisor` `axvisor_api` `define-simple-traits` `define-weak-traits` `fxmac_rs` `impl-simple-traits` `impl-weak-partial` `impl-weak-traits` `riscv_vcpu` `test-simple` `test-weak` `test-weak-partial` `x86_vcpu` |
 | `ax-display` | 10 | ArceOS graphics module | `ax-driver` `ax-sync` `lazyinit` | `ax-api` `ax-feat` `ax-runtime` `starry-kernel` |
 | `ax-dma` | 8 | ArceOS global DMA allocator | `ax-alloc` `ax-allocator` `ax-config` `ax-hal` `ax-kspin` `ax-mm` `memory_addr` | `ax-api` `ax-driver` |
-| `ax-driver` | 9 | ArceOS device drivers | `ax-alloc` `ax-config` `ax-dma` `ax-driver-base` `ax-driver-block` `ax-driver-display` `ax-driver-input` `ax-driver-net` `ax-driver-pci` `ax-driver-virtio` `ax-driver-vsock` `ax-errno` `ax-hal` `axplat-dyn` `crate_interface` | `ax-api` `ax-display` `ax-feat` `ax-fs` `ax-fs-ng` `ax-input` `ax-net` `ax-net-ng` `ax-runtime` `starry-kernel` |
+| `ax-driver` | 9 | ArceOS device drivers | `ax-alloc` `ax-config` `ax-crate-interface` `ax-dma` `ax-driver-base` `ax-driver-block` `ax-driver-display` `ax-driver-input` `ax-driver-net` `ax-driver-pci` `ax-driver-virtio` `ax-driver-vsock` `ax-errno` `ax-hal` `axplat-dyn` | `ax-api` `ax-display` `ax-feat` `ax-fs` `ax-fs-ng` `ax-input` `ax-net` `ax-net-ng` `ax-runtime` `starry-kernel` |
 | `ax-driver-base` | 0 | Common interfaces for all kinds of device drivers | — | `ax-driver` `ax-driver-block` `ax-driver-display` `ax-driver-input` `ax-driver-net` `ax-driver-virtio` `ax-driver-vsock` `axplat-dyn` |
 | `ax-driver-block` | 1 | Common traits and types for block storage drivers | `ax-driver-base` | `ax-driver` `ax-driver-virtio` `axplat-dyn` |
 | `ax-driver-display` | 1 | Common traits and types for graphics device drive… | `ax-driver-base` | `ax-driver` `ax-driver-virtio` |
@@ -1208,7 +1209,7 @@ flowchart TB
 | `ax-fs-ng` | 10 | ArceOS filesystem module | `ax-alloc` `ax-driver` `ax-errno` `ax-hal` `ax-io` `ax-kspin` `ax-sync` `axfs-ng-vfs` `axpoll` `scope-local` | `ax-feat` `ax-net-ng` `ax-runtime` `starry-kernel` |
 | `ax-fs-ramfs` | 2 | RAM filesystem used by ArceOS | `ax-fs-vfs` | `arceos-fs-shell` `ax-fs` |
 | `ax-fs-vfs` | 1 | Virtual filesystem interfaces used by ArceOS | `ax-errno` | `arceos-fs-shell` `ax-fs` `ax-fs-devfs` `ax-fs-ramfs` |
-| `ax-hal` | 6 | ArceOS hardware abstraction layer, provides unifi… | `ax-alloc` `ax-config` `ax-cpu` `ax-page-table-multiarch` `ax-percpu` `ax-plat` `ax-plat-aarch64-qemu-virt` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `axplat-dyn` `kernel_guard` `memory_addr` | `ax-api` `ax-dma` `ax-driver` `ax-feat` `ax-fs` `ax-fs-ng` `ax-ipi` `ax-mm` `ax-net` `ax-net-ng` `ax-posix-api` `ax-runtime` `ax-task` `axvisor` `starry-kernel` |
+| `ax-hal` | 6 | ArceOS hardware abstraction layer, provides unifi… | `ax-alloc` `ax-config` `ax-cpu` `ax-kernel-guard` `ax-page-table-multiarch` `ax-percpu` `ax-plat` `ax-plat-aarch64-qemu-virt` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `axplat-dyn` `memory_addr` | `ax-api` `ax-dma` `ax-driver` `ax-feat` `ax-fs` `ax-fs-ng` `ax-ipi` `ax-mm` `ax-net` `ax-net-ng` `ax-posix-api` `ax-runtime` `ax-task` `axvisor` `starry-kernel` |
 | `ax-helloworld` | 16 | ArceOS 示例程序 | `ax-std` | — |
 | `ax-helloworld-myplat` | 16 | ArceOS 示例程序 | `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `ax-std` | — |
 | `ax-httpclient` | 16 | ArceOS 示例程序 | `ax-std` | — |
@@ -1216,34 +1217,35 @@ flowchart TB
 | `ax-input` | 10 | Input device management for ArceOS | `ax-driver` `ax-sync` `lazyinit` | `ax-feat` `ax-runtime` `starry-kernel` |
 | `ax-io` | 1 | `std::io` for `no_std` environment | `ax-errno` | `ax-api` `ax-fs` `ax-fs-ng` `ax-libc` `ax-net` `ax-net-ng` `ax-posix-api` `ax-std` `starry-kernel` |
 | `ax-ipi` | 7 | ArceOS IPI management module | `ax-config` `ax-hal` `ax-kspin` `ax-percpu` `lazyinit` | `ax-api` `ax-feat` `ax-runtime` |
-| `ax-kspin` | 2 | Spinlocks used for kernel space that can disable … | `kernel_guard` | `ax-alloc` `ax-dma` `ax-feat` `ax-fs-ng` `ax-ipi` `ax-log` `ax-mm` `ax-plat` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-peripherals` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `ax-std` `ax-sync` `ax-task` `axplat-x86-qemu-q35` `axvisor` `starry-kernel` `starry-process` `starry-signal` |
+| `ax-kernel-guard` | 1 | RAII wrappers to create a critical section with l… | `ax-crate-interface` | `ax-hal` `ax-kspin` `ax-percpu` `ax-task` `axvisor` `starry-kernel` |
+| `ax-kspin` | 2 | Spinlocks used for kernel space that can disable … | `ax-kernel-guard` | `ax-alloc` `ax-dma` `ax-feat` `ax-fs-ng` `ax-ipi` `ax-log` `ax-mm` `ax-plat` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-peripherals` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `ax-std` `ax-sync` `ax-task` `axplat-x86-qemu-q35` `axvisor` `starry-kernel` `starry-process` `starry-signal` |
 | `ax-libc` | 15 | ArceOS user program library for C apps | `ax-errno` `ax-feat` `ax-io` `ax-posix-api` | — |
-| `ax-log` | 3 | Macros for multi-level formatted logging used by … | `ax-kspin` `crate_interface` | `ax-api` `ax-feat` `ax-posix-api` `ax-runtime` `starry-kernel` |
+| `ax-log` | 3 | Macros for multi-level formatted logging used by … | `ax-crate-interface` `ax-kspin` | `ax-api` `ax-feat` `ax-posix-api` `ax-runtime` `starry-kernel` |
 | `ax-memory-set` | 1 | Data structures and operations for managing memor… | `ax-errno` `memory_addr` | `ax-mm` `axaddrspace` `starry-kernel` |
 | `ax-mm` | 7 | ArceOS virtual memory management module | `ax-alloc` `ax-errno` `ax-hal` `ax-kspin` `ax-memory-set` `ax-page-table-multiarch` `lazyinit` `memory_addr` | `ax-api` `ax-dma` `ax-runtime` `starry-kernel` |
 | `ax-net` | 10 | ArceOS network module | `ax-driver` `ax-errno` `ax-hal` `ax-io` `ax-sync` `ax-task` `lazyinit` `smoltcp` | `ax-api` `ax-feat` `ax-posix-api` `ax-runtime` |
 | `ax-net-ng` | 11 | ArceOS network module | `ax-config` `ax-driver` `ax-errno` `ax-fs-ng` `ax-hal` `ax-io` `ax-sync` `ax-task` `axfs-ng-vfs` `axpoll` `smoltcp` | `ax-runtime` `starry-kernel` |
 | `ax-page-table-entry` | 1 | Page table entry definition for various hardware … | `memory_addr` | `ax-cpu` `ax-page-table-multiarch` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` `ax-plat-loongarch64-qemu-virt` `axaddrspace` `axvisor` `axvm` `riscv_vcpu` `x86_vcpu` |
 | `ax-page-table-multiarch` | 2 | Generic page table structures for various hardwar… | `ax-errno` `ax-page-table-entry` `memory_addr` | `ax-cpu` `ax-hal` `ax-mm` `axaddrspace` `axvisor` `axvm` `starry-kernel` |
-| `ax-percpu` | 2 | Define and access per-CPU data structures | `kernel_guard` `percpu_macros` | `arm_vcpu` `ax-alloc` `ax-cpu` `ax-hal` `ax-ipi` `ax-plat` `ax-plat-x86-pc` `ax-runtime` `ax-task` `axplat-dyn` `axplat-x86-qemu-q35` `axvcpu` `axvisor` `axvm` `scope-local` `smp-kernel` `starry-kernel` |
-| `ax-plat` | 3 | This crate provides a unified abstraction layer f… | `ax-kspin` `ax-percpu` `ax-plat-macros` `crate_interface` `handler_table` `memory_addr` | `ax-hal` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-peripherals` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `ax-runtime` `axplat-dyn` `axplat-x86-qemu-q35` `hello-kernel` `irq-kernel` `smp-kernel` |
+| `ax-percpu` | 2 | Define and access per-CPU data structures | `ax-kernel-guard` `percpu_macros` | `arm_vcpu` `ax-alloc` `ax-cpu` `ax-hal` `ax-ipi` `ax-plat` `ax-plat-x86-pc` `ax-runtime` `ax-task` `axplat-dyn` `axplat-x86-qemu-q35` `axvcpu` `axvisor` `axvm` `scope-local` `smp-kernel` `starry-kernel` |
+| `ax-plat` | 3 | This crate provides a unified abstraction layer f… | `ax-crate-interface` `ax-kspin` `ax-percpu` `ax-plat-macros` `handler_table` `memory_addr` | `ax-hal` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-peripherals` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `ax-runtime` `axplat-dyn` `axplat-x86-qemu-q35` `hello-kernel` `irq-kernel` `smp-kernel` |
 | `ax-plat-aarch64-bsta1000b` | 5 | Implementation of `axplat` hardware abstraction l… | `ax-config-macros` `ax-cpu` `ax-kspin` `ax-page-table-entry` `ax-plat` `ax-plat-aarch64-peripherals` | `ax-helloworld-myplat` |
 | `ax-plat-aarch64-peripherals` | 4 | ARM64 common peripheral drivers with `axplat` com… | `ax-arm-pl011` `ax-arm-pl031` `ax-cpu` `ax-kspin` `ax-plat` `int_ratio` `lazyinit` | `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` |
 | `ax-plat-aarch64-phytium-pi` | 5 | Implementation of `axplat` hardware abstraction l… | `ax-config-macros` `ax-cpu` `ax-page-table-entry` `ax-plat` `ax-plat-aarch64-peripherals` | `ax-helloworld-myplat` |
 | `ax-plat-aarch64-qemu-virt` | 5 | Implementation of `axplat` hardware abstraction l… | `ax-config-macros` `ax-cpu` `ax-page-table-entry` `ax-plat` `ax-plat-aarch64-peripherals` | `ax-hal` `ax-helloworld-myplat` `hello-kernel` `irq-kernel` `smp-kernel` |
 | `ax-plat-aarch64-raspi` | 5 | Implementation of `axplat` hardware abstraction l… | `ax-config-macros` `ax-cpu` `ax-page-table-entry` `ax-plat` `ax-plat-aarch64-peripherals` | `ax-helloworld-myplat` |
 | `ax-plat-loongarch64-qemu-virt` | 4 | Implementation of `axplat` hardware abstraction l… | `ax-config-macros` `ax-cpu` `ax-kspin` `ax-page-table-entry` `ax-plat` `lazyinit` | `ax-hal` `ax-helloworld-myplat` `hello-kernel` `irq-kernel` `smp-kernel` |
-| `ax-plat-macros` | 1 | Procedural macros for the `axplat` crate | `crate_interface` | `ax-plat` |
-| `ax-plat-riscv64-qemu-virt` | 5 | Implementation of `axplat` hardware abstraction l… | `ax-config-macros` `ax-cpu` `ax-kspin` `ax-plat` `axvisor_api` `crate_interface` `lazyinit` `riscv_plic` | `ax-hal` `ax-helloworld-myplat` `axvisor` `hello-kernel` `irq-kernel` `smp-kernel` |
-| `ax-plat-riscv64-qemu-virt` | 5 | Axvisor Hypervisor 运行时 | `ax-config-macros` `ax-cpu` `ax-kspin` `ax-plat` `axvisor_api` `crate_interface` `lazyinit` `riscv_plic` | `ax-hal` `ax-helloworld-myplat` `axvisor` `hello-kernel` `irq-kernel` `smp-kernel` |
+| `ax-plat-macros` | 1 | Procedural macros for the `axplat` crate | `ax-crate-interface` | `ax-plat` |
+| `ax-plat-riscv64-qemu-virt` | 5 | Implementation of `axplat` hardware abstraction l… | `ax-config-macros` `ax-cpu` `ax-crate-interface` `ax-kspin` `ax-plat` `axvisor_api` `lazyinit` `riscv_plic` | `ax-hal` `ax-helloworld-myplat` `axvisor` `hello-kernel` `irq-kernel` `smp-kernel` |
+| `ax-plat-riscv64-qemu-virt` | 5 | Axvisor Hypervisor 运行时 | `ax-config-macros` `ax-cpu` `ax-crate-interface` `ax-kspin` `ax-plat` `axvisor_api` `lazyinit` `riscv_plic` | `ax-hal` `ax-helloworld-myplat` `axvisor` `hello-kernel` `irq-kernel` `smp-kernel` |
 | `ax-plat-x86-pc` | 4 | Implementation of `axplat` hardware abstraction l… | `ax-config-macros` `ax-cpu` `ax-kspin` `ax-percpu` `ax-plat` `int_ratio` `lazyinit` | `ax-hal` `ax-helloworld-myplat` `hello-kernel` `irq-kernel` `smp-kernel` |
 | `ax-posix-api` | 14 | POSIX-compatible APIs for ArceOS modules | `ax-alloc` `ax-config` `ax-errno` `ax-feat` `ax-fs` `ax-hal` `ax-io` `ax-log` `ax-net` `ax-runtime` `ax-sync` `ax-task` `scope-local` | `ax-libc` |
-| `ax-runtime` | 12 | Runtime library of ArceOS | `ax-alloc` `ax-config` `ax-display` `ax-driver` `ax-fs` `ax-fs-ng` `ax-hal` `ax-input` `ax-ipi` `ax-log` `ax-mm` `ax-net` `ax-net-ng` `ax-percpu` `ax-plat` `ax-task` `axbacktrace` `axklib` `crate_interface` `ctor_bare` | `ax-api` `ax-feat` `ax-posix-api` `starry-kernel` |
+| `ax-runtime` | 12 | Runtime library of ArceOS | `ax-alloc` `ax-config` `ax-crate-interface` `ax-display` `ax-driver` `ax-fs` `ax-fs-ng` `ax-hal` `ax-input` `ax-ipi` `ax-log` `ax-mm` `ax-net` `ax-net-ng` `ax-percpu` `ax-plat` `ax-task` `axbacktrace` `axklib` `ctor_bare` | `ax-api` `ax-feat` `ax-posix-api` `starry-kernel` |
 | `ax-sched` | 1 | Various scheduler algorithms in a unified interfa… | `linked_list_r4l` | `ax-task` |
 | `ax-shell` | 16 | ArceOS 示例程序 | `ax-std` | — |
 | `ax-std` | 15 | ArceOS user library with an interface similar to … | `ax-api` `ax-errno` `ax-feat` `ax-io` `ax-kspin` `lazyinit` | `arceos-affinity` `arceos-display` `arceos-exception` `arceos-fs-shell` `arceos-irq` `arceos-memtest` `arceos-net-echoserver` `arceos-net-httpclient` `arceos-net-httpserver` `arceos-net-udpserver` `arceos-parallel` `arceos-priority` `arceos-sleep` `arceos-tls` `arceos-wait-queue` `arceos-yield` `ax-helloworld` `ax-helloworld-myplat` `ax-httpclient` `ax-httpserver` `ax-shell` `axvisor` |
 | `ax-sync` | 8 | ArceOS synchronization primitives | `ax-kspin` `ax-task` | `ax-api` `ax-display` `ax-feat` `ax-fs-ng` `ax-input` `ax-net` `ax-net-ng` `ax-posix-api` `starry-kernel` |
-| `ax-task` | 7 | ArceOS task management module | `ax-config` `ax-cpumask` `ax-errno` `ax-hal` `ax-kspin` `ax-percpu` `ax-sched` `axpoll` `crate_interface` `kernel_guard` `lazyinit` `memory_addr` `timer_list` | `ax-api` `ax-feat` `ax-net` `ax-net-ng` `ax-posix-api` `ax-runtime` `ax-sync` `starry-kernel` |
+| `ax-task` | 7 | ArceOS task management module | `ax-config` `ax-cpumask` `ax-crate-interface` `ax-errno` `ax-hal` `ax-kernel-guard` `ax-kspin` `ax-percpu` `ax-sched` `axpoll` `lazyinit` `memory_addr` `timer_list` | `ax-api` `ax-feat` `ax-net` `ax-net-ng` `ax-posix-api` `ax-runtime` `ax-sync` `starry-kernel` |
 | `axaddrspace` | 3 | ArceOS-Hypervisor guest address space management … | `ax-errno` `ax-memory-set` `ax-page-table-entry` `ax-page-table-multiarch` `lazyinit` `memory_addr` | `arm_vcpu` `arm_vgic` `axdevice` `axdevice_base` `axvcpu` `axvisor` `axvisor_api` `axvm` `riscv_vcpu` `riscv_vplic` `x86_vcpu` `x86_vlapic` |
 | `axbacktrace` | 0 | Backtrace for ArceOS | — | `ax-alloc` `ax-cpu` `ax-feat` `ax-runtime` `starry-kernel` |
 | `axbuild` | 2 | An OS build lib toolkit used by arceos | `axvmconfig` | `axvisor` `starryos` `tg-xtask` |
@@ -1256,30 +1258,28 @@ flowchart TB
 | `axplat-x86-qemu-q35` | 4 | Hardware platform implementation for x86_64 QEMU … | `ax-config-macros` `ax-cpu` `ax-kspin` `ax-percpu` `ax-plat` `int_ratio` `lazyinit` | `axvisor` |
 | `axpoll` | 0 | A library for polling I/O events and waking up ta… | — | `ax-fs-ng` `ax-net-ng` `ax-task` `axfs-ng-vfs` `starry-kernel` |
 | `axvcpu` | 5 | Virtual CPU abstraction for ArceOS hypervisor | `ax-errno` `ax-percpu` `axaddrspace` `axvisor_api` `memory_addr` | `arm_vcpu` `axvisor` `axvm` `riscv_vcpu` `x86_vcpu` |
-| `axvisor` | 16 | A lightweight type-1 hypervisor based on ArceOS | `ax-config` `ax-cpumask` `ax-errno` `ax-hal` `ax-kspin` `ax-page-table-entry` `ax-page-table-multiarch` `ax-percpu` `ax-plat-riscv64-qemu-virt` `ax-std` `axaddrspace` `axbuild` `axdevice` `axdevice_base` `axhvc` `axklib` `axplat-x86-qemu-q35` `axvcpu` `axvisor_api` `axvm` `crate_interface` `kernel_guard` `lazyinit` `memory_addr` `riscv_vcpu` `riscv_vplic` `timer_list` | — |
-| `axvisor_api` | 4 | Basic API for components of the Hypervisor on Arc… | `ax-cpumask` `axaddrspace` `axvisor_api_proc` `crate_interface` `memory_addr` | `arm_vcpu` `arm_vgic` `ax-plat-riscv64-qemu-virt` `axvcpu` `axvisor` `axvm` `riscv_vcpu` `riscv_vplic` `x86_vcpu` `x86_vlapic` |
+| `axvisor` | 16 | A lightweight type-1 hypervisor based on ArceOS | `ax-config` `ax-cpumask` `ax-crate-interface` `ax-errno` `ax-hal` `ax-kernel-guard` `ax-kspin` `ax-page-table-entry` `ax-page-table-multiarch` `ax-percpu` `ax-plat-riscv64-qemu-virt` `ax-std` `axaddrspace` `axbuild` `axdevice` `axdevice_base` `axhvc` `axklib` `axplat-x86-qemu-q35` `axvcpu` `axvisor_api` `axvm` `lazyinit` `memory_addr` `riscv_vcpu` `riscv_vplic` `timer_list` | — |
+| `axvisor_api` | 4 | Basic API for components of the Hypervisor on Arc… | `ax-cpumask` `ax-crate-interface` `axaddrspace` `axvisor_api_proc` `memory_addr` | `arm_vcpu` `arm_vgic` `ax-plat-riscv64-qemu-virt` `axvcpu` `axvisor` `axvm` `riscv_vcpu` `riscv_vplic` `x86_vcpu` `x86_vlapic` |
 | `axvisor_api_proc` | 0 | Procedural macros for the `axvisor_api` crate | — | `axvisor_api` |
 | `axvm` | 7 | Virtual Machine resource management crate for Arc… | `arm_vcpu` `arm_vgic` `ax-cpumask` `ax-errno` `ax-page-table-entry` `ax-page-table-multiarch` `ax-percpu` `axaddrspace` `axdevice` `axdevice_base` `axvcpu` `axvisor_api` `axvmconfig` `memory_addr` `riscv_vcpu` `x86_vcpu` | `axvisor` |
 | `axvmconfig` | 1 | A simple VM configuration tool for ArceOS-Hypervi… | `ax-errno` | `axbuild` `axdevice` `axdevice_base` `axvm` |
 | `bitmap-allocator` | 0 | Bit allocator based on segment tree algorithm. | — | `ax-allocator` |
 | `bwbench-client` | 0 | A raw socket benchmark client. | — | — |
 | `cargo-axplat` | 0 | Manages hardware platform packages using `axplat` | — | — |
-| `crate_interface` | 0 | Provides a way to define an interface (trait) in … | — | `arceos-fs-shell` `ax-driver` `ax-log` `ax-plat` `ax-plat-macros` `ax-plat-riscv64-qemu-virt` `ax-runtime` `ax-task` `axvisor` `axvisor_api` `define-simple-traits` `define-weak-traits` `fxmac_rs` `impl-simple-traits` `impl-weak-partial` `impl-weak-traits` `kernel_guard` `riscv_vcpu` `test-simple` `test-weak` `test-weak-partial` `x86_vcpu` |
 | `crate_interface_lite` | 0 | Provides a way to define an interface (trait) in … | — | — |
 | `ctor_bare` | 1 | Register constructor functions for Rust at compli… | `ctor_bare_macros` | `ax-runtime` |
 | `ctor_bare_macros` | 0 | Macros for registering constructor functions for … | — | `ctor_bare` |
-| `define-simple-traits` | 1 | Define simple traits without default implementati… | `crate_interface` | `impl-simple-traits` `test-simple` |
-| `define-weak-traits` | 1 | Define traits with default implementations using … | `crate_interface` | `impl-weak-partial` `impl-weak-traits` `test-weak` `test-weak-partial` |
+| `define-simple-traits` | 1 | Define simple traits without default implementati… | `ax-crate-interface` | `impl-simple-traits` `test-simple` |
+| `define-weak-traits` | 1 | Define traits with default implementations using … | `ax-crate-interface` | `impl-weak-partial` `impl-weak-traits` `test-weak` `test-weak-partial` |
 | `deptool` | 0 | ArceOS 配套工具与辅助程序 | — | — |
-| `fxmac_rs` | 1 | FXMAC Ethernet driver in Rust for PhytiumPi (Phyt… | `crate_interface` | `ax-driver-net` |
+| `fxmac_rs` | 1 | FXMAC Ethernet driver in Rust for PhytiumPi (Phyt… | `ax-crate-interface` | `ax-driver-net` |
 | `handler_table` | 0 | A lock-free table of event handlers | — | `ax-plat` |
 | `hello-kernel` | 6 | 可复用基础组件 | `ax-plat` `ax-plat-aarch64-qemu-virt` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` | — |
-| `impl-simple-traits` | 2 | Implement the simple traits defined in define-sim… | `crate_interface` `define-simple-traits` | `test-simple` |
-| `impl-weak-partial` | 2 | Partial implementation of WeakDefaultIf trait. Th… | `crate_interface` `define-weak-traits` | `test-weak-partial` |
-| `impl-weak-traits` | 2 | Full implementation of weak_default traits define… | `crate_interface` `define-weak-traits` | `test-weak` |
+| `impl-simple-traits` | 2 | Implement the simple traits defined in define-sim… | `ax-crate-interface` `define-simple-traits` | `test-simple` |
+| `impl-weak-partial` | 2 | Partial implementation of WeakDefaultIf trait. Th… | `ax-crate-interface` `define-weak-traits` | `test-weak-partial` |
+| `impl-weak-traits` | 2 | Full implementation of weak_default traits define… | `ax-crate-interface` `define-weak-traits` | `test-weak` |
 | `int_ratio` | 0 | The type of ratios represented by two integers. | — | `ax-plat-aarch64-peripherals` `ax-plat-x86-pc` `axplat-x86-qemu-q35` |
 | `irq-kernel` | 6 | 可复用基础组件 | `ax-config-macros` `ax-cpu` `ax-plat` `ax-plat-aarch64-qemu-virt` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` | — |
-| `kernel_guard` | 1 | RAII wrappers to create a critical section with l… | `crate_interface` | `ax-hal` `ax-kspin` `ax-percpu` `ax-task` `axvisor` `starry-kernel` |
 | `lazyinit` | 0 | Initialize a static value lazily. | — | `ax-cpu` `ax-display` `ax-fs` `ax-input` `ax-ipi` `ax-mm` `ax-net` `ax-plat-aarch64-peripherals` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `ax-std` `ax-task` `axaddrspace` `axplat-x86-qemu-q35` `axvisor` `starry-process` |
 | `linked_list_r4l` | 0 | Linked lists that supports arbitrary removal in c… | — | `ax-sched` |
 | `memory_addr` | 0 | Wrappers and helper functions for physical and vi… | — | `arm_vgic` `ax-alloc` `ax-cpu` `ax-dma` `ax-hal` `ax-memory-set` `ax-mm` `ax-page-table-entry` `ax-page-table-multiarch` `ax-plat` `ax-task` `axaddrspace` `axdevice` `axklib` `axplat-dyn` `axvcpu` `axvisor` `axvisor_api` `axvm` `riscv_vcpu` `smp-kernel` `starry-kernel` `x86_vcpu` `x86_vlapic` |
@@ -1288,26 +1288,26 @@ flowchart TB
 | `range-alloc-arceos` | 0 | Generic range allocator | — | `axdevice` |
 | `riscv-h` | 0 | RISC-V virtualization-related registers | — | `riscv_vcpu` `riscv_vplic` |
 | `riscv_plic` | 0 | RISC-V platform-level interrupt controller (PLIC)… | — | `ax-plat-riscv64-qemu-virt` |
-| `riscv_vcpu` | 6 | ArceOS-Hypervisor riscv vcpu module | `ax-errno` `ax-page-table-entry` `axaddrspace` `axvcpu` `axvisor_api` `crate_interface` `memory_addr` `riscv-h` | `axvisor` `axvm` |
+| `riscv_vcpu` | 6 | ArceOS-Hypervisor riscv vcpu module | `ax-crate-interface` `ax-errno` `ax-page-table-entry` `axaddrspace` `axvcpu` `axvisor_api` `memory_addr` `riscv-h` | `axvisor` `axvm` |
 | `riscv_vplic` | 5 | RISCV Virtual PLIC implementation. | `ax-errno` `axaddrspace` `axdevice_base` `axvisor_api` `riscv-h` | `axdevice` `axvisor` |
 | `rsext4` | 0 | A lightweight ext4 file system. | — | `ax-fs` |
 | `scope-local` | 3 | Scope local storage | `ax-percpu` | `ax-fs-ng` `ax-posix-api` `starry-kernel` |
 | `smoltcp` | 0 | A TCP/IP stack designed for bare-metal, real-time… | — | `ax-net` `ax-net-ng` `smoltcp-fuzz` |
 | `smoltcp-fuzz` | 1 | 可复用基础组件 | `smoltcp` | — |
 | `smp-kernel` | 6 | 可复用基础组件 | `ax-config-macros` `ax-cpu` `ax-percpu` `ax-plat` `ax-plat-aarch64-qemu-virt` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `memory_addr` | — |
-| `starry-kernel` | 14 | A Linux-compatible OS kernel built on ArceOS unik… | `ax-alloc` `ax-config` `ax-display` `ax-driver` `ax-errno` `ax-feat` `ax-fs-ng` `ax-hal` `ax-input` `ax-io` `ax-kspin` `ax-log` `ax-memory-set` `ax-mm` `ax-net-ng` `ax-page-table-multiarch` `ax-percpu` `ax-runtime` `ax-sync` `ax-task` `axbacktrace` `axfs-ng-vfs` `axpoll` `kernel_guard` `memory_addr` `scope-local` `starry-process` `starry-signal` `starry-vm` | `starryos` `starryos-test` |
+| `starry-kernel` | 14 | A Linux-compatible OS kernel built on ArceOS unik… | `ax-alloc` `ax-config` `ax-display` `ax-driver` `ax-errno` `ax-feat` `ax-fs-ng` `ax-hal` `ax-input` `ax-io` `ax-kernel-guard` `ax-kspin` `ax-log` `ax-memory-set` `ax-mm` `ax-net-ng` `ax-page-table-multiarch` `ax-percpu` `ax-runtime` `ax-sync` `ax-task` `axbacktrace` `axfs-ng-vfs` `axpoll` `memory_addr` `scope-local` `starry-process` `starry-signal` `starry-vm` | `starryos` `starryos-test` |
 | `starry-process` | 3 | Process management for Starry OS | `ax-kspin` `lazyinit` | `starry-kernel` |
 | `starry-signal` | 4 | Signal management library for Starry OS | `ax-cpu` `ax-kspin` `starry-vm` | `starry-kernel` |
 | `starry-vm` | 1 | Virtual memory management library for Starry OS | `ax-errno` | `starry-kernel` `starry-signal` |
 | `starryos` | 15 | A Linux-compatible OS kernel built on ArceOS unik… | `ax-feat` `axbuild` `starry-kernel` | — |
 | `starryos-test` | 15 | A Linux-compatible OS kernel built on ArceOS unik… | `ax-feat` `starry-kernel` | — |
-| `test-simple` | 3 | Integration tests for simple traits (without weak… | `crate_interface` `define-simple-traits` `impl-simple-traits` | — |
-| `test-weak` | 3 | Integration tests for weak_default traits with FU… | `crate_interface` `define-weak-traits` `impl-weak-traits` | — |
-| `test-weak-partial` | 3 | Integration tests for weak_default traits with PA… | `crate_interface` `define-weak-traits` `impl-weak-partial` | — |
+| `test-simple` | 3 | Integration tests for simple traits (without weak… | `ax-crate-interface` `define-simple-traits` `impl-simple-traits` | — |
+| `test-weak` | 3 | Integration tests for weak_default traits with FU… | `ax-crate-interface` `define-weak-traits` `impl-weak-traits` | — |
+| `test-weak-partial` | 3 | Integration tests for weak_default traits with PA… | `ax-crate-interface` `define-weak-traits` `impl-weak-partial` | — |
 | `tg-xtask` | 3 | 根工作区任务编排工具 | `axbuild` | — |
 | `tgmath` | 0 | A tiny math utility crate for TGOSKits demo. | — | — |
 | `timer_list` | 0 | A list of timed events that will be triggered seq… | — | `ax-task` `axvisor` |
-| `x86_vcpu` | 6 | x86 Virtual CPU implementation for the Arceos Hyp… | `ax-errno` `ax-page-table-entry` `axaddrspace` `axdevice_base` `axvcpu` `axvisor_api` `crate_interface` `memory_addr` `x86_vlapic` | `axvm` |
+| `x86_vcpu` | 6 | x86 Virtual CPU implementation for the Arceos Hyp… | `ax-crate-interface` `ax-errno` `ax-page-table-entry` `axaddrspace` `axdevice_base` `axvcpu` `axvisor_api` `memory_addr` `x86_vlapic` | `axvm` |
 | `x86_vlapic` | 5 | x86 Virtual Local APIC | `ax-errno` `axaddrspace` `axdevice_base` `axvisor_api` `memory_addr` | `x86_vcpu` |
 
 ## 5. Lock 外部依赖（关键词粗分）
@@ -1318,7 +1318,7 @@ flowchart TB
 
 | 类别 | 外部包条目数（去重 name+version） |
 |------|-------------------------------------|
-| 工具库/其他 | 528 |
+| 工具库/其他 | 527 |
 | 宏/代码生成 | 53 |
 | 系统/平台 | 50 |
 | 网络/协议 | 29 |
@@ -1335,125 +1335,125 @@ flowchart TB
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `digest` `0.10.7` | Traits for cryptographic hash functions and message authentication codes | — | — |
-| `digest` `0.11.2` | Traits for cryptographic hash functions and message authentication codes | — | — |
-| `fastrand` `2.3.0` | A simple and fast random number generator | `ax-sync` | — |
-| `getrandom` `0.2.17` | A small cross-platform library for retrieving random data from system source | — | — |
-| `getrandom` `0.3.4` | A small cross-platform library for retrieving random data from system source | — | — |
-| `getrandom` `0.4.2` | A small cross-platform library for retrieving random data from system source | — | — |
-| `iri-string` `0.7.12` | IRI as string types | — | — |
-| `oorandom` `11.1.5` | A tiny, robust PRNG implementation. | — | — |
-| `phf_shared` `0.11.3` | Support code shared by PHF libraries | — | — |
-| `rand` `0.10.0` | Random number generators and other randomness functionality. | `starry-kernel` | — |
-| `rand` `0.8.5` | Random number generators and other randomness functionality. | `arceos-memtest` `arceos-parallel` `ax-allocator` `smoltcp` | — |
-| `rand` `0.9.2` | Random number generators and other randomness functionality. | — | — |
-| `rand_chacha` `0.3.1` | ChaCha random number generator | `smoltcp` | — |
-| `rand_chacha` `0.9.0` | ChaCha random number generator | — | — |
-| `rand_core` `0.10.0` | Core random number generation traits and tools for implementation. | — | — |
-| `rand_core` `0.6.4` | Core random number generator traits and tools for implementation. | — | — |
-| `rand_core` `0.9.5` | Core random number generator traits and tools for implementation. | — | — |
-| `ring` `0.17.14` | An experiment. | — | — |
-| `ringbuf` `0.4.8` | Lock-free SPSC FIFO ring buffer with direct access to inner data | `ax-net-ng` `starry-kernel` | — |
-| `sha1` `0.10.6` | SHA-1 hash function | — | — |
-| `sha1` `0.11.0` | SHA-1 hash function | — | — |
-| `sha2` `0.10.9` | Pure Rust implementation of the SHA-2 hash function family including SHA-224, SHA-256, SHA-384, and… | `axbuild` | — |
-| `sha2` `0.11.0` | Pure Rust implementation of the SHA-2 hash function family including SHA-224, SHA-256, SHA-384, and… | — | — |
-| `sharded-slab` `0.1.7` | A lock-free concurrent slab. | — | — |
-| `wasm-bindgen-shared` `0.2.117` | Shared support between wasm-bindgen and wasm-bindgen cli, an internal dependency. | — | — |
-| `windows-strings` `0.5.1` | Windows string types | — | — |
+| `digest` `0.10.7` | — | — | — |
+| `digest` `0.11.2` | — | — | — |
+| `fastrand` `2.3.0` | — | `ax-sync` | — |
+| `getrandom` `0.2.17` | — | — | — |
+| `getrandom` `0.3.4` | — | — | — |
+| `getrandom` `0.4.2` | — | — | — |
+| `iri-string` `0.7.12` | — | — | — |
+| `oorandom` `11.1.5` | — | — | — |
+| `phf_shared` `0.11.3` | — | — | — |
+| `rand` `0.10.0` | — | `starry-kernel` | — |
+| `rand` `0.8.5` | — | `arceos-memtest` `arceos-parallel` `ax-allocator` `smoltcp` | — |
+| `rand` `0.9.2` | — | — | — |
+| `rand_chacha` `0.3.1` | — | `smoltcp` | — |
+| `rand_chacha` `0.9.0` | — | — | — |
+| `rand_core` `0.10.0` | — | — | — |
+| `rand_core` `0.6.4` | — | — | — |
+| `rand_core` `0.9.5` | — | — | — |
+| `ring` `0.17.14` | — | — | — |
+| `ringbuf` `0.4.8` | — | `ax-net-ng` `starry-kernel` | — |
+| `sha1` `0.10.6` | — | — | — |
+| `sha1` `0.11.0` | — | — | — |
+| `sha2` `0.10.9` | — | `axbuild` | — |
+| `sha2` `0.11.0` | — | — | — |
+| `sharded-slab` `0.1.7` | — | — | — |
+| `wasm-bindgen-shared` `0.2.117` | — | — | — |
+| `windows-strings` `0.5.1` | — | — | — |
 
 
 #### 命令行/配置
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `bitflags` `1.3.2` | A macro to generate structures which behave like bitflags. | `smoltcp` | — |
-| `bitflags` `2.11.0` | A macro to generate structures which behave like bitflags. | `ax-cap-access` `ax-fs-ng` `ax-fs-vfs` `ax-net-ng` `ax-page-table-entry` `ax-plat` `ax-plat-x86-pc` `axaddrspace` `axfs-ng-vfs` `axplat-x86-qemu-q35` `axpoll` `axvisor` `riscv-h` `riscv_vcpu` `rsext4` `starry-kernel` `starry-signal` `x86_vcpu` | — |
-| `cargo_metadata` `0.23.1` | structured access to the output of `cargo metadata` | `axbuild` | — |
-| `clap` `4.6.0` | A simple to use, efficient, and full-featured Command Line Argument Parser | `ax-config-gen` `axbuild` `axvisor` `axvmconfig` `starryos` | — |
-| `clap_builder` `4.6.0` | A simple to use, efficient, and full-featured Command Line Argument Parser | — | — |
-| `clap_derive` `4.6.0` | Parse command line argument by defining a struct, derive crate. | — | — |
-| `clap_lex` `1.1.0` | Minimal, flexible command line parser | — | — |
-| `lenient_semver` `0.4.2` | Lenient Semantic Version numbers. | — | — |
-| `lenient_semver_parser` `0.4.2` | Lenient parser for Semantic Version numbers. | — | — |
-| `lenient_semver_version_builder` `0.4.2` | VersionBuilder trait for lenient parser for Semantic Version numbers. | — | — |
-| `semver` `1.0.27` | Parser and evaluator for Cargo's flavor of Semantic Versioning | — | — |
+| `bitflags` `1.3.2` | — | `smoltcp` | — |
+| `bitflags` `2.11.0` | — | `ax-cap-access` `ax-fs-ng` `ax-fs-vfs` `ax-net-ng` `ax-page-table-entry` `ax-plat` `ax-plat-x86-pc` `axaddrspace` `axfs-ng-vfs` `axplat-x86-qemu-q35` `axpoll` `axvisor` `riscv-h` `riscv_vcpu` `rsext4` `starry-kernel` `starry-signal` `x86_vcpu` | — |
+| `cargo_metadata` `0.23.1` | — | `axbuild` | — |
+| `clap` `4.6.0` | — | `ax-config-gen` `axbuild` `axvisor` `axvmconfig` `starryos` | — |
+| `clap_builder` `4.6.0` | — | — | — |
+| `clap_derive` `4.6.0` | — | — | — |
+| `clap_lex` `1.1.0` | — | — | — |
+| `lenient_semver` `0.4.2` | — | — | — |
+| `lenient_semver_parser` `0.4.2` | — | — | — |
+| `lenient_semver_version_builder` `0.4.2` | — | — | — |
+| `semver` `1.0.27` | — | — | — |
 
 
 #### 宏/代码生成
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `borsh-derive` `1.6.1` | Binary Object Representation Serializer for Hashing | — | — |
-| `bytecheck` `0.6.12` | Derive macro for bytecheck | — | — |
-| `bytecheck_derive` `0.6.12` | Derive macro for bytecheck | — | — |
-| `bytemuck_derive` `1.10.2` | derive proc-macros for `bytemuck` | — | — |
-| `ctor-proc-macro` `0.0.6` | proc-macro support for the ctor crate | — | — |
-| `ctor-proc-macro` `0.0.7` | proc-macro support for the ctor crate | — | — |
-| `darling` `0.13.4` | A proc-macro library for reading attributes into structs when implementing custom derives. | — | — |
-| `darling` `0.20.11` | A proc-macro library for reading attributes into structs when implementing custom derives. | — | — |
-| `darling` `0.21.3` | A proc-macro library for reading attributes into structs when implementing custom derives. | — | — |
-| `darling` `0.23.0` | A proc-macro library for reading attributes into structs when implementing custom derives. | — | — |
-| `darling_core` `0.13.4` | Helper crate for proc-macro library for reading attributes into structs when implementing custom de… | — | — |
-| `darling_core` `0.20.11` | Helper crate for proc-macro library for reading attributes into structs when implementing custom de… | — | — |
-| `darling_core` `0.21.3` | Helper crate for proc-macro library for reading attributes into structs when implementing custom de… | — | — |
-| `darling_core` `0.23.0` | Helper crate for proc-macro library for reading attributes into structs when implementing custom de… | — | — |
-| `darling_macro` `0.13.4` | Internal support for a proc-macro library for reading attributes into structs when implementing cus… | — | — |
-| `darling_macro` `0.20.11` | Internal support for a proc-macro library for reading attributes into structs when implementing cus… | — | — |
-| `darling_macro` `0.21.3` | Internal support for a proc-macro library for reading attributes into structs when implementing cus… | — | — |
-| `darling_macro` `0.23.0` | Internal support for a proc-macro library for reading attributes into structs when implementing cus… | — | — |
-| `derive_more` `2.1.1` | Adds #[derive(x)] macros for more traits | `starry-signal` | — |
-| `derive_more-impl` `2.1.1` | Internal implementation of `derive_more` crate | — | — |
-| `dtor-proc-macro` `0.0.5` | proc-macro support for the dtor crate | — | — |
-| `dtor-proc-macro` `0.0.6` | proc-macro support for the dtor crate | — | — |
-| `enum-map-derive` `0.17.0` | Macros 1.1 implementation of #[derive(Enum)] | — | — |
-| `enumerable_derive` `1.2.0` | A proc-macro helping you to enumerate all possible values of a enum or struct | — | — |
-| `enumset_derive` `0.14.0` | An internal helper crate for enumset. Not public API. | — | — |
-| `heck` `0.4.1` | heck is a case conversion library. | — | — |
-| `heck` `0.5.0` | heck is a case conversion library. | — | — |
-| `num-derive` `0.4.2` | Numeric syntax extensions | — | — |
-| `num_enum_derive` `0.7.6` | Internal implementation details for ::num_enum (Procedural macros to make inter-operation between p… | — | — |
-| `paste` `1.0.15` | Macros for all your token pasting needs | `axbacktrace` `x86_vcpu` `x86_vlapic` | — |
-| `pest_derive` `2.8.6` | pest's derive macro | — | — |
-| `proc-macro-crate` `3.5.0` | Replacement for crate (macro_rules keyword) in proc-macros | `axvisor_api_proc` | — |
-| `proc-macro-error-attr2` `2.0.0` | Attribute macro for the proc-macro-error2 crate | — | — |
-| `proc-macro-error2` `2.0.1` | Almost drop-in replacement to panics in proc-macros | — | — |
-| `proc-macro2` `1.0.106` | A substitute implementation of the compiler's `proc_macro` API to decouple token-based libraries fr… | `ax-config-macros` `ax-plat-macros` `axvisor_api_proc` `crate_interface` `ctor_bare_macros` `percpu_macros` | — |
-| `proc-macro2-diagnostics` `0.10.1` | Diagnostics for proc-macro2. | — | — |
-| `ptr_meta_derive` `0.1.4` | Macros for ptr_meta | — | — |
-| `ptr_meta_derive` `0.3.1` | Proc macros for ptr_meta | — | — |
-| `quote` `1.0.45` | Quasi-quoting macro quote!(...) | `ax-config-macros` `ax-plat-macros` `axvisor` `axvisor_api_proc` `crate_interface` `ctor_bare_macros` `percpu_macros` | — |
-| `regex-syntax` `0.8.10` | A regular expression parser. | — | — |
-| `rkyv_derive` `0.7.46` | Derive macro for rkyv | — | — |
-| `schemars_derive` `1.2.1` | Macros for #[derive(JsonSchema)], for use with schemars | — | — |
-| `syn` `1.0.109` | Parser for Rust source code | — | — |
-| `syn` `2.0.117` | Parser for Rust source code | `ax-config-macros` `ax-plat-macros` `axvisor` `axvisor_api_proc` `crate_interface` `ctor_bare_macros` `percpu_macros` | — |
-| `sync_wrapper` `1.0.2` | A tool for enlisting the compiler's help in proving the absence of concurrency | — | — |
-| `synstructure` `0.13.2` | Helper methods and macros for custom derives | — | — |
-| `version_check` `0.9.5` | Tiny crate to check the version of the installed/running rustc. | — | — |
-| `wezterm-dynamic-derive` `0.1.1` | config serialization for wezterm via dynamic json-like data values | — | — |
-| `yoke-derive` `0.7.5` | Custom derive for the yoke crate | — | — |
-| `zerocopy-derive` `0.7.35` | Custom derive for traits from the zerocopy crate | — | — |
-| `zerocopy-derive` `0.8.48` | Custom derive for traits from the zerocopy crate | — | — |
-| `zerofrom-derive` `0.1.7` | Custom derive for the zerofrom crate | — | — |
-| `zerovec-derive` `0.10.3` | Custom derive for the zerovec crate | — | — |
+| `borsh-derive` `1.6.1` | — | — | — |
+| `bytecheck` `0.6.12` | — | — | — |
+| `bytecheck_derive` `0.6.12` | — | — | — |
+| `bytemuck_derive` `1.10.2` | — | — | — |
+| `ctor-proc-macro` `0.0.6` | — | — | — |
+| `ctor-proc-macro` `0.0.7` | — | — | — |
+| `darling` `0.13.4` | — | — | — |
+| `darling` `0.20.11` | — | — | — |
+| `darling` `0.21.3` | — | — | — |
+| `darling` `0.23.0` | — | — | — |
+| `darling_core` `0.13.4` | — | — | — |
+| `darling_core` `0.20.11` | — | — | — |
+| `darling_core` `0.21.3` | — | — | — |
+| `darling_core` `0.23.0` | — | — | — |
+| `darling_macro` `0.13.4` | — | — | — |
+| `darling_macro` `0.20.11` | — | — | — |
+| `darling_macro` `0.21.3` | — | — | — |
+| `darling_macro` `0.23.0` | — | — | — |
+| `derive_more` `2.1.1` | — | `starry-signal` | — |
+| `derive_more-impl` `2.1.1` | — | — | — |
+| `dtor-proc-macro` `0.0.5` | — | — | — |
+| `dtor-proc-macro` `0.0.6` | — | — | — |
+| `enum-map-derive` `0.17.0` | — | — | — |
+| `enumerable_derive` `1.2.0` | — | — | — |
+| `enumset_derive` `0.14.0` | — | — | — |
+| `heck` `0.4.1` | — | — | — |
+| `heck` `0.5.0` | — | — | — |
+| `num-derive` `0.4.2` | — | — | — |
+| `num_enum_derive` `0.7.6` | — | — | — |
+| `paste` `1.0.15` | — | `axbacktrace` `x86_vcpu` `x86_vlapic` | — |
+| `pest_derive` `2.8.6` | — | — | — |
+| `proc-macro-crate` `3.5.0` | — | `axvisor_api_proc` | — |
+| `proc-macro-error-attr2` `2.0.0` | — | — | — |
+| `proc-macro-error2` `2.0.1` | — | — | — |
+| `proc-macro2` `1.0.106` | — | `ax-config-macros` `ax-crate-interface` `ax-plat-macros` `axvisor_api_proc` `ctor_bare_macros` `percpu_macros` | — |
+| `proc-macro2-diagnostics` `0.10.1` | — | — | — |
+| `ptr_meta_derive` `0.1.4` | — | — | — |
+| `ptr_meta_derive` `0.3.1` | — | — | — |
+| `quote` `1.0.45` | — | `ax-config-macros` `ax-crate-interface` `ax-plat-macros` `axvisor` `axvisor_api_proc` `ctor_bare_macros` `percpu_macros` | — |
+| `regex-syntax` `0.8.10` | — | — | — |
+| `rkyv_derive` `0.7.46` | — | — | — |
+| `schemars_derive` `1.2.1` | — | — | — |
+| `syn` `1.0.109` | — | — | — |
+| `syn` `2.0.117` | — | `ax-config-macros` `ax-crate-interface` `ax-plat-macros` `axvisor` `axvisor_api_proc` `ctor_bare_macros` `percpu_macros` | — |
+| `sync_wrapper` `1.0.2` | — | — | — |
+| `synstructure` `0.13.2` | — | — | — |
+| `version_check` `0.9.5` | — | — | — |
+| `wezterm-dynamic-derive` `0.1.1` | — | — | — |
+| `yoke-derive` `0.7.5` | — | — | — |
+| `zerocopy-derive` `0.7.35` | — | — | — |
+| `zerocopy-derive` `0.8.48` | — | — | — |
+| `zerofrom-derive` `0.1.7` | — | — | — |
+| `zerovec-derive` `0.10.3` | — | — | — |
 
 
 #### 嵌入式/裸机
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `critical-section` `1.2.0` | Cross-platform critical section | — | — |
-| `defmt` `0.3.100` | A highly efficient logging framework that targets resource-constrained devices, like microcontrolle… | `smoltcp` | — |
-| `defmt` `1.0.1` | A highly efficient logging framework that targets resource-constrained devices, like microcontrolle… | — | — |
-| `defmt-macros` `1.0.1` | defmt macros | — | — |
-| `defmt-parser` `1.0.0` | Parsing library for defmt format strings | — | — |
-| `embedded-graphics` `0.8.2` | Embedded graphics library for small hardware displays | `arceos-display` | — |
-| `embedded-graphics-core` `0.4.1` | Core traits and functionality for embedded-graphics | — | — |
-| `embedded-hal` `1.0.0` | A Hardware Abstraction Layer (HAL) for embedded systems | — | — |
-| `tock-registers` `0.10.1` | Memory-Mapped I/O and register interface developed for Tock. | `arm_vgic` `ax-cpu` `riscv_plic` `riscv_vcpu` `x86_vlapic` | — |
-| `tock-registers` `0.8.1` | Memory-Mapped I/O and register interface developed for Tock. | `ax-arm-pl011` | — |
-| `tock-registers` `0.9.0` | Memory-Mapped I/O and register interface developed for Tock. | — | — |
+| `critical-section` `1.2.0` | — | — | — |
+| `defmt` `0.3.100` | — | `smoltcp` | — |
+| `defmt` `1.0.1` | — | — | — |
+| `defmt-macros` `1.0.1` | — | — | — |
+| `defmt-parser` `1.0.0` | — | — | — |
+| `embedded-graphics` `0.8.2` | — | `arceos-display` | — |
+| `embedded-graphics-core` `0.4.1` | — | — | — |
+| `embedded-hal` `1.0.0` | — | — | — |
+| `tock-registers` `0.10.1` | — | `arm_vgic` `ax-cpu` `riscv_plic` `riscv_vcpu` `x86_vlapic` | — |
+| `tock-registers` `0.8.1` | — | `ax-arm-pl011` | — |
+| `tock-registers` `0.9.0` | — | — | — |
 
 
 #### 工具库/其他
@@ -1461,735 +1461,734 @@ flowchart TB
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
 | `aarch32-cpu` `0.2.0` | — | — | — |
-| `aarch64-cpu` `10.0.0` | Low level access to processors using the AArch64 execution state | `fxmac_rs` | — |
-| `aarch64-cpu` `11.2.0` | Low level access to processors using the AArch64 execution state | `arm_vcpu` `arm_vgic` `ax-cpu` `ax-page-table-entry` `ax-plat-aarch64-peripherals` `ax-plat-aarch64-raspi` | — |
-| `aarch64-cpu-ext` `0.1.4` | Extended AArch64 CPU utilities and cache management operations | `axvisor` | — |
-| `acpi` `6.1.1` | A pure-Rust library for interacting with ACPI | — | — |
+| `aarch64-cpu` `10.0.0` | — | `fxmac_rs` | — |
+| `aarch64-cpu` `11.2.0` | — | `arm_vcpu` `arm_vgic` `ax-cpu` `ax-page-table-entry` `ax-plat-aarch64-peripherals` `ax-plat-aarch64-raspi` | — |
+| `aarch64-cpu-ext` `0.1.4` | — | `axvisor` | — |
+| `acpi` `6.1.1` | — | — | — |
 | `addr2line` `0.26.1` | — | `axbacktrace` | — |
-| `adler2` `2.0.1` | A simple clean-room implementation of the Adler-32 checksum | — | — |
-| `ahash` `0.7.8` | A non-cryptographic hash function using AES-NI for high performance | — | — |
-| `ahash` `0.8.12` | A non-cryptographic hash function using AES-NI for high performance | — | — |
-| `aho-corasick` `1.1.4` | Fast multiple substring searching. | — | — |
-| `aliasable` `0.1.3` | Basic aliasable (non unique pointer) types | — | — |
-| `allocator-api2` `0.2.21` | Mirror of Rust's allocator API | — | — |
-| `aml` `0.16.4` | Library for parsing AML | — | — |
-| `android_system_properties` `0.1.5` | Minimal Android system properties wrapper | — | — |
-| `anes` `0.1.6` | ANSI Escape Sequences provider & parser | — | — |
-| `ansi_rgb` `0.2.0` | Colorful console text using ANSI escape sequences | — | — |
-| `anstream` `1.0.0` | IO stream adapters for writing colored text that will gracefully degrade according to your terminal… | — | — |
-| `anstyle` `1.0.14` | ANSI text styling | — | — |
-| `anstyle-parse` `1.0.0` | Parse ANSI Style Escapes | — | — |
-| `anstyle-query` `1.1.5` | Look up colored console capabilities | — | — |
-| `anstyle-wincon` `3.0.11` | Styling legacy Windows terminals | — | — |
+| `adler2` `2.0.1` | — | — | — |
+| `ahash` `0.7.8` | — | — | — |
+| `ahash` `0.8.12` | — | — | — |
+| `aho-corasick` `1.1.4` | — | — | — |
+| `aliasable` `0.1.3` | — | — | — |
+| `allocator-api2` `0.2.21` | — | — | — |
+| `aml` `0.16.4` | — | — | — |
+| `android_system_properties` `0.1.5` | — | — | — |
+| `anes` `0.1.6` | — | — | — |
+| `ansi_rgb` `0.2.0` | — | — | — |
+| `anstream` `1.0.0` | — | — | — |
+| `anstyle` `1.0.14` | — | — | — |
+| `anstyle-parse` `1.0.0` | — | — | — |
+| `anstyle-query` `1.1.5` | — | — | — |
+| `anstyle-wincon` `3.0.11` | — | — | — |
 | `arbitrary-int` `1.3.0` | — | — | — |
 | `arbitrary-int` `2.1.1` | — | — | — |
-| `arm-gic-driver` `0.16.5` | A driver for the Arm Generic Interrupt Controller. | `ax-plat-aarch64-peripherals` | — |
-| `arm-gic-driver` `0.17.0` | A driver for the Arm Generic Interrupt Controller. | `axvisor` | — |
+| `arm-gic-driver` `0.16.5` | — | `ax-plat-aarch64-peripherals` | — |
+| `arm-gic-driver` `0.17.0` | — | `axvisor` | — |
 | `arm-targets` `0.4.1` | — | — | — |
 | `arm_pl011` `0.1.0` | — | — | — |
-| `as-any` `0.3.2` | provide the AsAny trait | — | — |
-| `assert_matches` `1.5.0` | Asserts that a value matches a pattern | `axaddrspace` | — |
-| `atomic` `0.6.1` | Generic Atomic<T> wrapper type | — | — |
-| `atomic-waker` `1.1.2` | A synchronization primitive for task wakeup | — | — |
-| `autocfg` `1.5.0` | Automatic cfg for Rust compiler features | `ax-io` | — |
-| `aws-lc-rs` `1.16.2` | aws-lc-rs is a cryptographic library using AWS-LC for its cryptographic operations. This library st… | — | — |
-| `aws-lc-sys` `0.39.1` | AWS-LC is a general-purpose cryptographic library maintained by the AWS Cryptography team for AWS a… | — | — |
-| `ax_slab_allocator` `0.4.0` | Slab allocator for `no_std` systems. Uses multiple slabs with blocks of different sizes and a linke… | `ax-allocator` | — |
+| `as-any` `0.3.2` | — | — | — |
+| `assert_matches` `1.5.0` | — | `axaddrspace` | — |
+| `atomic` `0.6.1` | — | — | — |
+| `atomic-waker` `1.1.2` | — | — | — |
+| `autocfg` `1.5.0` | — | `ax-io` | — |
+| `aws-lc-rs` `1.16.2` | — | — | — |
+| `aws-lc-sys` `0.39.1` | — | — | — |
+| `ax_slab_allocator` `0.4.0` | — | `ax-allocator` | — |
 | `axallocator` `0.2.0` | — | — | — |
 | `axconfig-gen` `0.2.1` | — | — | — |
 | `axconfig-macros` `0.2.1` | — | — | — |
 | `axcpu` `0.3.1` | — | — | `lazyinit` `memory_addr` |
-| `axfatfs` `0.1.0-pre.0` | FAT filesystem library. | `ax-fs` | — |
-| `axin` `0.1.0` | A Rust procedural macro library for function instrumentation | `axaddrspace` | — |
-| `axplat` `0.3.1-pre.6` | — | — | `crate_interface` `handler_table` `memory_addr` |
+| `axfatfs` `0.1.0-pre.0` | — | `ax-fs` | — |
+| `axin` `0.1.0` | — | `axaddrspace` | — |
+| `axplat` `0.3.1-pre.6` | — | — | `handler_table` `memory_addr` |
 | `axplat-macros` `0.1.0` | — | — | — |
 | `axplat-riscv64-visionfive2` `0.1.0-pre.2` | — | `starryos` `starryos-test` | `lazyinit` `riscv_plic` |
-| `az` `1.2.1` | Casts and checked casts | — | — |
-| `bare-metal` `1.0.0` | Abstractions common to bare metal systems | `riscv-h` | — |
-| `bare-test-macros` `0.2.0` | macros for bare-test | — | — |
+| `az` `1.2.1` | — | — | — |
+| `bare-metal` `1.0.0` | — | `riscv-h` | — |
+| `bare-test-macros` `0.2.0` | — | — | — |
 | `bcm2835-sdhci` `0.1.1` | — | `ax-driver-block` | — |
-| `bindgen` `0.72.1` | Automatically generates Rust FFI bindings to C and C++ libraries. | `ax-libc` `ax-posix-api` | — |
-| `bit` `0.1.1` | A library which provides helpers to manipulate bits and bit ranges. | `x86_vlapic` | — |
-| `bit-set` `0.5.3` | A set of bits | — | — |
-| `bit-vec` `0.6.3` | A vector of bits | — | — |
-| `bit_field` `0.10.3` | Simple bit field trait providing get_bit, get_bits, set_bit, and set_bits methods for Rust's integr… | `axaddrspace` `bitmap-allocator` `riscv-h` `riscv_vcpu` `x86_vcpu` | — |
+| `bindgen` `0.72.1` | — | `ax-libc` `ax-posix-api` | — |
+| `bit` `0.1.1` | — | `x86_vlapic` | — |
+| `bit-set` `0.5.3` | — | — | — |
+| `bit-vec` `0.6.3` | — | — | — |
+| `bit_field` `0.10.3` | — | `axaddrspace` `bitmap-allocator` `riscv-h` `riscv_vcpu` `x86_vcpu` | — |
 | `bitbybit` `1.4.0` | — | — | — |
 | `bitfield-struct` `0.11.0` | — | — | — |
-| `bitmaps` `3.2.1` | Fixed size boolean arrays | `arm_vgic` `ax-cpumask` `ax-page-table-multiarch` `riscv_vplic` `starry-kernel` | — |
-| `block-buffer` `0.10.4` | Buffer type for block processing of data | — | — |
-| `block-buffer` `0.12.0` | Buffer types for block processing of data | — | — |
-| `borsh` `1.6.1` | Binary Object Representation Serializer for Hashing | — | — |
+| `bitmaps` `3.2.1` | — | `arm_vgic` `ax-cpumask` `ax-page-table-multiarch` `riscv_vplic` `starry-kernel` | — |
+| `block-buffer` `0.10.4` | — | — | — |
+| `block-buffer` `0.12.0` | — | — | — |
+| `borsh` `1.6.1` | — | — | — |
 | `buddy-slab-allocator` `0.2.0` | — | `ax-alloc` `ax-dma` | — |
-| `buddy_system_allocator` `0.10.0` | A bare metal allocator that uses buddy system. | `ax-allocator` | — |
-| `buddy_system_allocator` `0.12.0` | A bare metal allocator that uses buddy system. | — | — |
-| `bumpalo` `3.20.2` | A fast bump allocation arena for Rust. | — | — |
-| `byte-unit` `5.2.0` | A library for interacting with units of bytes. | `axvisor` | — |
-| `bytemuck` `1.25.0` | A crate for mucking around with piles of bytes. | `starry-kernel` `starry-vm` | — |
-| `camino` `1.2.2` | UTF-8 paths | — | — |
-| `cargo-platform` `0.3.2` | Cargo's representation of a target platform. | — | — |
-| `cast` `0.3.0` | Ergonomic, checked cast functions for primitive types | — | — |
-| `castaway` `0.2.4` | Safe, zero-cost downcasting for limited compile-time specialization. | — | — |
-| `cesu8` `1.1.0` | Convert to and from CESU-8 encoding (similar to UTF-8) | — | — |
-| `cexpr` `0.6.0` | A C expression parser and evaluator | — | — |
-| `cfg-if` `1.0.4` | A macro to ergonomically define an item depending on a large number of #[cfg] parameters. Structure… | `ax-alloc` `ax-allocator` `ax-cpu` `ax-driver` `ax-fs-ng` `ax-hal` `ax-helloworld-myplat` `ax-kspin` `ax-log` `ax-net` `ax-net-ng` `ax-percpu` `ax-runtime` `ax-task` `axaddrspace` `axbacktrace` `axdevice` `axfs-ng-vfs` `axvisor` `axvm` `kernel_guard` `percpu_macros` `riscv_vcpu` `smoltcp` `starry-kernel` `starry-signal` `x86_vcpu` | — |
-| `cfg_aliases` `0.2.1` | A tiny utility to help save you a lot of effort with long winded `#[cfg()]` checks. | — | — |
-| `chrono` `0.4.44` | Date and time library for Rust | `ax-arm-pl031` `ax-fs-ng` `ax-log` `ax-plat-loongarch64-qemu-virt` `ax-runtime` `axbuild` `starry-kernel` | — |
-| `ciborium` `0.2.2` | serde implementation of CBOR using ciborium-basic | — | — |
-| `ciborium-io` `0.2.2` | Simplified Read/Write traits for no_std usage | — | — |
-| `ciborium-ll` `0.2.2` | Low-level CBOR codec primitives | — | — |
-| `clang-sys` `1.8.1` | Rust bindings for libclang. | — | — |
-| `colorchoice` `1.0.5` | Global override of color control | — | — |
-| `colored` `3.1.1` | The most simple way to add colors in your terminal | `axbuild` | — |
-| `combine` `4.6.7` | Fast parser combinators on arbitrary streams with zero-copy support. | — | — |
-| `compact_str` `0.8.1` | A memory efficient string type that transparently stores strings on the stack, when possible | — | — |
-| `compact_str` `0.9.0` | A memory efficient string type that transparently stores strings on the stack, when possible | — | — |
-| `concurrent-queue` `2.5.0` | Concurrent multi-producer multi-consumer queue | — | — |
-| `console` `0.16.3` | A terminal and console abstraction for Rust | — | — |
-| `const-default` `1.0.0` | A const Default trait | — | — |
-| `const-oid` `0.10.2` | Const-friendly implementation of the ISO/IEC Object Identifier (OID) standard as defined in ITU X.6… | — | — |
-| `const-str` `1.1.0` | compile-time string operations | `ax-config` `ax-plat` | — |
-| `const_fn` `0.4.12` | A lightweight attribute for easy generation of const functions with conditional compilations. | — | — |
-| `convert_case` `0.10.0` | Convert strings into any case | — | — |
-| `convert_case` `0.8.0` | Convert strings into any case | — | — |
-| `core-foundation` `0.10.1` | Bindings to Core Foundation for macOS | — | — |
-| `core-foundation` `0.9.4` | Bindings to Core Foundation for macOS | — | — |
-| `core-foundation-sys` `0.8.7` | Bindings to Core Foundation for macOS | — | — |
+| `buddy_system_allocator` `0.10.0` | — | `ax-allocator` | — |
+| `buddy_system_allocator` `0.12.0` | — | — | — |
+| `bumpalo` `3.20.2` | — | — | — |
+| `byte-unit` `5.2.0` | — | `axvisor` | — |
+| `bytemuck` `1.25.0` | — | `starry-kernel` `starry-vm` | — |
+| `camino` `1.2.2` | — | — | — |
+| `cargo-platform` `0.3.2` | — | — | — |
+| `cast` `0.3.0` | — | — | — |
+| `castaway` `0.2.4` | — | — | — |
+| `cesu8` `1.1.0` | — | — | — |
+| `cexpr` `0.6.0` | — | — | — |
+| `cfg-if` `1.0.4` | — | `ax-alloc` `ax-allocator` `ax-cpu` `ax-driver` `ax-fs-ng` `ax-hal` `ax-helloworld-myplat` `ax-kernel-guard` `ax-kspin` `ax-log` `ax-net` `ax-net-ng` `ax-percpu` `ax-runtime` `ax-task` `axaddrspace` `axbacktrace` `axdevice` `axfs-ng-vfs` `axvisor` `axvm` `percpu_macros` `riscv_vcpu` `smoltcp` `starry-kernel` `starry-signal` `x86_vcpu` | — |
+| `cfg_aliases` `0.2.1` | — | — | — |
+| `chrono` `0.4.44` | — | `ax-arm-pl031` `ax-fs-ng` `ax-log` `ax-plat-loongarch64-qemu-virt` `ax-runtime` `axbuild` `starry-kernel` | — |
+| `ciborium` `0.2.2` | — | — | — |
+| `ciborium-io` `0.2.2` | — | — | — |
+| `ciborium-ll` `0.2.2` | — | — | — |
+| `clang-sys` `1.8.1` | — | — | — |
+| `colorchoice` `1.0.5` | — | — | — |
+| `colored` `3.1.1` | — | `axbuild` | — |
+| `combine` `4.6.7` | — | — | — |
+| `compact_str` `0.8.1` | — | — | — |
+| `compact_str` `0.9.0` | — | — | — |
+| `concurrent-queue` `2.5.0` | — | — | — |
+| `console` `0.16.3` | — | — | — |
+| `const-default` `1.0.0` | — | — | — |
+| `const-oid` `0.10.2` | — | — | — |
+| `const-str` `1.1.0` | — | `ax-config` `ax-plat` | — |
+| `const_fn` `0.4.12` | — | — | — |
+| `convert_case` `0.10.0` | — | — | — |
+| `convert_case` `0.8.0` | — | — | — |
+| `core-foundation` `0.10.1` | — | — | — |
+| `core-foundation` `0.9.4` | — | — | — |
+| `core-foundation-sys` `0.8.7` | — | — | — |
 | `core_detect` `1.0.0` | — | — | — |
 | `cpp_demangle` `0.5.1` | — | — | — |
-| `cpufeatures` `0.2.17` | Lightweight runtime CPU feature detection for aarch64, loongarch64, and x86/x86_64 targets, with no… | — | — |
-| `cpufeatures` `0.3.0` | Lightweight runtime CPU feature detection for aarch64, loongarch64, and x86/x86_64 targets, with no… | — | — |
+| `cpufeatures` `0.2.17` | — | — | — |
+| `cpufeatures` `0.3.0` | — | — | — |
 | `crate_interface` `0.1.4` | — | — | — |
 | `crate_interface` `0.3.0` | — | — | — |
-| `crc` `3.4.0` | Rust implementation of CRC with support of various standards | — | — |
-| `crc32fast` `1.5.0` | Fast, SIMD-accelerated CRC32 (IEEE) checksum computation | — | — |
-| `criterion` `0.5.1` | Statistics-driven micro-benchmarking library | `ax-allocator` | — |
-| `criterion-plot` `0.5.0` | Criterion's plotting library | — | — |
-| `crossterm` `0.28.1` | A crossplatform terminal library for manipulating terminals. | — | — |
-| `crossterm` `0.29.0` | A crossplatform terminal library for manipulating terminals. | — | — |
-| `crossterm_winapi` `0.9.1` | WinAPI wrapper that provides some basic simple abstractions around common WinAPI calls | — | — |
-| `crunchy` `0.2.4` | Crunchy unroller: deterministically unroll constant loops | — | — |
-| `crypto-common` `0.1.7` | Common cryptographic traits | — | — |
-| `crypto-common` `0.2.1` | Common traits used by cryptographic algorithms | — | — |
-| `csscolorparser` `0.6.2` | CSS color parser library | — | — |
-| `ctor` `0.4.3` | __attribute__((constructor)) for Rust | `starry-process` | — |
-| `ctor` `0.6.3` | __attribute__((constructor)) for Rust | `scope-local` | — |
-| `cursive` `0.21.1` | A TUI (Text User Interface) library focused on ease-of-use. | — | — |
-| `cursive-macros` `0.1.0` | Proc-macros for the cursive TUI library. | — | — |
-| `cursive_core` `0.4.6` | Core components for the Cursive TUI | — | — |
-| `data-encoding` `2.10.0` | Efficient and customizable data-encoding functions like base64, base32, and hex | — | — |
-| `deltae` `0.3.2` | Calculate Delta E between two colors in CIE Lab space. | — | — |
-| `deranged` `0.5.8` | Ranged integers | — | — |
-| `device_tree` `1.1.0` | Reads and parses Linux device tree images | — | — |
-| `displaydoc` `0.2.5` | A derive macro for implementing the display Trait via a doc comment and string interpolation | — | — |
+| `crc` `3.4.0` | — | — | — |
+| `crc32fast` `1.5.0` | — | — | — |
+| `criterion` `0.5.1` | — | `ax-allocator` | — |
+| `criterion-plot` `0.5.0` | — | — | — |
+| `crossterm` `0.28.1` | — | — | — |
+| `crossterm` `0.29.0` | — | — | — |
+| `crossterm_winapi` `0.9.1` | — | — | — |
+| `crunchy` `0.2.4` | — | — | — |
+| `crypto-common` `0.1.7` | — | — | — |
+| `crypto-common` `0.2.1` | — | — | — |
+| `csscolorparser` `0.6.2` | — | — | — |
+| `ctor` `0.4.3` | — | `starry-process` | — |
+| `ctor` `0.6.3` | — | `scope-local` | — |
+| `cursive` `0.21.1` | — | — | — |
+| `cursive-macros` `0.1.0` | — | — | — |
+| `cursive_core` `0.4.6` | — | — | — |
+| `data-encoding` `2.10.0` | — | — | — |
+| `deltae` `0.3.2` | — | — | — |
+| `deranged` `0.5.8` | — | — | — |
+| `device_tree` `1.1.0` | — | — | — |
+| `displaydoc` `0.2.5` | — | — | — |
 | `dma-api` `0.2.2` | — | — | — |
 | `dma-api` `0.3.1` | — | — | — |
-| `dma-api` `0.5.2` | Trait for DMA alloc and some collections | — | — |
-| `dma-api` `0.7.1` | Trait for DMA alloc and some collections | `axplat-dyn` | — |
-| `document-features` `0.2.12` | Extract documentation for the feature flags from comments in Cargo.toml | — | — |
-| `downcast-rs` `2.0.2` | Trait object downcasting support using only safe Rust. It supports type parameters, associated type… | `starry-kernel` | — |
-| `dtor` `0.0.6` | __attribute__((destructor)) for Rust | — | — |
-| `dtor` `0.1.1` | __attribute__((destructor)) for Rust | — | — |
-| `dunce` `1.0.5` | Normalize Windows paths to the most compatible format, avoiding UNC where possible | — | — |
+| `dma-api` `0.5.2` | — | — | — |
+| `dma-api` `0.7.1` | — | `axplat-dyn` | — |
+| `document-features` `0.2.12` | — | — | — |
+| `downcast-rs` `2.0.2` | — | `starry-kernel` | — |
+| `dtor` `0.0.6` | — | — | — |
+| `dtor` `0.1.1` | — | — | — |
+| `dunce` `1.0.5` | — | — | — |
 | `dw_apb_uart` `0.1.0` | — | `ax-plat-aarch64-bsta1000b` | — |
-| `dyn-clone` `1.0.20` | Clone trait that is dyn-compatible | — | — |
-| `either` `1.15.0` | The enum `Either` with variants `Left` and `Right` is a general purpose sum type with two cases. | — | — |
-| `encode_unicode` `1.0.0` | UTF-8 and UTF-16 character types, iterators and related methods for char, u8 and u16. | — | — |
-| `encoding_rs` `0.8.35` | A Gecko-oriented implementation of the Encoding Standard | — | — |
-| `enum-map` `2.7.3` | A map with C-like enum keys represented internally as an array | — | — |
-| `enum_dispatch` `0.3.13` | Near drop-in replacement for dynamic-dispatched method calls with up to 10x the speed | `ax-net-ng` `starry-kernel` | — |
-| `enumerable` `1.2.0` | A library helping you to enumerate all possible values of a type | `axvmconfig` | — |
-| `enumn` `0.1.14` | Convert number to enum | — | — |
-| `enumset` `1.1.10` | A library for creating compact sets of enums. | — | — |
-| `env_filter` `1.0.1` | Filter log events using environment variables | — | — |
-| `equivalent` `1.0.2` | Traits for key comparison in maps. | — | — |
-| `errno` `0.3.14` | Cross-platform interface to the `errno` variable. | — | — |
-| `euclid` `0.22.14` | Geometry primitives | — | — |
-| `event-listener` `5.4.1` | Notify async tasks or threads | `ax-net-ng` `starry-kernel` `starry-signal` | — |
-| `event-listener-strategy` `0.5.4` | Block or poll on event_listener easily | — | — |
-| `extern-trait` `0.4.1` | Opaque types for traits using static dispatch | `ax-task` `axvisor` `starry-kernel` `starry-signal` `starry-vm` | — |
-| `extern-trait-impl` `0.4.1` | Proc-macro implementation for extern-trait | — | — |
-| `fancy-regex` `0.11.0` | An implementation of regexes, supporting a relatively rich set of features, including backreference… | — | — |
-| `filedescriptor` `0.8.3` | More ergonomic wrappers around RawFd and RawHandle | — | — |
-| `filetime` `0.2.27` | Platform-agnostic accessors of timestamps in File metadata | — | — |
-| `find-msvc-tools` `0.1.9` | Find windows-specific tools, read MSVC versions from the registry and from COM interfaces | — | — |
-| `finl_unicode` `1.4.0` | Library for handling Unicode functionality for finl (categories and grapheme segmentation) | — | — |
-| `fixedbitset` `0.4.2` | FixedBitSet is a simple bitset collection | — | — |
-| `flate2` `1.1.9` | DEFLATE compression and decompression exposed as Read/BufRead/Write streams. Supports miniz_oxide a… | `axbuild` | — |
-| `flatten_objects` `0.2.4` | A container that stores numbered objects. Each object can be assigned with a unique ID. | `ax-posix-api` `starry-kernel` | — |
-| `float-cmp` `0.9.0` | Floating point approximate comparison traits | — | — |
-| `fnv` `1.0.7` | Fowler–Noll–Vo hash function | — | — |
-| `foldhash` `0.1.5` | A fast, non-cryptographic, minimally DoS-resistant hashing algorithm. | — | — |
-| `foldhash` `0.2.0` | A fast, non-cryptographic, minimally DoS-resistant hashing algorithm. | — | — |
-| `form_urlencoded` `1.2.2` | Parser and serializer for the application/x-www-form-urlencoded syntax, as used by HTML forms. | — | — |
-| `fs_extra` `1.3.0` | Expanding std::fs and std::io. Recursively copy folders with information about process and much mor… | — | — |
-| `funty` `2.0.0` | Trait generalization over the primitive types | — | — |
-| `generic-array` `0.14.7` | Generic types implementing functionality of arrays | — | — |
-| `getopts` `0.2.24` | getopts-like option parsing | `smoltcp` | — |
+| `dyn-clone` `1.0.20` | — | — | — |
+| `either` `1.15.0` | — | — | — |
+| `encode_unicode` `1.0.0` | — | — | — |
+| `encoding_rs` `0.8.35` | — | — | — |
+| `enum-map` `2.7.3` | — | — | — |
+| `enum_dispatch` `0.3.13` | — | `ax-net-ng` `starry-kernel` | — |
+| `enumerable` `1.2.0` | — | `axvmconfig` | — |
+| `enumn` `0.1.14` | — | — | — |
+| `enumset` `1.1.10` | — | — | — |
+| `env_filter` `1.0.1` | — | — | — |
+| `equivalent` `1.0.2` | — | — | — |
+| `errno` `0.3.14` | — | — | — |
+| `euclid` `0.22.14` | — | — | — |
+| `event-listener` `5.4.1` | — | `ax-net-ng` `starry-kernel` `starry-signal` | — |
+| `event-listener-strategy` `0.5.4` | — | — | — |
+| `extern-trait` `0.4.1` | — | `ax-task` `axvisor` `starry-kernel` `starry-signal` `starry-vm` | — |
+| `extern-trait-impl` `0.4.1` | — | — | — |
+| `fancy-regex` `0.11.0` | — | — | — |
+| `filedescriptor` `0.8.3` | — | — | — |
+| `filetime` `0.2.27` | — | — | — |
+| `find-msvc-tools` `0.1.9` | — | — | — |
+| `finl_unicode` `1.4.0` | — | — | — |
+| `fixedbitset` `0.4.2` | — | — | — |
+| `flate2` `1.1.9` | — | `axbuild` | — |
+| `flatten_objects` `0.2.4` | — | `ax-posix-api` `starry-kernel` | — |
+| `float-cmp` `0.9.0` | — | — | — |
+| `fnv` `1.0.7` | — | — | — |
+| `foldhash` `0.1.5` | — | — | — |
+| `foldhash` `0.2.0` | — | — | — |
+| `form_urlencoded` `1.2.2` | — | — | — |
+| `fs_extra` `1.3.0` | — | — | — |
+| `funty` `2.0.0` | — | — | — |
+| `generic-array` `0.14.7` | — | — | — |
+| `getopts` `0.2.24` | — | `smoltcp` | — |
 | `gimli` `0.33.1` | — | `axbacktrace` `starry-kernel` | — |
-| `glob` `0.3.3` | Support for matching file paths against Unix shell style patterns. | — | — |
-| `h2` `0.4.13` | An HTTP/2 client and server | — | — |
-| `half` `2.7.1` | Half-precision floating point f16 and bf16 types for Rust implementing the IEEE 754-2008 standard b… | — | — |
+| `glob` `0.3.3` | — | — | — |
+| `h2` `0.4.13` | — | — | — |
+| `half` `2.7.1` | — | — | — |
 | `handler_table` `0.1.2` | — | — | — |
-| `hash32` `0.3.1` | 32-bit hashing algorithms | — | — |
-| `heapless` `0.8.0` | `static` friendly data structures that don't require dynamic memory allocation | `smoltcp` | — |
-| `heapless` `0.9.2` | `static` friendly data structures that don't require dynamic memory allocation | `ax-hal` `ax-io` `ax-plat-x86-pc` `axplat-dyn` `axplat-x86-qemu-q35` | — |
-| `hermit-abi` `0.5.2` | Hermit system calls definitions. | — | — |
-| `humantime` `2.3.0` | A parser and formatter for std::time::{Duration, SystemTime} | — | — |
-| `hybrid-array` `0.4.10` | Hybrid typenum-based and const generic array types designed to provide the flexibility of typenum-b… | — | — |
-| `iana-time-zone` `0.1.65` | get the IANA time zone for the current system | — | — |
-| `iana-time-zone-haiku` `0.1.2` | iana-time-zone support crate for Haiku OS | — | — |
-| `icu_collections` `1.5.0` | Collection of API for use in ICU libraries. | — | — |
-| `icu_locid` `1.5.0` | API for managing Unicode Language and Locale Identifiers | — | — |
-| `icu_locid_transform` `1.5.0` | API for Unicode Language and Locale Identifiers canonicalization | — | — |
-| `icu_locid_transform_data` `1.5.1` | Data for the icu_locid_transform crate | — | — |
-| `icu_normalizer` `1.5.0` | API for normalizing text into Unicode Normalization Forms | — | — |
-| `icu_normalizer_data` `1.5.1` | Data for the icu_normalizer crate | — | — |
-| `icu_properties` `1.5.1` | Definitions for Unicode properties | — | — |
-| `icu_properties_data` `1.5.1` | Data for the icu_properties crate | — | — |
-| `icu_provider` `1.5.0` | Trait and struct definitions for the ICU data provider | — | — |
-| `icu_provider_macros` `1.5.0` | Proc macros for ICU data providers | — | — |
-| `id-arena` `2.3.0` | A simple, id-based arena. | — | — |
-| `ident_case` `1.0.1` | Utility for applying case rules to Rust identifiers. | — | — |
-| `idna` `0.5.0` | IDNA (Internationalizing Domain Names in Applications) and Punycode. | — | — |
-| `idna` `1.0.1` | IDNA (Internationalizing Domain Names in Applications) and Punycode. | `smoltcp` | — |
-| `indicatif` `0.18.4` | A progress bar and cli reporting library for Rust | `axbuild` | — |
-| `indoc` `2.0.7` | Indented document literals | `ax-runtime` `starry-kernel` | — |
-| `inherit-methods-macro` `0.1.0` | Inherit methods from a field automatically (via procedural macros) | `axfs-ng-vfs` `starry-kernel` | — |
-| `insta` `1.47.2` | A snapshot testing library for Rust | `smoltcp` | — |
-| `instability` `0.3.12` | Rust API stability attributes for the rest of us. A fork of the `stability` crate. | — | — |
-| `intrusive-collections` `0.9.7` | Intrusive collections for Rust (linked list and red-black tree) | `ax-fs-ng` | — |
-| `io-kit-sys` `0.4.1` | Bindings to IOKit for macOS | — | — |
-| `ipnet` `2.12.0` | Provides types and useful methods for working with IPv4 and IPv6 network addresses, commonly called… | — | — |
-| `is-terminal` `0.4.17` | Test whether a given stream is a terminal | — | — |
-| `is_terminal_polyfill` `1.70.2` | Polyfill for `is_terminal` stdlib feature for use with older MSRVs | — | — |
-| `itertools` `0.10.5` | Extra iterator adaptors, iterator methods, free functions, and macros. | — | — |
-| `itertools` `0.13.0` | Extra iterator adaptors, iterator methods, free functions, and macros. | — | — |
-| `itertools` `0.14.0` | Extra iterator adaptors, iterator methods, free functions, and macros. | — | — |
-| `itoa` `1.0.18` | Fast integer primitive to string conversion | — | — |
+| `hash32` `0.3.1` | — | — | — |
+| `heapless` `0.8.0` | — | `smoltcp` | — |
+| `heapless` `0.9.2` | — | `ax-hal` `ax-io` `ax-plat-x86-pc` `axplat-dyn` `axplat-x86-qemu-q35` | — |
+| `hermit-abi` `0.5.2` | — | — | — |
+| `humantime` `2.3.0` | — | — | — |
+| `hybrid-array` `0.4.10` | — | — | — |
+| `iana-time-zone` `0.1.65` | — | — | — |
+| `iana-time-zone-haiku` `0.1.2` | — | — | — |
+| `icu_collections` `1.5.0` | — | — | — |
+| `icu_locid` `1.5.0` | — | — | — |
+| `icu_locid_transform` `1.5.0` | — | — | — |
+| `icu_locid_transform_data` `1.5.1` | — | — | — |
+| `icu_normalizer` `1.5.0` | — | — | — |
+| `icu_normalizer_data` `1.5.1` | — | — | — |
+| `icu_properties` `1.5.1` | — | — | — |
+| `icu_properties_data` `1.5.1` | — | — | — |
+| `icu_provider` `1.5.0` | — | — | — |
+| `icu_provider_macros` `1.5.0` | — | — | — |
+| `id-arena` `2.3.0` | — | — | — |
+| `ident_case` `1.0.1` | — | — | — |
+| `idna` `0.5.0` | — | — | — |
+| `idna` `1.0.1` | — | `smoltcp` | — |
+| `indicatif` `0.18.4` | — | `axbuild` | — |
+| `indoc` `2.0.7` | — | `ax-runtime` `starry-kernel` | — |
+| `inherit-methods-macro` `0.1.0` | — | `axfs-ng-vfs` `starry-kernel` | — |
+| `insta` `1.47.2` | — | `smoltcp` | — |
+| `instability` `0.3.12` | — | — | — |
+| `intrusive-collections` `0.9.7` | — | `ax-fs-ng` | — |
+| `io-kit-sys` `0.4.1` | — | — | — |
+| `ipnet` `2.12.0` | — | — | — |
+| `is-terminal` `0.4.17` | — | — | — |
+| `is_terminal_polyfill` `1.70.2` | — | — | — |
+| `itertools` `0.10.5` | — | — | — |
+| `itertools` `0.13.0` | — | — | — |
+| `itertools` `0.14.0` | — | — | — |
+| `itoa` `1.0.18` | — | — | — |
 | `ixgbe-driver` `0.1.1` | — | `ax-driver-net` | `smoltcp` |
-| `jiff` `0.2.23` | A date-time library that encourages you to jump into the pit of success. This library is heavily in… | — | — |
-| `jiff-static` `0.2.23` | Create static TimeZone values for Jiff (useful in core-only environments). | — | — |
-| `jkconfig` `0.1.8` | A Cursive-based TUI component library for JSON Schema configuration | `axbuild` | — |
-| `jkconfig` `0.2.2` | A Ratatui-based TUI component library for JSON Schema configuration | — | — |
-| `jni` `0.21.1` | Rust bindings to the JNI | — | — |
-| `jni-sys` `0.3.1` | Rust definitions corresponding to jni.h | — | — |
-| `jni-sys` `0.4.1` | Rust definitions corresponding to jni.h | — | — |
-| `jni-sys-macros` `0.4.1` | Macros for jni-sys crate | — | — |
-| `jobserver` `0.1.34` | An implementation of the GNU Make jobserver for Rust. | — | — |
-| `js-sys` `0.3.94` | Bindings for all JS global objects and functions in all JS environments like Node.js and browsers, … | — | — |
-| `kasm-aarch64` `0.2.0` | Boot kernel code with mmu. | — | — |
-| `kasuari` `0.4.12` | A rust layout solver for GUIs, based on the Cassowary algorithm. A fork of the unmaintained cassowa… | — | — |
-| `kernel_guard` `0.1.3` | — | — | `crate_interface` |
-| `kernutil` `0.2.0` | A kernel. | — | — |
-| `kspin` `0.1.1` | — | — | `kernel_guard` |
-| `lab` `0.11.0` | Tools for converting RGB colors to the CIE-L*a*b* color space, and comparing differences in color. | — | — |
-| `lazy_static` `1.5.0` | A macro for declaring lazily evaluated statics in Rust. | `ax-net-ng` `ax-posix-api` `axaddrspace` `axvisor` `rsext4` `starry-kernel` | — |
+| `jiff` `0.2.23` | — | — | — |
+| `jiff-static` `0.2.23` | — | — | — |
+| `jkconfig` `0.1.8` | — | `axbuild` | — |
+| `jkconfig` `0.2.2` | — | — | — |
+| `jni` `0.21.1` | — | — | — |
+| `jni-sys` `0.3.1` | — | — | — |
+| `jni-sys` `0.4.1` | — | — | — |
+| `jni-sys-macros` `0.4.1` | — | — | — |
+| `jobserver` `0.1.34` | — | — | — |
+| `js-sys` `0.3.94` | — | — | — |
+| `kasm-aarch64` `0.2.0` | — | — | — |
+| `kasuari` `0.4.12` | — | — | — |
+| `kernel_guard` `0.1.3` | — | — | — |
+| `kspin` `0.1.1` | — | — | — |
+| `lab` `0.11.0` | — | — | — |
+| `lazy_static` `1.5.0` | — | `ax-net-ng` `ax-posix-api` `axaddrspace` `axvisor` `rsext4` `starry-kernel` | — |
 | `lazyinit` `0.2.2` | — | — | — |
-| `leb128fmt` `0.1.0` | A library to encode and decode LEB128 compressed integers. | — | — |
-| `libloading` `0.8.9` | Bindings around the platform's dynamic library loading primitives with greatly improved memory safe… | — | — |
-| `libredox` `0.1.15` | Redox stable ABI | — | — |
-| `libudev` `0.3.0` | Rust wrapper for libudev | — | — |
-| `libudev-sys` `0.1.4` | FFI bindings to libudev | — | — |
-| `libz-sys` `1.1.25` | Low-level bindings to the system libz library (also known as zlib). | — | — |
-| `line-clipping` `0.3.7` | A simple crate implementing line clipping algorithms. | — | — |
-| `linkme` `0.3.35` | Safe cross-platform linker shenanigans | `arceos-exception` `ax-cpu` `ax-hal` `starry-kernel` | — |
-| `linkme-impl` `0.3.35` | Implementation detail of the linkme crate | — | — |
-| `litemap` `0.7.5` | A key-value Map implementation based on a flat, sorted Vec. | — | — |
-| `litrs` `1.0.0` | Parse and inspect Rust literals (i.e. tokens in the Rust programming language representing fixed va… | — | — |
-| `lock_api` `0.4.14` | Wrappers to create fully-featured Mutex and RwLock types. Compatible with no_std. | `ax-std` `ax-sync` `starry-kernel` | — |
-| `loongArch64` `0.2.5` | loongArch64 support for Rust | `ax-cpu` `ax-plat-loongarch64-qemu-virt` | — |
-| `lwext4_rust` `0.2.0` | lwext4 in Rust | `ax-fs-ng` | — |
-| `lzma-rs` `0.3.0` | A codec for LZMA, LZMA2 and XZ written in pure Rust | — | — |
-| `lzma-sys` `0.1.20` | Raw bindings to liblzma which contains an implementation of LZMA and xz stream encoding/decoding. H… | — | — |
-| `mac_address` `1.1.8` | Cross-platform retrieval of a network interface MAC address. | — | — |
-| `mach2` `0.4.3` | A Rust interface to the user-space API of the Mach 3.0 kernel that underlies OSX. | — | — |
-| `managed` `0.8.0` | An interface for logically owning objects, whether or not heap allocation is available. | `smoltcp` | — |
-| `matchit` `0.8.4` | A high performance, zero-copy URL router. | — | — |
-| `mbarrier` `0.1.3` | Cross-platform memory barrier implementations for Rust, inspired by Linux kernel | — | — |
-| `md5` `0.8.0` | The package provides the MD5 hash function. | — | — |
-| `memmem` `0.1.1` | Substring searching | — | — |
-| `memoffset` `0.9.1` | offset_of functionality for Rust structs. | `riscv_vcpu` | — |
+| `leb128fmt` `0.1.0` | — | — | — |
+| `libloading` `0.8.9` | — | — | — |
+| `libredox` `0.1.15` | — | — | — |
+| `libudev` `0.3.0` | — | — | — |
+| `libudev-sys` `0.1.4` | — | — | — |
+| `libz-sys` `1.1.25` | — | — | — |
+| `line-clipping` `0.3.7` | — | — | — |
+| `linkme` `0.3.35` | — | `arceos-exception` `ax-cpu` `ax-hal` `starry-kernel` | — |
+| `linkme-impl` `0.3.35` | — | — | — |
+| `litemap` `0.7.5` | — | — | — |
+| `litrs` `1.0.0` | — | — | — |
+| `lock_api` `0.4.14` | — | `ax-std` `ax-sync` `starry-kernel` | — |
+| `loongArch64` `0.2.5` | — | `ax-cpu` `ax-plat-loongarch64-qemu-virt` | — |
+| `lwext4_rust` `0.2.0` | — | `ax-fs-ng` | — |
+| `lzma-rs` `0.3.0` | — | — | — |
+| `lzma-sys` `0.1.20` | — | — | — |
+| `mac_address` `1.1.8` | — | — | — |
+| `mach2` `0.4.3` | — | — | — |
+| `managed` `0.8.0` | — | `smoltcp` | — |
+| `matchit` `0.8.4` | — | — | — |
+| `mbarrier` `0.1.3` | — | — | — |
+| `md5` `0.8.0` | — | — | — |
+| `memmem` `0.1.1` | — | — | — |
+| `memoffset` `0.9.1` | — | `riscv_vcpu` | — |
 | `memory_addr` `0.4.1` | — | — | — |
-| `micromath` `2.1.0` | Embedded-friendly math library featuring fast floating point approximations (with small code size) … | — | — |
-| `mime` `0.3.17` | Strongly Typed Mimes | — | — |
-| `mime_guess` `2.0.5` | A simple crate for detection of a file's MIME type by its extension. | — | — |
-| `minimal-lexical` `0.2.1` | Fast float parsing conversion routines. | — | — |
-| `miniz_oxide` `0.8.9` | DEFLATE compression and decompression library rewritten in Rust based on miniz | — | — |
+| `micromath` `2.1.0` | — | — | — |
+| `mime` `0.3.17` | — | — | — |
+| `mime_guess` `2.0.5` | — | — | — |
+| `minimal-lexical` `0.2.1` | — | — | — |
+| `miniz_oxide` `0.8.9` | — | — | — |
 | `nb` `1.1.0` | — | — | — |
-| `network-interface` `2.0.5` | Retrieve system's Network Interfaces on Linux, FreeBSD, macOS and Windows on a standarized manner | — | — |
-| `nom` `7.1.3` | A byte-oriented, zero-copy, parser combinators library | — | — |
-| `nu-ansi-term` `0.50.3` | Library for ANSI terminal colors and styles (bold, underline) | — | — |
-| `num` `0.4.3` | A collection of numeric types and traits for Rust, including bigint, complex, rational, range itera… | — | — |
-| `num-align` `0.1.0` | Some hal for os | — | — |
-| `num-complex` `0.4.6` | Complex numbers implementation for Rust | — | — |
-| `num-conv` `0.2.1` | `num_conv` is a crate to convert between integer types without using `as` casts. This provides bett… | — | — |
-| `num-integer` `0.1.46` | Integer traits and functions | — | — |
-| `num-iter` `0.1.45` | External iterators for generic mathematics | — | — |
-| `num-rational` `0.4.2` | Rational numbers implementation for Rust | — | — |
-| `num-traits` `0.2.19` | Numeric traits for generic mathematics | — | — |
-| `num_enum` `0.7.6` | Procedural macros to make inter-operation between primitives and enums easier. | `starry-kernel` | — |
-| `num_threads` `0.1.7` | A minimal library that determines the number of running threads for the current process. | — | — |
-| `numeric-enum-macro` `0.2.0` | A declarative macro for type-safe enum-to-numbers conversion | `arm_vcpu` `axaddrspace` `x86_vcpu` | — |
-| `object` `0.38.1` | A unified interface for reading and writing object file formats. | `axbuild` | — |
-| `object` `0.39.0` | A unified interface for reading and writing object file formats. | — | — |
-| `once_cell` `1.21.4` | Single assignment cells and lazy values. | — | — |
-| `once_cell_polyfill` `1.70.2` | Polyfill for `OnceCell` stdlib feature for use with older MSRVs | — | — |
-| `openssl-probe` `0.2.1` | A library for helping to find system-wide trust anchor ("root") certificate locations based on path… | — | — |
-| `ordered-float` `4.6.0` | Wrappers for total ordering on floats | — | — |
-| `ostool` `0.12.4` | A tool for operating system development | `axbuild` | — |
-| `ouroboros` `0.18.5` | Easy, safe self-referential struct generation. | `starry-kernel` | — |
-| `ouroboros_macro` `0.18.5` | Proc macro for ouroboros crate. | — | — |
-| `page-table-generic` `0.7.1` | Generic page table walk and map. | — | — |
+| `network-interface` `2.0.5` | — | — | — |
+| `nom` `7.1.3` | — | — | — |
+| `nu-ansi-term` `0.50.3` | — | — | — |
+| `num` `0.4.3` | — | — | — |
+| `num-align` `0.1.0` | — | — | — |
+| `num-complex` `0.4.6` | — | — | — |
+| `num-conv` `0.2.1` | — | — | — |
+| `num-integer` `0.1.46` | — | — | — |
+| `num-iter` `0.1.45` | — | — | — |
+| `num-rational` `0.4.2` | — | — | — |
+| `num-traits` `0.2.19` | — | — | — |
+| `num_enum` `0.7.6` | — | `starry-kernel` | — |
+| `num_threads` `0.1.7` | — | — | — |
+| `numeric-enum-macro` `0.2.0` | — | `arm_vcpu` `axaddrspace` `x86_vcpu` | — |
+| `object` `0.38.1` | — | `axbuild` | — |
+| `object` `0.39.0` | — | — | — |
+| `once_cell` `1.21.4` | — | — | — |
+| `once_cell_polyfill` `1.70.2` | — | — | — |
+| `openssl-probe` `0.2.1` | — | — | — |
+| `ordered-float` `4.6.0` | — | — | — |
+| `ostool` `0.12.4` | — | `axbuild` | — |
+| `ouroboros` `0.18.5` | — | `starry-kernel` | — |
+| `ouroboros_macro` `0.18.5` | — | — | — |
+| `page-table-generic` `0.7.1` | — | — | — |
 | `page_table_entry` `0.6.1` | — | — | `memory_addr` |
 | `page_table_multiarch` `0.6.1` | — | — | `memory_addr` |
-| `pci_types` `0.10.1` | Library with types for handling PCI devices | — | — |
-| `pcie` `0.5.0` | A simple PCIE driver for enumerating devices. | `axvisor` | — |
-| `pcie` `0.6.0` | A simple PCIE driver for enumerating devices. | — | — |
-| `percent-encoding` `2.3.2` | Percent encoding and decoding | — | — |
+| `pci_types` `0.10.1` | — | — | — |
+| `pcie` `0.5.0` | — | `axvisor` | — |
+| `pcie` `0.6.0` | — | — | — |
+| `percent-encoding` `2.3.2` | — | — | — |
 | `percpu` `0.2.3-preview.1` | — | — | `percpu_macros` |
 | `percpu` `0.4.0` | — | — | `percpu_macros` |
 | `percpu_macros` `0.2.3-preview.1` | — | — | — |
 | `percpu_macros` `0.4.0` | — | — | — |
-| `pest` `2.8.6` | The Elegant Parser | — | — |
-| `pest_generator` `2.8.6` | pest code generator | — | — |
-| `pest_meta` `2.8.6` | pest meta language parser and validator | — | — |
-| `phf` `0.11.3` | Runtime support for perfect hash function data structures | — | — |
-| `phf_codegen` `0.11.3` | Codegen library for PHF types | — | — |
-| `phf_generator` `0.11.3` | PHF generation logic | — | — |
-| `phf_macros` `0.11.3` | Macros to generate types in the phf crate | — | — |
+| `pest` `2.8.6` | — | — | — |
+| `pest_generator` `2.8.6` | — | — | — |
+| `pest_meta` `2.8.6` | — | — | — |
+| `phf` `0.11.3` | — | — | — |
+| `phf_codegen` `0.11.3` | — | — | — |
+| `phf_generator` `0.11.3` | — | — | — |
+| `phf_macros` `0.11.3` | — | — | — |
 | `phytium-mci` `0.1.1` | — | `axvisor` | — |
-| `pin-project-lite` `0.2.17` | A lightweight version of pin-project written with declarative macros. | — | — |
-| `pin-utils` `0.1.0` | Utilities for pinning | — | — |
-| `pkg-config` `0.3.32` | A library to run the pkg-config system tool at build time in order to be used in Cargo build script… | — | — |
-| `plain` `0.2.3` | A small Rust library that allows users to reinterpret data of certain types safely. | — | — |
-| `plotters` `0.3.7` | A Rust drawing library focus on data plotting for both WASM and native applications | — | — |
-| `plotters-backend` `0.3.7` | Plotters Backend API | — | — |
-| `plotters-svg` `0.3.7` | Plotters SVG backend | — | — |
-| `portable-atomic` `1.13.1` | Portable atomic types including support for 128-bit atomics, atomic float, etc. | — | — |
-| `portable-atomic-util` `0.2.6` | Synchronization primitives built with portable-atomic. | — | — |
-| `powerfmt` `0.2.0` | `powerfmt` is a library that provides utilities for formatting values. This crate makes it signific… | — | — |
-| `ppv-lite86` `0.2.21` | Cross-platform cryptography-oriented low-level SIMD library. | — | — |
-| `prettyplease` `0.2.37` | A minimal `syn` syntax tree pretty-printer | `axvisor` | — |
-| `ptr_meta` `0.1.4` | A radioactive stabilization of the ptr_meta rfc | — | — |
-| `ptr_meta` `0.3.1` | A radioactive stabilization of the ptr_meta rfc | — | — |
-| `quinn` `0.11.9` | Versatile QUIC transport protocol implementation | — | — |
-| `quinn-proto` `0.11.14` | State machine for the QUIC transport protocol | — | — |
-| `quinn-udp` `0.5.14` | UDP sockets with ECN information for the QUIC transport protocol | — | — |
-| `r-efi` `5.3.0` | UEFI Reference Specification Protocol Constants and Definitions | — | — |
-| `r-efi` `6.0.0` | UEFI Reference Specification Protocol Constants and Definitions | — | — |
-| `radium` `0.7.0` | Portable interfaces for maybe-atomic types | — | — |
-| `ranges-ext` `0.6.2` | A kernel. | — | — |
-| `ratatui` `0.30.0` | A library that's all about cooking up terminal user interfaces | — | — |
-| `ratatui-core` `0.1.0` | Core types and traits for the Ratatui Terminal UI library. Widget libraries should use this crate. … | — | — |
-| `ratatui-crossterm` `0.1.0` | Crossterm backend for the Ratatui Terminal UI library. | — | — |
-| `ratatui-macros` `0.7.0` | Macros for Ratatui | — | — |
-| `ratatui-termwiz` `0.1.0` | Termwiz backend for the Ratatui Terminal UI library. | — | — |
-| `ratatui-widgets` `0.3.0` | A collection of Ratatui widgets for building terminal user interfaces using Ratatui. | — | — |
-| `raw-cpuid` `10.7.0` | A library to parse the x86 CPUID instruction, written in rust with no external dependencies. The im… | — | — |
-| `raw-cpuid` `11.6.0` | A library to parse the x86 CPUID instruction, written in rust with no external dependencies. The im… | `ax-plat-x86-pc` `axplat-x86-qemu-q35` `x86_vcpu` | — |
-| `rd-block` `0.1.1` | Driver Interface block definition. | `axplat-dyn` `axvisor` | — |
-| `rdif-base` `0.7.0` | Driver Interface base definition. | — | — |
-| `rdif-base` `0.8.0` | Driver Interface base definition. | — | — |
-| `rdif-block` `0.7.0` | Driver Interface block definition. | `axvisor` | — |
-| `rdif-clk` `0.5.0` | Driver Interface clk definition. | `axvisor` | — |
-| `rdif-def` `0.2.2` | Driver Interface base definition. | — | — |
-| `rdif-intc` `0.14.0` | Driver Interface of interrupt controller. | `axvisor` | — |
-| `rdif-pcie` `0.2.0` | Driver Interface of interrupt controller. | — | — |
-| `rdif-serial` `0.6.0` | Driver Interface base definition. | — | — |
-| `rdrive` `0.20.0` | A dyn driver manager. | `axplat-dyn` `axvisor` | — |
-| `rdrive-macros` `0.4.1` | macros for rdrive | — | — |
-| `redox_syscall` `0.5.18` | A Rust library to access raw Redox system calls | — | — |
-| `redox_syscall` `0.7.3` | A Rust library to access raw Redox system calls | — | — |
-| `ref-cast` `1.0.25` | Safely cast &T to &U where the struct U contains a single field of type T. | — | — |
-| `ref-cast-impl` `1.0.25` | Derive implementation for ref_cast::RefCast. | — | — |
-| `regex` `1.12.3` | An implementation of regular expressions for Rust. This implementation uses finite automata and gua… | `axbuild` | — |
-| `regex-automata` `0.4.14` | Automata construction and matching using regular expressions. | — | — |
-| `rend` `0.4.2` | Endian-aware primitives for Rust | — | — |
-| `reqwest` `0.13.2` | higher level HTTP client library | `axbuild` | — |
-| `rgb` `0.8.53` | `struct RGB/RGBA/etc.` for sharing pixels between crates + convenience methods for color manipulati… | — | — |
-| `riscv` `0.14.0` | Low level access to RISC-V processors | `ax-plat-riscv64-qemu-virt` `riscv-h` `riscv_vcpu` | — |
-| `riscv` `0.16.0` | Low level access to RISC-V processors | `ax-cpu` `ax-page-table-multiarch` `ax-plat-riscv64-qemu-virt` `starry-kernel` | — |
-| `riscv-decode` `0.2.3` | A simple library for decoding RISC-V instructions | `riscv_vcpu` | — |
-| `riscv-macros` `0.2.0` | Procedural macros re-exported in `riscv` | — | — |
-| `riscv-macros` `0.4.0` | Procedural macros re-exported in `riscv` | — | — |
-| `riscv-pac` `0.2.0` | Low level access to RISC-V processors | — | — |
-| `riscv-types` `0.1.0` | Low level access to RISC-V processors | — | — |
-| `riscv_goldfish` `0.1.1` | System Real Time Clock (RTC) Drivers for riscv based on goldfish. | `ax-plat-riscv64-qemu-virt` | — |
+| `pin-project-lite` `0.2.17` | — | — | — |
+| `pin-utils` `0.1.0` | — | — | — |
+| `pkg-config` `0.3.32` | — | — | — |
+| `plain` `0.2.3` | — | — | — |
+| `plotters` `0.3.7` | — | — | — |
+| `plotters-backend` `0.3.7` | — | — | — |
+| `plotters-svg` `0.3.7` | — | — | — |
+| `portable-atomic` `1.13.1` | — | — | — |
+| `portable-atomic-util` `0.2.6` | — | — | — |
+| `powerfmt` `0.2.0` | — | — | — |
+| `ppv-lite86` `0.2.21` | — | — | — |
+| `prettyplease` `0.2.37` | — | `axvisor` | — |
+| `ptr_meta` `0.1.4` | — | — | — |
+| `ptr_meta` `0.3.1` | — | — | — |
+| `quinn` `0.11.9` | — | — | — |
+| `quinn-proto` `0.11.14` | — | — | — |
+| `quinn-udp` `0.5.14` | — | — | — |
+| `r-efi` `5.3.0` | — | — | — |
+| `r-efi` `6.0.0` | — | — | — |
+| `radium` `0.7.0` | — | — | — |
+| `ranges-ext` `0.6.2` | — | — | — |
+| `ratatui` `0.30.0` | — | — | — |
+| `ratatui-core` `0.1.0` | — | — | — |
+| `ratatui-crossterm` `0.1.0` | — | — | — |
+| `ratatui-macros` `0.7.0` | — | — | — |
+| `ratatui-termwiz` `0.1.0` | — | — | — |
+| `ratatui-widgets` `0.3.0` | — | — | — |
+| `raw-cpuid` `10.7.0` | — | — | — |
+| `raw-cpuid` `11.6.0` | — | `ax-plat-x86-pc` `axplat-x86-qemu-q35` `x86_vcpu` | — |
+| `rd-block` `0.1.1` | — | `axplat-dyn` `axvisor` | — |
+| `rdif-base` `0.7.0` | — | — | — |
+| `rdif-base` `0.8.0` | — | — | — |
+| `rdif-block` `0.7.0` | — | `axvisor` | — |
+| `rdif-clk` `0.5.0` | — | `axvisor` | — |
+| `rdif-def` `0.2.2` | — | — | — |
+| `rdif-intc` `0.14.0` | — | `axvisor` | — |
+| `rdif-pcie` `0.2.0` | — | — | — |
+| `rdif-serial` `0.6.0` | — | — | — |
+| `rdrive` `0.20.0` | — | `axplat-dyn` `axvisor` | — |
+| `rdrive-macros` `0.4.1` | — | — | — |
+| `redox_syscall` `0.5.18` | — | — | — |
+| `redox_syscall` `0.7.3` | — | — | — |
+| `ref-cast` `1.0.25` | — | — | — |
+| `ref-cast-impl` `1.0.25` | — | — | — |
+| `regex` `1.12.3` | — | `axbuild` | — |
+| `regex-automata` `0.4.14` | — | — | — |
+| `rend` `0.4.2` | — | — | — |
+| `reqwest` `0.13.2` | — | `axbuild` | — |
+| `rgb` `0.8.53` | — | — | — |
+| `riscv` `0.14.0` | — | `ax-plat-riscv64-qemu-virt` `riscv-h` `riscv_vcpu` | — |
+| `riscv` `0.16.0` | — | `ax-cpu` `ax-page-table-multiarch` `ax-plat-riscv64-qemu-virt` `starry-kernel` | — |
+| `riscv-decode` `0.2.3` | — | `riscv_vcpu` | — |
+| `riscv-macros` `0.2.0` | — | — | — |
+| `riscv-macros` `0.4.0` | — | — | — |
+| `riscv-pac` `0.2.0` | — | — | — |
+| `riscv-types` `0.1.0` | — | — | — |
+| `riscv_goldfish` `0.1.1` | — | `ax-plat-riscv64-qemu-virt` | — |
 | `riscv_plic` `0.2.0` | — | — | — |
 | `rk3568_clk` `0.1.0` | — | `axvisor` | — |
 | `rk3588-clk` `0.1.3` | — | `axvisor` | — |
-| `rkyv` `0.7.46` | Zero-copy deserialization framework for Rust | — | — |
-| `rlsf` `0.2.2` | Real-time dynamic memory allocator based on the TLSF algorithm | `ax-allocator` | — |
+| `rkyv` `0.7.46` | — | — | — |
+| `rlsf` `0.2.2` | — | `ax-allocator` | — |
 | `rockchip-pm` `0.4.1` | — | `axvisor` | — |
-| `rstest` `0.17.0` | Rust fixture based test framework. It use procedural macro to implement fixtures and table based te… | `smoltcp` | — |
-| `rstest_macros` `0.17.0` | Rust fixture based test framework. It use procedural macro to implement fixtures and table based te… | — | — |
-| `rust_decimal` `1.41.0` | Decimal number implementation written in pure Rust suitable for financial and fixed-precision calcu… | — | — |
+| `rstest` `0.17.0` | — | `smoltcp` | — |
+| `rstest_macros` `0.17.0` | — | — | — |
+| `rust_decimal` `1.41.0` | — | — | — |
 | `rustc-demangle` `0.1.27` | — | — | — |
-| `rustc-hash` `2.1.2` | A speedy, non-cryptographic hashing algorithm used by rustc | — | — |
-| `rustc_version` `0.4.1` | A library for querying the version of a installed rustc compiler | — | — |
-| `rustsbi` `0.4.0` | Minimal RISC-V's SBI implementation library in Rust | `riscv_vcpu` | — |
-| `rustsbi-macros` `0.0.2` | Proc-macros for RustSBI, a RISC-V SBI implementation library in Rust | — | — |
-| `rustversion` `1.0.22` | Conditional compilation according to rustc compiler version | — | — |
-| `ruzstd` `0.8.2` | A decoder for the zstd compression format | — | — |
-| `ryu` `1.0.23` | Fast floating point to string conversion | — | — |
-| `same-file` `1.0.6` | A simple crate for determining whether two file paths point to the same file. | — | — |
-| `sbi-rt` `0.0.3` | Runtime library for supervisors to call RISC-V Supervisor Binary Interface (RISC-V SBI) | `ax-plat-riscv64-qemu-virt` `riscv_vcpu` | — |
-| `sbi-spec` `0.0.7` | Definitions and constants in RISC-V Supervisor Binary Interface (RISC-V SBI) | `riscv_vcpu` | — |
-| `schannel` `0.1.29` | Schannel bindings for rust, allowing SSL/TLS (e.g. https) without openssl | — | — |
-| `schemars` `1.2.1` | Generate JSON Schemas from Rust code | `axbuild` `axvmconfig` | — |
-| `scopeguard` `1.2.0` | A RAII scope guard that will run a given closure when it goes out of scope, even if the code betwee… | — | — |
+| `rustc-hash` `2.1.2` | — | — | — |
+| `rustc_version` `0.4.1` | — | — | — |
+| `rustsbi` `0.4.0` | — | `riscv_vcpu` | — |
+| `rustsbi-macros` `0.0.2` | — | — | — |
+| `rustversion` `1.0.22` | — | — | — |
+| `ruzstd` `0.8.2` | — | — | — |
+| `ryu` `1.0.23` | — | — | — |
+| `same-file` `1.0.6` | — | — | — |
+| `sbi-rt` `0.0.3` | — | `ax-plat-riscv64-qemu-virt` `riscv_vcpu` | — |
+| `sbi-spec` `0.0.7` | — | `riscv_vcpu` | — |
+| `schannel` `0.1.29` | — | — | — |
+| `schemars` `1.2.1` | — | `axbuild` `axvmconfig` | — |
+| `scopeguard` `1.2.0` | — | — | — |
 | `sdmmc` `0.1.0` | — | `axvisor` | — |
-| `seahash` `4.1.0` | A blazingly fast, portable hash function with proven statistical guarantees. | — | — |
-| `security-framework` `3.7.0` | Security.framework bindings for macOS and iOS | — | — |
-| `security-framework-sys` `2.17.0` | Apple `Security.framework` low-level FFI bindings | — | — |
-| `serialport` `4.9.0` | A cross-platform low-level serial port library. | — | — |
-| `shlex` `1.3.0` | Split a string into shell words, like Python's shlex. | — | — |
-| `signal-hook` `0.3.18` | Unix signal handling | — | — |
-| `signal-hook-registry` `1.4.8` | Backend crate for signal-hook | — | — |
-| `simd-adler32` `0.3.9` | A SIMD-accelerated Adler-32 hash algorithm implementation. | — | — |
-| `simdutf8` `0.1.5` | SIMD-accelerated UTF-8 validation. | — | — |
-| `similar` `2.7.0` | A diff library for Rust | — | — |
+| `seahash` `4.1.0` | — | — | — |
+| `security-framework` `3.7.0` | — | — | — |
+| `security-framework-sys` `2.17.0` | — | — | — |
+| `serialport` `4.9.0` | — | — | — |
+| `shlex` `1.3.0` | — | — | — |
+| `signal-hook` `0.3.18` | — | — | — |
+| `signal-hook-registry` `1.4.8` | — | — | — |
+| `simd-adler32` `0.3.9` | — | — | — |
+| `simdutf8` `0.1.5` | — | — | — |
+| `similar` `2.7.0` | — | — | — |
 | `simple-ahci` `0.1.1-preview.1` | — | `ax-driver-block` | — |
 | `simple-sdmmc` `0.1.0` | — | `ax-driver-block` | — |
-| `siphasher` `1.0.2` | SipHash-2-4, SipHash-1-3 and 128-bit variants in pure Rust | — | — |
-| `slab` `0.4.12` | Pre-allocated storage for a uniform data type | `ax-fs-ng` `starry-kernel` | — |
-| `some-serial` `0.3.1` | Unified serial driver collection for embedded and bare-metal environments | — | — |
-| `someboot` `0.1.12` | Sparreal OS kernel | — | — |
-| `somehal` `0.6.6` | A kernel. | `axplat-dyn` | — |
-| `somehal-macros` `0.1.2` | A kernel. | — | — |
-| `spin` `0.10.0` | Spin-based synchronization primitives | `arm_vcpu` `arm_vgic` `ax-fs` `ax-fs-ng` `ax-hal` `ax-net` `ax-net-ng` `ax-percpu` `ax-plat-aarch64-peripherals` `ax-posix-api` `ax-std` `ax-task` `axaddrspace` `axbacktrace` `axdevice` `axfs-ng-vfs` `axplat-dyn` `axpoll` `axvisor` `axvm` `riscv_vplic` `scope-local` `starry-kernel` `x86_vcpu` | — |
-| `spin` `0.9.8` | Spin-based synchronization primitives | `ax-driver-net` `ax-fs-devfs` `ax-fs-ramfs` | — |
-| `spin_on` `0.1.1` | A simple, inefficient Future executor | — | — |
-| `spinning_top` `0.2.5` | A simple spinlock crate based on the abstractions provided by `lock_api`. | — | — |
-| `spinning_top` `0.3.0` | A simple spinlock crate based on the abstractions provided by `lock_api`. | — | — |
-| `stable_deref_trait` `1.2.1` | An unsafe marker trait for types like Box and Rc that dereference to a stable address even when mov… | — | — |
+| `siphasher` `1.0.2` | — | — | — |
+| `slab` `0.4.12` | — | `ax-fs-ng` `starry-kernel` | — |
+| `some-serial` `0.3.1` | — | — | — |
+| `someboot` `0.1.12` | — | — | — |
+| `somehal` `0.6.6` | — | `axplat-dyn` | — |
+| `somehal-macros` `0.1.2` | — | — | — |
+| `spin` `0.10.0` | — | `arm_vcpu` `arm_vgic` `ax-fs` `ax-fs-ng` `ax-hal` `ax-net` `ax-net-ng` `ax-percpu` `ax-plat-aarch64-peripherals` `ax-posix-api` `ax-std` `ax-task` `axaddrspace` `axbacktrace` `axdevice` `axfs-ng-vfs` `axplat-dyn` `axpoll` `axvisor` `axvm` `riscv_vplic` `scope-local` `starry-kernel` `x86_vcpu` | — |
+| `spin` `0.9.8` | — | `ax-driver-net` `ax-fs-devfs` `ax-fs-ramfs` | — |
+| `spin_on` `0.1.1` | — | — | — |
+| `spinning_top` `0.2.5` | — | — | — |
+| `spinning_top` `0.3.0` | — | — | — |
+| `stable_deref_trait` `1.2.1` | — | — | — |
 | `starry-fatfs` `0.4.1-preview.2` | — | `ax-fs-ng` | — |
-| `static_assertions` `1.1.0` | Compile-time assertions to ensure that invariants are met. | — | — |
-| `strsim` `0.10.0` | Implementations of string similarity metrics. Includes Hamming, Levenshtein, OSA, Damerau-Levenshte… | — | — |
-| `strsim` `0.11.1` | Implementations of string similarity metrics. Includes Hamming, Levenshtein, OSA, Damerau-Levenshte… | — | — |
-| `strum` `0.27.2` | Helpful macros for working with enums and strings | `ax-alloc` `ax-driver-input` `ax-errno` `starry-signal` | — |
-| `strum` `0.28.0` | Helpful macros for working with enums and strings | `starry-kernel` | — |
-| `strum_macros` `0.27.2` | Helpful macros for working with enums and strings | — | — |
-| `strum_macros` `0.28.0` | Helpful macros for working with enums and strings | — | — |
-| `subtle` `2.6.1` | Pure-Rust traits and utilities for constant-time cryptographic implementations. | — | — |
-| `svgbobdoc` `0.3.0` | Renders ASCII diagrams in doc comments as SVG images. | — | — |
-| `syscalls` `0.8.1` | A list of Linux system calls. | `starry-kernel` | — |
-| `system-configuration` `0.7.0` | Bindings to SystemConfiguration framework for macOS | — | — |
-| `system-configuration-sys` `0.6.0` | Low level bindings to SystemConfiguration framework for macOS | — | — |
-| `tap` `1.0.1` | Generic extensions for tapping values in Rust | — | — |
-| `tar` `0.4.45` | A Rust implementation of a TAR file reader and writer. This library does not currently handle compr… | `axbuild` | — |
-| `tempfile` `3.27.0` | A library for managing temporary files and directories. | `axbuild` | — |
-| `termcolor` `1.4.1` | A simple cross platform library for writing colored text to a terminal. | — | — |
-| `terminfo` `0.9.0` | Terminal information. | — | — |
-| `termwiz` `0.23.3` | Terminal Wizardry for Unix and Windows | — | — |
-| `tftpd` `0.5.3` | Multithreaded TFTP server daemon | — | — |
-| `thread_local` `1.1.9` | Per-object thread-local storage | — | — |
-| `time` `0.3.47` | Date and time library. Fully interoperable with the standard library. Mostly compatible with #![no_… | — | — |
-| `time-core` `0.1.8` | This crate is an implementation detail and should not be relied upon directly. | — | — |
-| `time-macros` `0.2.27` | Procedural macros for the time crate. This crate is an implementation detail and should not be reli… | — | — |
-| `tinystr` `0.7.6` | A small ASCII-only bounded length string representation. | — | — |
-| `tinytemplate` `1.2.1` | Simple, lightweight template engine | — | — |
-| `tinyvec` `1.11.0` | `tinyvec` provides 100% safe vec-like data structures. | — | — |
-| `tinyvec_macros` `0.1.1` | Some macros for tiny containers | — | — |
-| `trait-ffi` `0.2.11` | A Rust procedural macro library for creating and implementing extern fn with Trait. | `axklib` | — |
-| `try-lock` `0.2.5` | A lightweight atomic lock. | — | — |
-| `tungstenite` `0.28.0` | Lightweight stream-based WebSocket implementation | — | — |
-| `twox-hash` `2.1.2` | A Rust implementation of the XXHash and XXH3 algorithms | — | — |
-| `typeid` `1.0.3` | Const TypeId and non-'static TypeId | — | — |
-| `typenum` `1.19.0` | Typenum is a Rust library for type-level numbers evaluated at compile time. It currently supports b… | — | — |
-| `uart_16550` `0.4.0` | Minimal support for uart_16550 serial output. | `ax-plat-riscv64-qemu-virt` `axplat-x86-qemu-q35` | — |
-| `uart_16550` `0.5.0` | Simple yet highly configurable low-level driver for 16550 UART devices, typically known and used as… | `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` | — |
-| `uboot-shell` `0.2.3` | A crate for communicating with u-boot | — | — |
-| `ucd-trie` `0.1.7` | A trie for storing Unicode codepoint sets and maps. | — | — |
-| `ucs2` `0.3.3` | UCS-2 decoding and encoding functions | — | — |
-| `uefi` `0.36.1` | This crate makes it easy to develop Rust software that leverages safe, convenient, and performant a… | — | — |
-| `uefi-macros` `0.19.0` | Procedural macros for the `uefi` crate. | — | — |
-| `uefi-raw` `0.13.0` | Raw UEFI types and bindings for protocols, boot, and runtime services. This can serve as base for a… | — | — |
-| `uguid` `2.2.1` | GUID (Globally Unique Identifier) no_std library | — | — |
-| `uluru` `3.1.0` | A simple, fast, LRU cache implementation | `starry-kernel` | — |
-| `unescaper` `0.1.8` | Unescape strings with escape sequences written out as literal characters. | — | — |
-| `unicase` `2.9.0` | A case-insensitive wrapper around strings. | — | — |
-| `unicode-bidi` `0.3.18` | Implementation of the Unicode Bidirectional Algorithm | — | — |
-| `unicode-ident` `1.0.24` | Determine whether characters have the XID_Start or XID_Continue properties according to Unicode Sta… | — | — |
-| `unicode-normalization` `0.1.25` | This crate provides functions for normalization of Unicode strings, including Canonical and Compati… | — | — |
-| `unicode-segmentation` `1.13.2` | This crate provides Grapheme Cluster, Word and Sentence boundaries according to Unicode Standard An… | — | — |
-| `unicode-truncate` `2.0.1` | Unicode-aware algorithm to pad or truncate `str` in terms of displayed width. | — | — |
-| `unicode-width` `0.1.14` | Determine displayed width of `char` and `str` types according to Unicode Standard Annex #11 rules. | — | — |
-| `unicode-width` `0.2.2` | Determine displayed width of `char` and `str` types according to Unicode Standard Annex #11 rules. | — | — |
-| `unicode-xid` `0.2.6` | Determine whether characters have the XID_Start or XID_Continue properties according to Unicode Sta… | — | — |
-| `unit-prefix` `0.5.2` | Format numbers with metric and binary unit prefixes | — | — |
-| `untrusted` `0.9.0` | Safe, fast, zero-panic, zero-crashing, zero-allocation parsing of untrusted inputs in Rust. | — | — |
-| `ureq` `3.3.0` | Simple, safe HTTP client | — | — |
-| `ureq-proto` `0.6.0` | ureq support crate | — | — |
-| `url` `2.5.2` | URL library for Rust, based on the WHATWG URL Standard | `smoltcp` | — |
-| `utf-8` `0.7.6` | Incremental, zero-copy UTF-8 decoding with error handling | — | — |
-| `utf16_iter` `1.0.5` | Iterator by char over potentially-invalid UTF-16 in &[u16] | — | — |
-| `utf8-width` `0.1.8` | To determine the width of a UTF-8 character by providing its first byte. | — | — |
-| `utf8-zero` `0.8.1` | Zero-copy, incremental UTF-8 decoding with error handling | — | — |
-| `utf8_iter` `1.0.4` | Iterator by char over potentially-invalid UTF-8 in &[u8] | — | — |
-| `utf8parse` `0.2.2` | Table-driven UTF-8 parser | — | — |
-| `uuid` `1.23.0` | A library to generate and parse UUIDs. | — | — |
-| `valuable` `0.1.1` | Object-safe value inspection, used to pass un-typed structured data across trait-object boundaries. | — | — |
-| `vcpkg` `0.2.15` | A library to find native dependencies in a vcpkg tree at build time in order to be used in Cargo bu… | — | — |
-| `virtio-drivers` `0.7.5` | VirtIO guest drivers. | `ax-driver-pci` `ax-driver-virtio` | — |
+| `static_assertions` `1.1.0` | — | — | — |
+| `strsim` `0.10.0` | — | — | — |
+| `strsim` `0.11.1` | — | — | — |
+| `strum` `0.27.2` | — | `ax-alloc` `ax-driver-input` `ax-errno` `starry-signal` | — |
+| `strum` `0.28.0` | — | `starry-kernel` | — |
+| `strum_macros` `0.27.2` | — | — | — |
+| `strum_macros` `0.28.0` | — | — | — |
+| `subtle` `2.6.1` | — | — | — |
+| `svgbobdoc` `0.3.0` | — | — | — |
+| `syscalls` `0.8.1` | — | `starry-kernel` | — |
+| `system-configuration` `0.7.0` | — | — | — |
+| `system-configuration-sys` `0.6.0` | — | — | — |
+| `tap` `1.0.1` | — | — | — |
+| `tar` `0.4.45` | — | `axbuild` | — |
+| `tempfile` `3.27.0` | — | `axbuild` | — |
+| `termcolor` `1.4.1` | — | — | — |
+| `terminfo` `0.9.0` | — | — | — |
+| `termwiz` `0.23.3` | — | — | — |
+| `tftpd` `0.5.3` | — | — | — |
+| `thread_local` `1.1.9` | — | — | — |
+| `time` `0.3.47` | — | — | — |
+| `time-core` `0.1.8` | — | — | — |
+| `time-macros` `0.2.27` | — | — | — |
+| `tinystr` `0.7.6` | — | — | — |
+| `tinytemplate` `1.2.1` | — | — | — |
+| `tinyvec` `1.11.0` | — | — | — |
+| `tinyvec_macros` `0.1.1` | — | — | — |
+| `trait-ffi` `0.2.11` | — | `axklib` | — |
+| `try-lock` `0.2.5` | — | — | — |
+| `tungstenite` `0.28.0` | — | — | — |
+| `twox-hash` `2.1.2` | — | — | — |
+| `typeid` `1.0.3` | — | — | — |
+| `typenum` `1.19.0` | — | — | — |
+| `uart_16550` `0.4.0` | — | `ax-plat-riscv64-qemu-virt` `axplat-x86-qemu-q35` | — |
+| `uart_16550` `0.5.0` | — | `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` | — |
+| `uboot-shell` `0.2.3` | — | — | — |
+| `ucd-trie` `0.1.7` | — | — | — |
+| `ucs2` `0.3.3` | — | — | — |
+| `uefi` `0.36.1` | — | — | — |
+| `uefi-macros` `0.19.0` | — | — | — |
+| `uefi-raw` `0.13.0` | — | — | — |
+| `uguid` `2.2.1` | — | — | — |
+| `uluru` `3.1.0` | — | `starry-kernel` | — |
+| `unescaper` `0.1.8` | — | — | — |
+| `unicase` `2.9.0` | — | — | — |
+| `unicode-bidi` `0.3.18` | — | — | — |
+| `unicode-ident` `1.0.24` | — | — | — |
+| `unicode-normalization` `0.1.25` | — | — | — |
+| `unicode-segmentation` `1.13.2` | — | — | — |
+| `unicode-truncate` `2.0.1` | — | — | — |
+| `unicode-width` `0.1.14` | — | — | — |
+| `unicode-width` `0.2.2` | — | — | — |
+| `unicode-xid` `0.2.6` | — | — | — |
+| `unit-prefix` `0.5.2` | — | — | — |
+| `untrusted` `0.9.0` | — | — | — |
+| `ureq` `3.3.0` | — | — | — |
+| `ureq-proto` `0.6.0` | — | — | — |
+| `url` `2.5.2` | — | `smoltcp` | — |
+| `utf-8` `0.7.6` | — | — | — |
+| `utf16_iter` `1.0.5` | — | — | — |
+| `utf8-width` `0.1.8` | — | — | — |
+| `utf8-zero` `0.8.1` | — | — | — |
+| `utf8_iter` `1.0.4` | — | — | — |
+| `utf8parse` `0.2.2` | — | — | — |
+| `uuid` `1.23.0` | — | — | — |
+| `valuable` `0.1.1` | — | — | — |
+| `vcpkg` `0.2.15` | — | — | — |
+| `virtio-drivers` `0.7.5` | — | `ax-driver-pci` `ax-driver-virtio` | — |
 | `volatile` `0.3.0` | — | — | — |
-| `volatile` `0.4.6` | A simple volatile wrapper type | — | — |
+| `volatile` `0.4.6` | — | — | — |
 | `volatile` `0.6.1` | — | — | — |
 | `volatile-macro` `0.6.0` | — | — | — |
-| `vtparse` `0.6.2` | Low level escape sequence parser | — | — |
-| `walkdir` `2.5.0` | Recursively walk a directory. | — | — |
-| `want` `0.3.1` | Detect when another Future wants a result. | — | — |
-| `wasi` `0.11.1+wasi-snapshot-preview1` | Experimental WASI API bindings for Rust | — | — |
-| `wasip2` `1.0.2+wasi-0.2.9` | WASIp2 API bindings for Rust | — | — |
-| `wasip3` `0.4.0+wasi-0.3.0-rc-2026-01-06` | WASIp3 API bindings for Rust | — | — |
-| `wasm-bindgen` `0.2.117` | Easy support for interacting between JS and Rust. | — | — |
-| `wasm-bindgen-macro` `0.2.117` | Definition of the `#[wasm_bindgen]` attribute, an internal dependency | — | — |
-| `wasm-bindgen-macro-support` `0.2.117` | Implementation APIs for the `#[wasm_bindgen]` attribute | — | — |
-| `wasm-encoder` `0.244.0` | A low-level WebAssembly encoder. | — | — |
-| `wasm-metadata` `0.244.0` | Read and manipulate WebAssembly metadata | — | — |
-| `wasm-streams` `0.5.0` | Bridging between web streams and Rust streams using WebAssembly | — | — |
-| `wasmparser` `0.244.0` | A simple event-driven library for parsing WebAssembly binary files. | — | — |
-| `weak-map` `0.1.2` | BTreeMap with weak references | `starry-kernel` `starry-process` | — |
-| `web-sys` `0.3.94` | Bindings for all Web APIs, a procedurally generated crate from WebIDL | — | — |
-| `web-time` `1.1.0` | Drop-in replacement for std::time for Wasm in browsers | — | — |
-| `webpki-root-certs` `1.0.6` | Mozilla trusted certificate authorities in self-signed X.509 format for use with crates other than … | — | — |
-| `webpki-roots` `1.0.6` | Mozilla's CA root certificates for use with webpki | — | — |
-| `wezterm-bidi` `0.2.3` | The Unicode Bidi Algorithm (UBA) | — | — |
-| `wezterm-blob-leases` `0.1.1` | Manage image blob caching/leasing for wezterm | — | — |
-| `wezterm-color-types` `0.3.0` | Types for working with colors | — | — |
-| `wezterm-dynamic` `0.2.1` | config serialization for wezterm via dynamic json-like data values | — | — |
-| `wezterm-input-types` `0.1.0` | config serialization for wezterm via dynamic json-like data values | — | — |
-| `winapi` `0.3.9` | Raw FFI bindings for all of Windows API. | — | — |
-| `winapi-util` `0.1.11` | A dumping ground for high level safe wrappers over windows-sys. | — | — |
-| `winnow` `0.7.15` | A byte-oriented, zero-copy, parser combinators library | — | — |
-| `winnow` `1.0.1` | A byte-oriented, zero-copy, parser combinators library | — | — |
-| `wit-bindgen` `0.51.0` | Rust bindings generator and runtime support for WIT and the component model. Used when compiling Ru… | — | — |
-| `wit-bindgen-core` `0.51.0` | Low-level support for bindings generation based on WIT files for use with `wit-bindgen-cli` and oth… | — | — |
-| `wit-bindgen-rust` `0.51.0` | Rust bindings generator for WIT and the component model, typically used through the `wit-bindgen` c… | — | — |
-| `wit-bindgen-rust-macro` `0.51.0` | Procedural macro paired with the `wit-bindgen` crate. | — | — |
-| `wit-component` `0.244.0` | Tooling for working with `*.wit` and component files together. | — | — |
-| `wit-parser` `0.244.0` | Tooling for parsing `*.wit` files and working with their contents. | — | — |
-| `write16` `1.0.0` | A UTF-16 analog of the Write trait | — | — |
-| `writeable` `0.5.5` | A more efficient alternative to fmt::Display | — | — |
-| `wyz` `0.5.1` | myrrlyn’s utility collection | — | — |
-| `x2apic` `0.5.0` | A Rust interface to the x2apic interrupt architecture. | `ax-plat-x86-pc` `axplat-x86-qemu-q35` | — |
-| `x86` `0.52.0` | Library to program x86 (amd64) hardware. Contains x86 specific data structure descriptions, data-ta… | `ax-cpu` `ax-page-table-multiarch` `ax-percpu` `ax-plat-x86-pc` `axaddrspace` `axplat-x86-qemu-q35` `starry-kernel` `x86_vcpu` | — |
-| `x86_64` `0.15.4` | Support for x86_64 specific instructions, registers, and structures. | `ax-cpu` `ax-page-table-entry` `ax-plat-x86-pc` `axplat-x86-qemu-q35` `x86_vcpu` | — |
-| `x86_rtc` `0.1.1` | System Real Time Clock (RTC) Drivers for x86_64 based on CMOS. | `ax-plat-x86-pc` `axplat-x86-qemu-q35` | — |
-| `xattr` `1.6.1` | unix extended filesystem attributes | — | — |
-| `xi-unicode` `0.3.0` | Unicode utilities useful for text editing, including a line breaking iterator. | — | — |
-| `xz2` `0.1.7` | Rust bindings to liblzma providing Read/Write streams as well as low-level in-memory encoding/decod… | `axbuild` | — |
-| `yansi` `1.0.1` | A dead simple ANSI terminal color painting library. | — | — |
-| `yoke` `0.7.5` | Abstraction allowing borrowed data to be carried along with the backing data it borrows from | — | — |
-| `zero` `0.1.3` | A Rust library for zero-allocation parsing of binary data. | — | — |
-| `zerocopy` `0.7.35` | Utilities for zero-copy parsing and serialization | — | — |
-| `zerocopy` `0.8.48` | Zerocopy makes zero-cost memory manipulation effortless. We write "unsafe" so you don't have to. | `starry-kernel` | — |
-| `zerofrom` `0.1.7` | ZeroFrom trait for constructing | — | — |
-| `zeroize` `1.8.2` | Securely clear secrets from memory with a simple trait built on stable Rust primitives which guaran… | — | — |
-| `zerovec` `0.10.4` | Zero-copy vector backed by a byte array | — | — |
-| `zmij` `1.0.21` | A double-to-string conversion algorithm based on Schubfach and yy | — | — |
+| `vtparse` `0.6.2` | — | — | — |
+| `walkdir` `2.5.0` | — | — | — |
+| `want` `0.3.1` | — | — | — |
+| `wasi` `0.11.1+wasi-snapshot-preview1` | — | — | — |
+| `wasip2` `1.0.2+wasi-0.2.9` | — | — | — |
+| `wasip3` `0.4.0+wasi-0.3.0-rc-2026-01-06` | — | — | — |
+| `wasm-bindgen` `0.2.117` | — | — | — |
+| `wasm-bindgen-macro` `0.2.117` | — | — | — |
+| `wasm-bindgen-macro-support` `0.2.117` | — | — | — |
+| `wasm-encoder` `0.244.0` | — | — | — |
+| `wasm-metadata` `0.244.0` | — | — | — |
+| `wasm-streams` `0.5.0` | — | — | — |
+| `wasmparser` `0.244.0` | — | — | — |
+| `weak-map` `0.1.2` | — | `starry-kernel` `starry-process` | — |
+| `web-sys` `0.3.94` | — | — | — |
+| `web-time` `1.1.0` | — | — | — |
+| `webpki-root-certs` `1.0.6` | — | — | — |
+| `webpki-roots` `1.0.6` | — | — | — |
+| `wezterm-bidi` `0.2.3` | — | — | — |
+| `wezterm-blob-leases` `0.1.1` | — | — | — |
+| `wezterm-color-types` `0.3.0` | — | — | — |
+| `wezterm-dynamic` `0.2.1` | — | — | — |
+| `wezterm-input-types` `0.1.0` | — | — | — |
+| `winapi` `0.3.9` | — | — | — |
+| `winapi-util` `0.1.11` | — | — | — |
+| `winnow` `0.7.15` | — | — | — |
+| `winnow` `1.0.1` | — | — | — |
+| `wit-bindgen` `0.51.0` | — | — | — |
+| `wit-bindgen-core` `0.51.0` | — | — | — |
+| `wit-bindgen-rust` `0.51.0` | — | — | — |
+| `wit-bindgen-rust-macro` `0.51.0` | — | — | — |
+| `wit-component` `0.244.0` | — | — | — |
+| `wit-parser` `0.244.0` | — | — | — |
+| `write16` `1.0.0` | — | — | — |
+| `writeable` `0.5.5` | — | — | — |
+| `wyz` `0.5.1` | — | — | — |
+| `x2apic` `0.5.0` | — | `ax-plat-x86-pc` `axplat-x86-qemu-q35` | — |
+| `x86` `0.52.0` | — | `ax-cpu` `ax-page-table-multiarch` `ax-percpu` `ax-plat-x86-pc` `axaddrspace` `axplat-x86-qemu-q35` `starry-kernel` `x86_vcpu` | — |
+| `x86_64` `0.15.4` | — | `ax-cpu` `ax-page-table-entry` `ax-plat-x86-pc` `axplat-x86-qemu-q35` `x86_vcpu` | — |
+| `x86_rtc` `0.1.1` | — | `ax-plat-x86-pc` `axplat-x86-qemu-q35` | — |
+| `xattr` `1.6.1` | — | — | — |
+| `xi-unicode` `0.3.0` | — | — | — |
+| `xz2` `0.1.7` | — | `axbuild` | — |
+| `yansi` `1.0.1` | — | — | — |
+| `yoke` `0.7.5` | — | — | — |
+| `zero` `0.1.3` | — | — | — |
+| `zerocopy` `0.7.35` | — | — | — |
+| `zerocopy` `0.8.48` | — | `starry-kernel` | — |
+| `zerofrom` `0.1.7` | — | — | — |
+| `zeroize` `1.8.2` | — | — | — |
+| `zerovec` `0.10.4` | — | — | — |
+| `zmij` `1.0.21` | — | — | — |
 
 
 #### 序列化/数据格式
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `base64` `0.13.1` | encodes and decodes base64 as bytes or utf8 | — | — |
-| `base64` `0.22.1` | encodes and decodes base64 as bytes or utf8 | — | — |
-| `byteorder` `1.5.0` | Library for reading/writing numbers in big-endian and little-endian. | `smoltcp` | — |
-| `bytes` `1.11.1` | Types and traits for working with bytes | — | — |
-| `hex` `0.4.3` | Encoding and decoding data into/from hexadecimal representation. | — | — |
-| `serde` `1.0.228` | A generic serialization/deserialization framework | `axbuild` `axdevice_base` `axvmconfig` | — |
-| `serde_core` `1.0.228` | Serde traits only, with no support for derive -- use the `serde` crate instead | — | — |
-| `serde_derive` `1.0.228` | Macros 1.1 implementation of #[derive(Serialize, Deserialize)] | — | — |
-| `serde_derive_internals` `0.29.1` | AST representation used by Serde derive macros. Unstable. | — | — |
-| `serde_json` `1.0.149` | A JSON serialization file format | `axbuild` | — |
-| `serde_path_to_error` `0.1.20` | Path to the element that failed to deserialize | — | — |
-| `serde_repr` `0.1.20` | Derive Serialize and Deserialize that delegates to the underlying repr of a C-like enum. | `axvmconfig` | — |
-| `serde_spanned` `1.1.1` | Serde-compatible spanned Value | — | — |
-| `serde_urlencoded` `0.7.1` | `x-www-form-urlencoded` meets Serde | — | — |
-| `toml` `0.9.12+spec-1.1.0` | A native Rust encoder and decoder of TOML-formatted files and streams. Provides implementations of … | `axvisor` `axvmconfig` | — |
-| `toml` `1.1.2+spec-1.1.0` | A native Rust encoder and decoder of TOML-formatted files and streams. Provides implementations of … | `axbuild` | — |
-| `toml_datetime` `0.6.11` | A TOML-compatible datetime type | — | — |
-| `toml_datetime` `0.7.5+spec-1.1.0` | A TOML-compatible datetime type | — | — |
-| `toml_datetime` `1.1.1+spec-1.1.0` | A TOML-compatible datetime type | — | — |
-| `toml_edit` `0.22.27` | Yet another format-preserving TOML parser. | `ax-config-gen` | — |
-| `toml_edit` `0.25.10+spec-1.1.0` | Yet another format-preserving TOML parser. | — | — |
-| `toml_parser` `1.1.2+spec-1.1.0` | Yet another format-preserving TOML parser. | — | — |
-| `toml_write` `0.1.2` | A low-level interface for writing out TOML | — | — |
-| `toml_writer` `1.1.1+spec-1.1.0` | A low-level interface for writing out TOML | — | — |
+| `base64` `0.13.1` | — | — | — |
+| `base64` `0.22.1` | — | — | — |
+| `byteorder` `1.5.0` | — | `smoltcp` | — |
+| `bytes` `1.11.1` | — | — | — |
+| `hex` `0.4.3` | — | — | — |
+| `serde` `1.0.228` | — | `axbuild` `axdevice_base` `axvmconfig` | — |
+| `serde_core` `1.0.228` | — | — | — |
+| `serde_derive` `1.0.228` | — | — | — |
+| `serde_derive_internals` `0.29.1` | — | — | — |
+| `serde_json` `1.0.149` | — | `axbuild` | — |
+| `serde_path_to_error` `0.1.20` | — | — | — |
+| `serde_repr` `0.1.20` | — | `axvmconfig` | — |
+| `serde_spanned` `1.1.1` | — | — | — |
+| `serde_urlencoded` `0.7.1` | — | — | — |
+| `toml` `0.9.12+spec-1.1.0` | — | `axvisor` `axvmconfig` | — |
+| `toml` `1.1.2+spec-1.1.0` | — | `axbuild` | — |
+| `toml_datetime` `0.6.11` | — | — | — |
+| `toml_datetime` `0.7.5+spec-1.1.0` | — | — | — |
+| `toml_datetime` `1.1.1+spec-1.1.0` | — | — | — |
+| `toml_edit` `0.22.27` | — | `ax-config-gen` | — |
+| `toml_edit` `0.25.10+spec-1.1.0` | — | — | — |
+| `toml_parser` `1.1.2+spec-1.1.0` | — | — | — |
+| `toml_write` `0.1.2` | — | — | — |
+| `toml_writer` `1.1.1+spec-1.1.0` | — | — | — |
 
 
 #### 异步/并发
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `async-channel` `2.5.0` | Async multi-producer multi-consumer channel | `ax-net-ng` | — |
-| `async-trait` `0.1.89` | Type erasure for async trait methods | `ax-net-ng` | — |
-| `crossbeam-channel` `0.5.15` | Multi-producer multi-consumer channels for message passing | — | — |
-| `crossbeam-deque` `0.8.6` | Concurrent work-stealing deque | — | — |
-| `crossbeam-epoch` `0.9.18` | Epoch-based garbage collection | — | — |
-| `crossbeam-utils` `0.8.21` | Utilities for concurrent programming | — | — |
-| `futures` `0.3.32` | An implementation of futures and streams featuring zero allocations, composability, and iterator-li… | `axpoll` | — |
-| `futures-channel` `0.3.32` | Channels for asynchronous communication using futures-rs. | — | — |
-| `futures-core` `0.3.32` | The core traits and types in for the `futures` library. | — | — |
-| `futures-executor` `0.3.32` | Executors for asynchronous tasks based on the futures-rs library. | — | — |
-| `futures-io` `0.3.32` | The `AsyncRead`, `AsyncWrite`, `AsyncSeek`, and `AsyncBufRead` traits for the futures-rs library. | — | — |
-| `futures-macro` `0.3.32` | The futures-rs procedural macro implementations. | — | — |
-| `futures-sink` `0.3.32` | The asynchronous `Sink` trait for the futures-rs library. | — | — |
-| `futures-task` `0.3.32` | Tools for working with tasks. | — | — |
-| `futures-timer` `3.0.3` | Timeouts for futures. | — | — |
-| `futures-util` `0.3.32` | Common utilities and extension traits for the futures-rs library. | `ax-task` `axbuild` | — |
-| `parking_lot` `0.12.5` | More compact and efficient implementations of the standard synchronization primitives. | — | — |
-| `parking_lot_core` `0.9.12` | An advanced API for creating custom synchronization primitives. | — | — |
-| `rayon` `1.11.0` | Simple work-stealing parallelism for Rust | — | — |
-| `rayon-core` `1.13.0` | Core APIs for Rayon | — | — |
-| `tokio` `1.51.0` | An event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications. | `axbuild` `axpoll` `axvisor` `starryos` `tg-xtask` | — |
-| `tokio-macros` `2.7.0` | Tokio's proc macros. | — | — |
-| `tokio-rustls` `0.26.4` | Asynchronous TLS/SSL streams for Tokio using Rustls. | — | — |
-| `tokio-serial` `5.4.5` | A serial port implementation for tokio | — | — |
-| `tokio-tungstenite` `0.28.0` | Tokio binding for Tungstenite, the Lightweight stream-based WebSocket implementation | — | — |
-| `tokio-util` `0.7.18` | Additional utilities for working with Tokio. | — | — |
-| `wasm-bindgen-futures` `0.4.67` | Bridging the gap between Rust Futures and JavaScript Promises | — | — |
+| `async-channel` `2.5.0` | — | `ax-net-ng` | — |
+| `async-trait` `0.1.89` | — | `ax-net-ng` | — |
+| `crossbeam-channel` `0.5.15` | — | — | — |
+| `crossbeam-deque` `0.8.6` | — | — | — |
+| `crossbeam-epoch` `0.9.18` | — | — | — |
+| `crossbeam-utils` `0.8.21` | — | — | — |
+| `futures` `0.3.32` | — | `axpoll` | — |
+| `futures-channel` `0.3.32` | — | — | — |
+| `futures-core` `0.3.32` | — | — | — |
+| `futures-executor` `0.3.32` | — | — | — |
+| `futures-io` `0.3.32` | — | — | — |
+| `futures-macro` `0.3.32` | — | — | — |
+| `futures-sink` `0.3.32` | — | — | — |
+| `futures-task` `0.3.32` | — | — | — |
+| `futures-timer` `3.0.3` | — | — | — |
+| `futures-util` `0.3.32` | — | `ax-task` `axbuild` | — |
+| `parking_lot` `0.12.5` | — | — | — |
+| `parking_lot_core` `0.9.12` | — | — | — |
+| `rayon` `1.11.0` | — | — | — |
+| `rayon-core` `1.13.0` | — | — | — |
+| `tokio` `1.51.0` | — | `axbuild` `axpoll` `axvisor` `starryos` `tg-xtask` | — |
+| `tokio-macros` `2.7.0` | — | — | — |
+| `tokio-rustls` `0.26.4` | — | — | — |
+| `tokio-serial` `5.4.5` | — | — | — |
+| `tokio-tungstenite` `0.28.0` | — | — | — |
+| `tokio-util` `0.7.18` | — | — | — |
+| `wasm-bindgen-futures` `0.4.67` | — | — | — |
 
 
 #### 数据结构/算法
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `arrayvec` `0.7.6` | A vector with fixed capacity, backed by an array (it can be stored on the stack too). Implements fi… | `ax-page-table-multiarch` | — |
-| `bitvec` `1.0.1` | Addresses memory by bits, for packed collections and bitfields | — | — |
-| `hashbrown` `0.12.3` | A Rust port of Google's SwissTable hash map | — | — |
-| `hashbrown` `0.14.5` | A Rust port of Google's SwissTable hash map | `axvisor` | — |
-| `hashbrown` `0.15.5` | A Rust port of Google's SwissTable hash map | — | — |
-| `hashbrown` `0.16.1` | A Rust port of Google's SwissTable hash map | `ax-net-ng` `axfs-ng-vfs` `starry-kernel` | — |
-| `indexmap` `2.13.1` | A hash table with consistent order and fast iteration. | — | — |
-| `lru` `0.16.3` | A LRU cache implementation | `ax-fs-ng` | — |
-| `lru-slab` `0.1.2` | Pre-allocated storage with constant-time LRU tracking | — | — |
-| `smallvec` `1.15.1` | 'Small vector' optimization: store up to a small number of items on the stack | `ax-driver` `axfs-ng-vfs` | — |
+| `arrayvec` `0.7.6` | — | `ax-page-table-multiarch` | — |
+| `bitvec` `1.0.1` | — | — | — |
+| `hashbrown` `0.12.3` | — | — | — |
+| `hashbrown` `0.14.5` | — | `axvisor` | — |
+| `hashbrown` `0.15.5` | — | — | — |
+| `hashbrown` `0.16.1` | — | `ax-net-ng` `axfs-ng-vfs` `starry-kernel` | — |
+| `indexmap` `2.13.1` | — | — | — |
+| `lru` `0.16.3` | — | `ax-fs-ng` | — |
+| `lru-slab` `0.1.2` | — | — | — |
+| `smallvec` `1.15.1` | — | `ax-driver` `axfs-ng-vfs` | — |
 
 
 #### 日志/错误
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `anyhow` `1.0.102` | Flexible concrete Error type built on std::error::Error | `axbuild` `axplat-dyn` `axvisor` `starryos` `tg-xtask` | — |
-| `crc-catalog` `2.4.0` | Catalog of CRC algorithms (generated from http://reveng.sourceforge.net/crc-catalogue) expressed as… | — | — |
-| `env_logger` `0.10.2` | A logging implementation for `log` which is configured via an environment variable. | `smoltcp` | — |
-| `env_logger` `0.11.10` | A logging implementation for `log` which is configured via an environment variable. | `axbuild` `axvmconfig` | — |
-| `log` `0.4.29` | A lightweight logging facade for Rust | `arm_vcpu` `arm_vgic` `ax-alloc` `ax-cpu` `ax-display` `ax-dma` `ax-driver` `ax-driver-block` `ax-driver-net` `ax-driver-virtio` `ax-driver-vsock` `ax-errno` `ax-fs` `ax-fs-devfs` `ax-fs-ng` `ax-fs-ramfs` `ax-fs-vfs` `ax-hal` `ax-input` `ax-ipi` `ax-log` `ax-mm` `ax-net` `ax-net-ng` `ax-page-table-multiarch` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-peripherals` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `ax-task` `axaddrspace` `axbacktrace` `axbuild` `axdevice` `axfs-ng-vfs` `axplat-dyn` `axplat-x86-qemu-q35` `axvisor` `axvm` `axvmconfig` `fxmac_rs` `riscv-h` `riscv_vcpu` `riscv_vplic` `rsext4` `smoltcp` `starry-signal` `x86_vcpu` `x86_vlapic` | — |
-| `thiserror` `1.0.69` | derive(Error) | — | — |
-| `thiserror` `2.0.18` | derive(Error) | — | — |
-| `thiserror-impl` `1.0.69` | Implementation detail of the `thiserror` crate | — | — |
-| `thiserror-impl` `2.0.18` | Implementation detail of the `thiserror` crate | — | — |
-| `tracing` `0.1.44` | Application-level tracing for Rust. | `axbuild` | — |
-| `tracing-attributes` `0.1.31` | Procedural macro attributes for automatically instrumenting functions. | — | — |
-| `tracing-core` `0.1.36` | Core primitives for application-level tracing. | — | — |
-| `tracing-log` `0.2.0` | Provides compatibility between `tracing` and the `log` crate. | `axbuild` | — |
-| `tracing-subscriber` `0.3.23` | Utilities for implementing and composing `tracing` subscribers. | `axbuild` | — |
+| `anyhow` `1.0.102` | — | `axbuild` `axplat-dyn` `axvisor` `starryos` `tg-xtask` | — |
+| `crc-catalog` `2.4.0` | — | — | — |
+| `env_logger` `0.10.2` | — | `smoltcp` | — |
+| `env_logger` `0.11.10` | — | `axbuild` `axvmconfig` | — |
+| `log` `0.4.29` | — | `arm_vcpu` `arm_vgic` `ax-alloc` `ax-cpu` `ax-display` `ax-dma` `ax-driver` `ax-driver-block` `ax-driver-net` `ax-driver-virtio` `ax-driver-vsock` `ax-errno` `ax-fs` `ax-fs-devfs` `ax-fs-ng` `ax-fs-ramfs` `ax-fs-vfs` `ax-hal` `ax-input` `ax-ipi` `ax-log` `ax-mm` `ax-net` `ax-net-ng` `ax-page-table-multiarch` `ax-plat-aarch64-bsta1000b` `ax-plat-aarch64-peripherals` `ax-plat-aarch64-phytium-pi` `ax-plat-aarch64-qemu-virt` `ax-plat-aarch64-raspi` `ax-plat-loongarch64-qemu-virt` `ax-plat-riscv64-qemu-virt` `ax-plat-x86-pc` `ax-task` `axaddrspace` `axbacktrace` `axbuild` `axdevice` `axfs-ng-vfs` `axplat-dyn` `axplat-x86-qemu-q35` `axvisor` `axvm` `axvmconfig` `fxmac_rs` `riscv-h` `riscv_vcpu` `riscv_vplic` `rsext4` `smoltcp` `starry-signal` `x86_vcpu` `x86_vlapic` | — |
+| `thiserror` `1.0.69` | — | — | — |
+| `thiserror` `2.0.18` | — | — | — |
+| `thiserror-impl` `1.0.69` | — | — | — |
+| `thiserror-impl` `2.0.18` | — | — | — |
+| `tracing` `0.1.44` | — | `axbuild` | — |
+| `tracing-attributes` `0.1.31` | — | — | — |
+| `tracing-core` `0.1.36` | — | — | — |
+| `tracing-log` `0.2.0` | — | `axbuild` | — |
+| `tracing-subscriber` `0.3.23` | — | `axbuild` | — |
 
 
 #### 系统/平台
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `cc` `1.2.58` | A build-time dependency for Cargo build scripts to assist in invoking the native C compiler to comp… | — | — |
-| `cmake` `0.1.58` | A build dependency for running `cmake` to build a native library | — | — |
-| `libc` `0.2.184` | Raw FFI bindings to platform libraries like libc. | `smoltcp` | — |
-| `linux-raw-sys` `0.12.1` | Generated bindings for Linux's userspace API | `axpoll` `starry-kernel` `starry-signal` | — |
-| `linux-raw-sys` `0.4.15` | Generated bindings for Linux's userspace API | — | — |
-| `memchr` `2.8.0` | Provides extremely fast (uses SIMD on x86_64, aarch64 and wasm32) routines for 1, 2 or 3 byte searc… | `ax-io` | — |
-| `nix` `0.26.4` | Rust friendly bindings to *nix APIs | — | — |
-| `nix` `0.29.0` | Rust friendly bindings to *nix APIs | — | — |
-| `rustix` `0.38.44` | Safe Rust bindings to POSIX/Unix/Linux/Winsock-like syscalls | — | — |
-| `rustix` `1.1.4` | Safe Rust bindings to POSIX/Unix/Linux/Winsock-like syscalls | — | — |
-| `smccc` `0.2.2` | Functions and constants for the Arm SMC Calling Convention (SMCCC) 1.4 and Arm Power State Coordina… | — | — |
-| `winapi-i686-pc-windows-gnu` `0.4.0` | Import libraries for the i686-pc-windows-gnu target. Please don't use this crate directly, depend o… | — | — |
-| `winapi-x86_64-pc-windows-gnu` `0.4.0` | Import libraries for the x86_64-pc-windows-gnu target. Please don't use this crate directly, depend… | — | — |
-| `windows-core` `0.62.2` | Core type support for COM and Windows | — | — |
-| `windows-implement` `0.60.2` | The implement macro for the Windows crates | — | — |
-| `windows-interface` `0.59.3` | The interface macro for the Windows crates | — | — |
-| `windows-link` `0.2.1` | Linking for Windows | — | — |
-| `windows-registry` `0.6.1` | Windows registry | — | — |
-| `windows-result` `0.4.1` | Windows error handling | — | — |
-| `windows-sys` `0.45.0` | Rust for Windows | — | — |
-| `windows-sys` `0.52.0` | Rust for Windows | — | — |
-| `windows-sys` `0.59.0` | Rust for Windows | — | — |
-| `windows-sys` `0.60.2` | Rust for Windows | — | — |
-| `windows-sys` `0.61.2` | Rust for Windows | — | — |
-| `windows-targets` `0.42.2` | Import libs for Windows | — | — |
-| `windows-targets` `0.52.6` | Import libs for Windows | — | — |
-| `windows-targets` `0.53.5` | Import libs for Windows | — | — |
-| `windows_aarch64_gnullvm` `0.42.2` | Import lib for Windows | — | — |
-| `windows_aarch64_gnullvm` `0.52.6` | Import lib for Windows | — | — |
-| `windows_aarch64_gnullvm` `0.53.1` | Import lib for Windows | — | — |
-| `windows_aarch64_msvc` `0.42.2` | Import lib for Windows | — | — |
-| `windows_aarch64_msvc` `0.52.6` | Import lib for Windows | — | — |
-| `windows_aarch64_msvc` `0.53.1` | Import lib for Windows | — | — |
-| `windows_i686_gnu` `0.42.2` | Import lib for Windows | — | — |
-| `windows_i686_gnu` `0.52.6` | Import lib for Windows | — | — |
-| `windows_i686_gnu` `0.53.1` | Import lib for Windows | — | — |
-| `windows_i686_gnullvm` `0.52.6` | Import lib for Windows | — | — |
-| `windows_i686_gnullvm` `0.53.1` | Import lib for Windows | — | — |
-| `windows_i686_msvc` `0.42.2` | Import lib for Windows | — | — |
-| `windows_i686_msvc` `0.52.6` | Import lib for Windows | — | — |
-| `windows_i686_msvc` `0.53.1` | Import lib for Windows | — | — |
-| `windows_x86_64_gnu` `0.42.2` | Import lib for Windows | — | — |
-| `windows_x86_64_gnu` `0.52.6` | Import lib for Windows | — | — |
-| `windows_x86_64_gnu` `0.53.1` | Import lib for Windows | — | — |
-| `windows_x86_64_gnullvm` `0.42.2` | Import lib for Windows | — | — |
-| `windows_x86_64_gnullvm` `0.52.6` | Import lib for Windows | — | — |
-| `windows_x86_64_gnullvm` `0.53.1` | Import lib for Windows | — | — |
-| `windows_x86_64_msvc` `0.42.2` | Import lib for Windows | — | — |
-| `windows_x86_64_msvc` `0.52.6` | Import lib for Windows | — | — |
-| `windows_x86_64_msvc` `0.53.1` | Import lib for Windows | — | — |
+| `cc` `1.2.58` | — | — | — |
+| `cmake` `0.1.58` | — | — | — |
+| `libc` `0.2.184` | — | `smoltcp` | — |
+| `linux-raw-sys` `0.12.1` | — | `axpoll` `starry-kernel` `starry-signal` | — |
+| `linux-raw-sys` `0.4.15` | — | — | — |
+| `memchr` `2.8.0` | — | `ax-io` | — |
+| `nix` `0.26.4` | — | — | — |
+| `nix` `0.29.0` | — | — | — |
+| `rustix` `0.38.44` | — | — | — |
+| `rustix` `1.1.4` | — | — | — |
+| `smccc` `0.2.2` | — | — | — |
+| `winapi-i686-pc-windows-gnu` `0.4.0` | — | — | — |
+| `winapi-x86_64-pc-windows-gnu` `0.4.0` | — | — | — |
+| `windows-core` `0.62.2` | — | — | — |
+| `windows-implement` `0.60.2` | — | — | — |
+| `windows-interface` `0.59.3` | — | — | — |
+| `windows-link` `0.2.1` | — | — | — |
+| `windows-registry` `0.6.1` | — | — | — |
+| `windows-result` `0.4.1` | — | — | — |
+| `windows-sys` `0.45.0` | — | — | — |
+| `windows-sys` `0.52.0` | — | — | — |
+| `windows-sys` `0.59.0` | — | — | — |
+| `windows-sys` `0.60.2` | — | — | — |
+| `windows-sys` `0.61.2` | — | — | — |
+| `windows-targets` `0.42.2` | — | — | — |
+| `windows-targets` `0.52.6` | — | — | — |
+| `windows-targets` `0.53.5` | — | — | — |
+| `windows_aarch64_gnullvm` `0.42.2` | — | — | — |
+| `windows_aarch64_gnullvm` `0.52.6` | — | — | — |
+| `windows_aarch64_gnullvm` `0.53.1` | — | — | — |
+| `windows_aarch64_msvc` `0.42.2` | — | — | — |
+| `windows_aarch64_msvc` `0.52.6` | — | — | — |
+| `windows_aarch64_msvc` `0.53.1` | — | — | — |
+| `windows_i686_gnu` `0.42.2` | — | — | — |
+| `windows_i686_gnu` `0.52.6` | — | — | — |
+| `windows_i686_gnu` `0.53.1` | — | — | — |
+| `windows_i686_gnullvm` `0.52.6` | — | — | — |
+| `windows_i686_gnullvm` `0.53.1` | — | — | — |
+| `windows_i686_msvc` `0.42.2` | — | — | — |
+| `windows_i686_msvc` `0.52.6` | — | — | — |
+| `windows_i686_msvc` `0.53.1` | — | — | — |
+| `windows_x86_64_gnu` `0.42.2` | — | — | — |
+| `windows_x86_64_gnu` `0.52.6` | — | — | — |
+| `windows_x86_64_gnu` `0.53.1` | — | — | — |
+| `windows_x86_64_gnullvm` `0.42.2` | — | — | — |
+| `windows_x86_64_gnullvm` `0.52.6` | — | — | — |
+| `windows_x86_64_gnullvm` `0.53.1` | — | — | — |
+| `windows_x86_64_msvc` `0.42.2` | — | — | — |
+| `windows_x86_64_msvc` `0.52.6` | — | — | — |
+| `windows_x86_64_msvc` `0.53.1` | — | — | — |
 
 
 #### 网络/协议
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `axum` `0.8.8` | Web framework that focuses on ergonomics and modularity | — | — |
-| `axum-core` `0.5.6` | Core types and traits for axum | — | — |
-| `http` `1.4.0` | A set of types for representing HTTP requests and responses. | — | — |
-| `http-body` `1.0.1` | Trait representing an asynchronous, streaming, HTTP request or response body. | — | — |
-| `http-body-util` `0.1.3` | Combinators and adapters for HTTP request or response bodies. | — | — |
-| `http-range-header` `0.4.2` | No-dep range header parser | — | — |
-| `httparse` `1.10.1` | A tiny, safe, speedy, zero-copy HTTP/1.x parser. | — | — |
-| `httpdate` `1.0.3` | HTTP date parsing and formatting | — | — |
-| `hyper` `1.9.0` | A protective and efficient HTTP library for all. | — | — |
-| `hyper-rustls` `0.27.7` | Rustls+hyper integration for pure rust HTTPS | — | — |
-| `hyper-util` `0.1.20` | hyper utilities | — | — |
-| `mio` `1.2.0` | Lightweight non-blocking I/O. | — | — |
-| `mio-serial` `5.0.6` | A serial port implementation for mio | — | — |
-| `mmio-api` `0.2.1` | Memory-mapped I/O abstraction API for OS kernel development. | — | — |
-| `rustls` `0.23.37` | Rustls is a modern TLS library written in Rust. | — | — |
-| `rustls-native-certs` `0.8.3` | rustls-native-certs allows rustls to use the platform native certificate store | — | — |
-| `rustls-pki-types` `1.14.0` | Shared types for the rustls PKI ecosystem | — | — |
-| `rustls-platform-verifier` `0.6.2` | rustls-platform-verifier supports verifying TLS certificates in rustls with the operating system ve… | — | — |
-| `rustls-platform-verifier-android` `0.1.1` | The internal JVM support component of the rustls-platform-verifier crate. You shouldn't depend on t… | — | — |
-| `rustls-webpki` `0.103.10` | Web PKI X.509 Certificate Verification. | — | — |
-| `signal-hook-mio` `0.2.5` | MIO support for signal-hook | — | — |
+| `axum` `0.8.8` | — | — | — |
+| `axum-core` `0.5.6` | — | — | — |
+| `http` `1.4.0` | — | — | — |
+| `http-body` `1.0.1` | — | — | — |
+| `http-body-util` `0.1.3` | — | — | — |
+| `http-range-header` `0.4.2` | — | — | — |
+| `httparse` `1.10.1` | — | — | — |
+| `httpdate` `1.0.3` | — | — | — |
+| `hyper` `1.9.0` | — | — | — |
+| `hyper-rustls` `0.27.7` | — | — | — |
+| `hyper-util` `0.1.20` | — | — | — |
+| `mio` `1.2.0` | — | — | — |
+| `mio-serial` `5.0.6` | — | — | — |
+| `mmio-api` `0.2.1` | — | — | — |
+| `rustls` `0.23.37` | — | — | — |
+| `rustls-native-certs` `0.8.3` | — | — | — |
+| `rustls-pki-types` `1.14.0` | — | — | — |
+| `rustls-platform-verifier` `0.6.2` | — | — | — |
+| `rustls-platform-verifier-android` `0.1.1` | — | — | — |
+| `rustls-webpki` `0.103.10` | — | — | — |
+| `signal-hook-mio` `0.2.5` | — | — | — |
 | `smoltcp` `0.12.0` | — | — | — |
-| `socket2` `0.6.3` | Utilities for handling networking sockets with a maximal amount of configuration possible intended. | — | — |
-| `starry-smoltcp` `0.12.1-preview.1` | A TCP/IP stack designed for bare-metal, real-time systems without a heap. | `ax-net` `ax-net-ng` | — |
-| `termios` `0.3.3` | Safe bindings for the termios library. | — | — |
-| `tower` `0.5.3` | Tower is a library of modular and reusable components for building robust clients and servers. | — | — |
-| `tower-http` `0.6.8` | Tower middleware and utilities for HTTP clients and servers | — | — |
-| `tower-layer` `0.3.3` | Decorates a `Service` to allow easy composition between `Service`s. | — | — |
-| `tower-service` `0.3.3` | Trait representing an asynchronous, request / response based, client or server. | — | — |
+| `socket2` `0.6.3` | — | — | — |
+| `starry-smoltcp` `0.12.1-preview.1` | — | `ax-net` `ax-net-ng` | — |
+| `termios` `0.3.3` | — | — | — |
+| `tower` `0.5.3` | — | — | — |
+| `tower-http` `0.6.8` | — | — | — |
+| `tower-layer` `0.3.3` | — | — | — |
+| `tower-service` `0.3.3` | — | — | — |
 
 
 #### 设备树/固件
 
 | 外部组件（name version） | 简介（≤100字） | 直接依赖该外部的内部组件 | 该外部直接依赖的内部组件 |
 |--------------------------|----------------|---------------------------|---------------------------|
-| `fdt-edit` `0.2.3` | A high-level library for creating, editing, and encoding Flattened Device Tree (FDT) structures | `axplat-dyn` | — |
-| `fdt-parser` `0.4.19` | A crate for parsing FDT | `ax-hal` `axvisor` | — |
-| `fdt-raw` `0.3.0` | A low-level, no-std compatible library for parsing Flattened Device Tree (FDT) binary files | — | — |
-| `fitimage` `0.1.3` | A Rust library for creating U-Boot compatible FIT images | — | — |
-| `kernel-elf-parser` `0.3.4` | An lightweight ELF parser that parses ELF files and converts them into information needed for kerne… | `starry-kernel` | — |
-| `multiboot` `0.8.0` | Library to access multiboot structures. | `ax-plat-x86-pc` `axplat-x86-qemu-q35` | — |
-| `vm-fdt` `0.3.0` | Crate for writing Flattened Devicetree blobs | — | — |
-| `xmas-elf` `0.9.1` | Library for parsing and navigating ELF data; zero-allocation, type-safe. | `starry-kernel` | — |
+| `fdt-edit` `0.2.3` | — | `axplat-dyn` | — |
+| `fdt-parser` `0.4.19` | — | `ax-hal` `axvisor` | — |
+| `fdt-raw` `0.3.0` | — | — | — |
+| `fitimage` `0.1.3` | — | — | — |
+| `kernel-elf-parser` `0.3.4` | — | `starry-kernel` | — |
+| `multiboot` `0.8.0` | — | `ax-plat-x86-pc` `axplat-x86-qemu-q35` | — |
+| `vm-fdt` `0.3.0` | — | — | — |
+| `xmas-elf` `0.9.1` | — | `starry-kernel` | — |
 

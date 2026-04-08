@@ -2,9 +2,9 @@
 
 use core::mem::MaybeUninit;
 
-use axplat::mem::{PhysAddr, pa, phys_to_virt};
-use kspin::SpinNoIrq;
-use lazyinit::LazyInit;
+use ax_kspin::SpinNoIrq;
+use ax_lazyinit::LazyInit;
+use ax_plat::mem::{PhysAddr, pa, phys_to_virt};
 use x2apic::{
     ioapic::IoApic,
     lapic::{LocalApic, LocalApicBuilder, xapic_base},
@@ -106,7 +106,7 @@ pub fn init_secondary() {
 
 #[cfg(feature = "irq")]
 mod irq_impl {
-    use axplat::irq::{HandlerTable, IpiTarget, IrqHandler, IrqIf};
+    use ax_plat::irq::{HandlerTable, IpiTarget, IrqHandler, IrqIf};
 
     /// The maximum number of IRQs.
     const MAX_IRQ_COUNT: usize = 256;

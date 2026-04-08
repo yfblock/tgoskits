@@ -1,15 +1,15 @@
-# handler_table
+# ax-handler-table
 
-[![Crates.io](https://img.shields.io/crates/v/handler_table)](https://crates.io/crates/handler_table)
-[![Docs.rs](https://docs.rs/handler_table/badge.svg)](https://docs.rs/handler_table)
-[![CI](https://github.com/arceos-org/handler_table/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/handler_table/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/ax-handler-table)](https://crates.io/crates/ax-handler-table)
+[![Docs.rs](https://docs.rs/ax-handler-table/badge.svg)](https://docs.rs/ax-handler-table)
+[![CI](https://github.com/arceos-org/ax-handler-table/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/ax-handler-table/actions/workflows/ci.yml)
 
 A lock-free table of event handlers.
 
 ## Examples
 
 ```rust
-use handler_table::HandlerTable;
+use ax_handler_table::HandlerTable;
 
 static TABLE: HandlerTable<8> = HandlerTable::new();
 

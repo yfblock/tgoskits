@@ -2,9 +2,9 @@ use core::{alloc::Layout, ptr::NonNull};
 
 use std::os::arceos;
 
+use ax_memory_addr::PAGE_SIZE_4K;
 use axaddrspace::{AxMmHal, HostPhysAddr, HostVirtAddr};
 use axvisor_api::memory::MemoryIf;
-use memory_addr::PAGE_SIZE_4K;
 
 use crate::hal::AxMmHalImpl;
 
@@ -17,7 +17,7 @@ impl MemoryIf for MemoryImpl {
     }
 
     fn alloc_contiguous_frames(num_frames: usize, frame_align_pow2: usize) -> Option<HostPhysAddr> {
-        arceos::modules::axalloc::global_allocator()
+        arceos::modules::ax_alloc::global_allocator()
             .alloc(
                 Layout::from_size_align(
                     num_frames * PAGE_SIZE_4K,
@@ -36,8 +36,8 @@ impl MemoryIf for MemoryImpl {
     }
 
     fn dealloc_contiguous_frames(paddr: HostPhysAddr, num_frames: usize) {
-        // arceos::modules::axalloc::global_allocator().dealloc_pages(paddr.as_usize(), num_frames);
-        arceos::modules::axalloc::global_allocator().dealloc(
+        // arceos::modules::ax_alloc::global_allocator().dealloc_pages(paddr.as_usize(), num_frames);
+        arceos::modules::ax_alloc::global_allocator().dealloc(
             unsafe { NonNull::new_unchecked(paddr.as_usize() as _) },
             Layout::from_size_align(num_frames * PAGE_SIZE_4K, PAGE_SIZE_4K).unwrap(),
         );

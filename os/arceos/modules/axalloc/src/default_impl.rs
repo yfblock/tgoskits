@@ -11,8 +11,8 @@ use core::{
     ptr::NonNull,
 };
 
-use axallocator::{AllocResult, BaseAllocator, BitmapPageAllocator, ByteAllocator, PageAllocator};
-use kspin::SpinNoIrq;
+use ax_allocator::{AllocResult, BaseAllocator, BitmapPageAllocator, ByteAllocator, PageAllocator};
+use ax_kspin::SpinNoIrq;
 
 use super::{UsageKind, Usages};
 
@@ -26,13 +26,13 @@ const MIN_HEAP_SIZE: usize = 0x8000; // 32 K
 cfg_if::cfg_if! {
     if #[cfg(feature = "slab")] {
         /// The default byte allocator.
-        pub type DefaultByteAllocator = axallocator::SlabByteAllocator;
+        pub type DefaultByteAllocator = ax_allocator::SlabByteAllocator;
     } else if #[cfg(feature = "buddy")] {
         /// The default byte allocator.
-        pub type DefaultByteAllocator = axallocator::BuddyByteAllocator;
+        pub type DefaultByteAllocator = ax_allocator::BuddyByteAllocator;
     } else if #[cfg(feature = "tlsf")] {
         /// The default byte allocator.
-        pub type DefaultByteAllocator = axallocator::TlsfByteAllocator;
+        pub type DefaultByteAllocator = ax_allocator::TlsfByteAllocator;
     }
 }
 

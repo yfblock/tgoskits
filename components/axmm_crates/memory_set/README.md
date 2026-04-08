@@ -1,7 +1,7 @@
-# memory_set
+# ax-memory-set
 
-[![Crates.io](https://img.shields.io/crates/v/memory_set)](https://crates.io/crates/memory_set)
-[![Docs.rs](https://docs.rs/memory_set/badge.svg)](https://docs.rs/memory_set)
+[![Crates.io](https://img.shields.io/crates/v/ax-memory-set)](https://crates.io/crates/ax-memory-set)
+[![Docs.rs](https://docs.rs/ax-memory-set/badge.svg)](https://docs.rs/ax-memory-set)
 [![CI](https://github.com/arceos-org/axmm_crates/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/axmm_crates/actions/workflows/ci.yml)
 
 Data structures and operations for managing memory mappings.
@@ -15,7 +15,7 @@ It is useful to implement [`mmap`][1], [`munmap`][1] and [`mprotect`][2].
 
 ```rust
 use memory_addr::{va, va_range, VirtAddr};
-use memory_set::{MappingBackend, MemoryArea, MemorySet};
+use ax_memory_set::{MappingBackend, MemoryArea, MemorySet};
 
 const MAX_ADDR: usize = 0x10000;
 

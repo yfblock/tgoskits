@@ -336,7 +336,7 @@ mod tests {
         let patches = discover_patch_paths(&root, &root.join("os/arceos")).unwrap();
 
         assert_eq!(
-            patches.get("axplat-riscv64-qemu-virt"),
+            patches.get("ax-plat-riscv64-qemu-virt"),
             Some(&PathBuf::from(
                 "../../components/axplat_crates/platforms/axplat-riscv64-qemu-virt"
             ))
@@ -349,13 +349,13 @@ mod tests {
         let patches = discover_patch_paths(&root, &root.join("os/arceos")).unwrap();
 
         for crate_name in [
-            "crate_interface",
-            "axallocator",
+            "ax-crate-interface",
+            "ax-allocator",
             "axbacktrace",
-            "lazyinit",
-            "axsched",
-            "cap_access",
-            "cpumask",
+            "ax-lazyinit",
+            "ax-sched",
+            "ax-cap-access",
+            "ax-cpumask",
             "rsext4",
         ] {
             assert!(
@@ -371,7 +371,7 @@ mod tests {
         let patches = discover_patch_paths(&root, &root.join("os/arceos")).unwrap();
 
         assert_eq!(
-            patches.get("page_table_entry"),
+            patches.get("ax-page-table-entry"),
             Some(&PathBuf::from(
                 "../../components/page_table_multiarch/page_table_entry"
             ))

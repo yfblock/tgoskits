@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use ax_errno::AxResult;
 use axaddrspace::GuestPhysAddr;
-use axerrno::AxResult;
 use axvm::{
     VMMemoryRegion,
     config::{AxVMConfig, AxVMCrateConfig, VmMemMappingType},
@@ -40,8 +40,8 @@ pub mod config {
     /// Read VM configs from filesystem
     #[cfg(feature = "fs")]
     pub fn filesystem_vm_configs() -> Vec<String> {
-        use axstd::fs;
-        use axstd::io::{BufReader, Read};
+        use ax_std::fs;
+        use ax_std::io::{BufReader, Read};
 
         let config_dir = "/guest/vm_default";
 

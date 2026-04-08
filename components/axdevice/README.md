@@ -73,7 +73,7 @@ use axaddrspace::device::AccessWidth;
 use axaddrspace::{GuestPhysAddr, GuestPhysAddrRange};
 use axdevice::{AxVmDeviceConfig, AxVmDevices};
 use axdevice_base::BaseDeviceOps;
-use axerrno::AxResult;
+use ax_errno::AxResult;
 use axvmconfig::EmulatedDeviceType;
 
 struct MockMmioDevice {

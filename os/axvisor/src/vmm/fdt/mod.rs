@@ -25,9 +25,9 @@ mod vm_fdt;
 
 use alloc::collections::BTreeMap;
 use alloc::vec::Vec;
+use ax_lazyinit::LazyInit;
 use axvm::config::{AxVMConfig, AxVMCrateConfig};
 use fdt_parser::Fdt;
-use lazyinit::LazyInit;
 use spin::Mutex;
 
 pub use parser::*;
@@ -109,7 +109,7 @@ pub fn get_developer_provided_dtb(
         }
         #[cfg(feature = "fs")]
         Some("fs") => {
-            use axerrno::ax_err_type;
+            use ax_errno::ax_err_type;
             use std::io::{BufReader, Read};
             if let Some(dtb_path) = &crate_config.kernel.dtb_path {
                 let (dtb_file, dtb_size) =

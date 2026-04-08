@@ -1,5 +1,5 @@
 [package]
-name = "axdriver_block"
+name = "ax-driver-block"
 edition.workspace = true
 version.workspace = true
 authors.workspace = true
@@ -20,7 +20,7 @@ ahci = ["dep:simple-ahci"]
 bcm2835-sdhci = ["dep:bcm2835-sdhci"]
 
 [dependencies]
-axdriver_base = { version = "0.3.4" }
+ax-driver-base = { version = "0.3.4" }
 log = { workspace = true }
 simple-sdmmc = { version = "0.1", optional = true }
 simple-ahci = { version = "0.1.1-preview.1", optional = true }

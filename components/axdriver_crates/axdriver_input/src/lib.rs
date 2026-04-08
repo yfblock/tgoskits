@@ -3,7 +3,7 @@
 #![no_std]
 
 #[doc(no_inline)]
-pub use axdriver_base::{BaseDriverOps, DevError, DevResult, DeviceType};
+pub use ax_driver_base::{BaseDriverOps, DevError, DevResult, DeviceType};
 use strum::FromRepr;
 
 #[repr(u8)]

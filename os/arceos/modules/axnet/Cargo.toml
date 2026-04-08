@@ -1,5 +1,5 @@
 [package]
-name = "axnet"
+name = "ax-net"
 version.workspace = true
 edition.workspace = true
 authors = [
@@ -14,17 +14,17 @@ repository = "https://github.com/arceos-org/arceos/tree/main/modules/axnet"
 [features]
 smoltcp = ["dep:smoltcp"]
 default = ["smoltcp"]
-vsock = ["axdriver/vsock"]
+vsock = ["ax-driver/vsock"]
 
 [dependencies]
-axdriver = { workspace = true, features = ["net"] }
-axerrno.workspace = true
-axhal.workspace = true
-axio.workspace = true
-axsync.workspace = true
-axtask.workspace = true
+ax-driver = { workspace = true, features = ["net"] }
+ax-errno.workspace = true
+ax-hal.workspace = true
+ax-io.workspace = true
+ax-sync.workspace = true
+ax-task.workspace = true
 cfg-if.workspace = true
-lazyinit.workspace = true
+ax-lazyinit.workspace = true
 log.workspace = true
 spin.workspace = true
 

@@ -1,5 +1,5 @@
 [package]
-name = "axdriver_input"
+name = "ax-driver-input"
 edition.workspace = true
 version.workspace = true
 authors.workspace = true
@@ -13,5 +13,5 @@ categories.workspace = true
 readme = "README.md"
 
 [dependencies]
-axdriver_base = { version = "0.3.4" }
+ax-driver-base = { version = "0.3.4" }
 strum = { version = "0.27.2", default-features = false, features = ["derive"] }

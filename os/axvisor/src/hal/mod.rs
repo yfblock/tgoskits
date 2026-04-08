@@ -14,10 +14,10 @@
 
 use std::os::arceos;
 
+use ax_hal::{self, percpu::this_cpu_id};
+use ax_page_table_multiarch::PagingHandler;
 use axaddrspace::{AxMmHal, HostPhysAddr, HostVirtAddr};
-use axhal::{self, percpu::this_cpu_id};
 use axvm::AxVMPerCpu;
-use page_table_multiarch::PagingHandler;
 
 #[cfg_attr(target_arch = "aarch64", path = "arch/aarch64/mod.rs")]
 #[cfg_attr(target_arch = "x86_64", path = "arch/x86_64/mod.rs")]
@@ -42,20 +42,20 @@ pub struct AxMmHalImpl;
 
 impl AxMmHal for AxMmHalImpl {
     fn alloc_frame() -> Option<HostPhysAddr> {
-        <axhal::paging::PagingHandlerImpl as PagingHandler>::alloc_frame()
+        <ax_hal::paging::PagingHandlerImpl as PagingHandler>::alloc_frame()
     }
 
     fn dealloc_frame(paddr: HostPhysAddr) {
-        <axhal::paging::PagingHandlerImpl as PagingHandler>::dealloc_frame(paddr)
+        <ax_hal::paging::PagingHandlerImpl as PagingHandler>::dealloc_frame(paddr)
     }
 
     #[inline]
     fn phys_to_virt(paddr: HostPhysAddr) -> HostVirtAddr {
-        <axhal::paging::PagingHandlerImpl as PagingHandler>::phys_to_virt(paddr)
+        <ax_hal::paging::PagingHandlerImpl as PagingHandler>::phys_to_virt(paddr)
     }
 
     fn virt_to_phys(vaddr: axaddrspace::HostVirtAddr) -> axaddrspace::HostPhysAddr {
-        axhal::mem::virt_to_phys(vaddr)
+        ax_hal::mem::virt_to_phys(vaddr)
     }
 }
 
@@ -65,11 +65,11 @@ impl AxMmHal for AxMmHalImpl {
 //     type MmHal = AxMmHalImpl;
 
 //     fn irq_hanlder() {
-//         axhal::irq::irq_handler(0);
+//         ax_hal::irq::irq_handler(0);
 //     }
 // }
 
-#[percpu::def_percpu]
+#[ax_percpu::def_percpu]
 static mut AXVM_PER_CPU: AxVMPerCpu = AxVMPerCpu::new_uninit();
 
 /// Init hardware virtualization support in each core.
@@ -87,7 +87,7 @@ pub(crate) fn enable_virtualization() {
 
     hardware_check();
 
-    let cpu_count = axhal::cpu_num();
+    let cpu_count = ax_hal::cpu_num();
 
     for cpu_id in 0..cpu_count {
         thread::spawn(move || {
@@ -102,12 +102,12 @@ pub(crate) fn enable_virtualization() {
 
             vmm::init_timer_percpu();
 
-            // SAFETY: We are initializing the percpu state for the first time
+            // SAFETY: We are initializing the per-CPU state for the first time
             #[allow(static_mut_refs)]
             let percpu = unsafe { AXVM_PER_CPU.current_ref_mut_raw() };
             percpu
                 .init(this_cpu_id())
-                .expect("Failed to initialize percpu state");
+                .expect("Failed to initialize per-CPU state");
             percpu
                 .hardware_enable()
                 .expect("Failed to enable virtualization");

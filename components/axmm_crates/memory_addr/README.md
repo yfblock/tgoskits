@@ -1,7 +1,7 @@
-# memory_addr
+# ax-memory-addr
 
-[![Crates.io](https://img.shields.io/crates/v/memory_addr)](https://crates.io/crates/memory_addr)
-[![Docs.rs](https://docs.rs/memory_addr/badge.svg)](https://docs.rs/memory_addr)
+[![Crates.io](https://img.shields.io/crates/v/ax-memory-addr)](https://crates.io/crates/ax-memory-addr)
+[![Docs.rs](https://docs.rs/ax-memory-addr/badge.svg)](https://docs.rs/ax-memory-addr)
 [![CI](https://github.com/arceos-org/axmm_crates/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/axmm_crates/actions/workflows/ci.yml)
 
 Wrappers and helper functions for physical and virtual memory addresses.
@@ -9,7 +9,7 @@ Wrappers and helper functions for physical and virtual memory addresses.
 ## Examples
 
 ```rust
-use memory_addr::{pa, va, va_range, PhysAddr, VirtAddr, MemoryAddr};
+use ax_memory_addr::{pa, va, va_range, PhysAddr, VirtAddr, MemoryAddr};
 
 let phys_addr = PhysAddr::from(0x12345678);
 let virt_addr = VirtAddr::from(0x87654321);

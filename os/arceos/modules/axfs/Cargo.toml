@@ -1,5 +1,5 @@
 [package]
-name = "axfs"
+name = "ax-fs"
 version.workspace = true
 edition.workspace = true
 authors = ["Yuekai Jia <equation618@gmail.com>"]
@@ -14,15 +14,15 @@ times = []
 use-ramdisk = [] # TODO: init ramdisk
 
 [dependencies]
-axdriver = { workspace = true, features = ["block"] }
-axerrno = { workspace = true }
-axhal = { workspace = true }
-axfs_devfs = { version = "0.3.2" }
-axfs_ramfs = { version = "0.3.2" }
-axfs_vfs = "0.3.2"
-axio = { workspace = true, features = ["alloc"] }
-cap_access = "0.3.0"
-lazyinit = "0.4.2"
+ax-driver = { workspace = true, features = ["block"] }
+ax-errno = { workspace = true }
+ax-hal = { workspace = true }
+ax-fs-devfs = { version = "0.3.2" }
+ax-fs-ramfs = { version = "0.3.2" }
+ax-fs-vfs = "0.3.2"
+ax-io = { workspace = true, features = ["alloc"] }
+ax-cap-access = "0.3.0"
+ax-lazyinit = "0.4.2"
 log = { workspace = true }
 rsext4 = "0.3.0"
 spin = { workspace = true }

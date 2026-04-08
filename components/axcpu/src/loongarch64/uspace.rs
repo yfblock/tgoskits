@@ -2,11 +2,11 @@
 
 use core::ops::{Deref, DerefMut};
 
+use ax_memory_addr::VirtAddr;
 use loongArch64::register::{
     badi, badv,
     estat::{self, Exception, Trap},
 };
-use memory_addr::VirtAddr;
 
 pub use crate::uspace_common::{ExceptionKind, ReturnReason};
 use crate::{TrapFrame, trap::PageFaultFlags};

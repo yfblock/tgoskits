@@ -1,5 +1,5 @@
 [package]
-name = "axdriver_display"
+name = "ax-driver-display"
 edition.workspace = true
 version.workspace = true
 authors.workspace = true
@@ -13,4 +13,4 @@ categories.workspace = true
 readme = "README.md"
 
 [dependencies]
-axdriver_base = { version = "0.3.4" }
+ax-driver-base = { version = "0.3.4" }

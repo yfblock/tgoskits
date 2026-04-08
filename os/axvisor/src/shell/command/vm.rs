@@ -19,7 +19,7 @@ use std::{
     vec::Vec,
 };
 
-use axhal::time::busy_wait;
+use ax_hal::time::busy_wait;
 use axvm::VMStatus;
 #[cfg(feature = "fs")]
 use std::fs::read_to_string;

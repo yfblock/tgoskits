@@ -77,8 +77,8 @@ flowchart TD
 
 ```bash
 # ArceOS
-cargo arceos build --package arceos-helloworld --target riscv64gc-unknown-none-elf
-cargo arceos qemu --package arceos-helloworld --target riscv64gc-unknown-none-elf
+cargo arceos build --package ax-helloworld --target riscv64gc-unknown-none-elf
+cargo arceos qemu --package ax-helloworld --target riscv64gc-unknown-none-elf
 
 # StarryOS
 cargo starry build --arch riscv64

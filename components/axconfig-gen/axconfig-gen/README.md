@@ -1,11 +1,11 @@
-# axconfig-gen
+# ax-config-gen
 
 A TOML-based configuration generation tool for [ArceOS](https://github.com/arceos-org/arceos).
 
 ### Executable Usage
 
 ```text
-Usage: axconfig-gen [OPTIONS] <SPEC>...
+Usage: ax-config-gen [OPTIONS] <SPEC>...
 
 Arguments:
   <SPEC>...  Paths to the config specification files
@@ -24,7 +24,7 @@ Options:
 For example, to generate a config file `.axconfig.toml` from the config specifications distributed in `a.toml` and `b.toml`, you can run:
 
 ```console
-$ axconfig-gen a.toml b.toml -o .axconfig.toml -f toml
+$ ax-config-gen a.toml b.toml -o .axconfig.toml -f toml
 ```
 
 See [defconfig.toml](https://github.com/arceos-org/axconfig-gen/blob/main/example-configs/defconfig.toml) for an example of a config specification file.
@@ -34,7 +34,7 @@ Value types are necessary for generating Rust constant definitions. Types can be
 ### Library Usage
 
 ```rust
-use axconfig_gen::{Config, OutputFormat};
+use ax_config_gen::{Config, OutputFormat};
 
 let config_toml = r#"
 are-you-ok = true
@@ -63,6 +63,6 @@ pub mod hello {
 
 ### Related libraries
 
-There is also a procedural macro library [`axconfig-macros`](https://docs.rs/axconfig-macros) that can be
+There is also a procedural macro library [`ax-config-macros`](https://docs.rs/ax-config-macros) that can be
 used to include TOML files in your project and convert them to Rust code at
 compile time.

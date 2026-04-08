@@ -68,7 +68,7 @@ axhvc = "0.2.0"
 ### Example
 
 ```rust
-use axerrno::ax_err;
+use ax_errno::ax_err;
 use axhvc::{HyperCallCode, HyperCallResult, InvalidHyperCallCode};
 
 fn handle_hypercall(code: u32) -> Result<HyperCallResult, InvalidHyperCallCode> {

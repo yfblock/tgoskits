@@ -1,7 +1,7 @@
-# ctor_bare
+# ax-ctor-bare
 
-[![Crates.io](https://img.shields.io/crates/v/ctor_bare)](https://crates.io/crates/ctor_bare)
-[![Docs.rs](https://docs.rs/ctor_bare/badge.svg)](https://docs.rs/ctor_bare)
+[![Crates.io](https://img.shields.io/crates/v/ax-ctor-bare)](https://crates.io/crates/ax-ctor-bare)
+[![Docs.rs](https://docs.rs/ax-ctor-bare/badge.svg)](https://docs.rs/ax-ctor-bare)
 [![CI](https://github.com/arceos-org/ctor_bare/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/ctor_bare/actions/workflows/ci.yml)
 
 
@@ -17,12 +17,12 @@ It can support Linux, MacOS and other systems, and can be also used in `no_std` 
 In Linux, Windows, MacOS and other systems, the `.init_array` section is a default section to store initialization functions. When the program starts, the system will call all functions in the `.init_array` section in order.
 
 
-When you are running your own operating system, you can call `ctor_bare::call_ctors` to invoke all registered constructor functions.
+When you are running your own operating system, you can call `ax_ctor_bare::call_ctors` to invoke all registered constructor functions.
 
 ## Usage
 
 ```rust
-use ctor_bare::register_ctor;
+use ax_ctor_bare::register_ctor;
 #[register_ctor]
 fn hello_world() {
     println!("Hello, world!");

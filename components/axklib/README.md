@@ -31,7 +31,7 @@ axklib = "0.2.0"
 
 ```rust
 // 1. Map 4K of device MMIO at physical address `paddr`
-// Returns axerrno::AxResult<VirtAddr>
+// Returns ax_errno::AxResult<VirtAddr>
 let vaddr = axklib::mem::iomap(paddr, 0x1000)?;
 
 // 2. Busy-wait for 100 microseconds

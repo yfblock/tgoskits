@@ -1,8 +1,8 @@
-#![cfg_attr(feature = "axstd", no_std)]
-#![cfg_attr(feature = "axstd", no_main)]
+#![cfg_attr(feature = "ax-std", no_std)]
+#![cfg_attr(feature = "ax-std", no_main)]
 
-#[cfg(feature = "axstd")]
-extern crate axstd as std;
+#[cfg(feature = "ax-std")]
+extern crate ax_std as std;
 
 use std::{arch::asm, println};
 
@@ -20,20 +20,20 @@ fn raise_break_exception() {
     println!("Breakpoint test OK!");
 }
 
-#[cfg(feature = "axstd")]
+#[cfg(feature = "ax-std")]
 fn raise_page_fault() {
-    use std::os::arceos::modules::axhal;
+    use std::os::arceos::modules::ax_hal;
 
-    use axhal::{mem::VirtAddr, paging::MappingFlags};
+    use ax_hal::{mem::VirtAddr, paging::MappingFlags};
 
-    #[linkme::distributed_slice(axhal::trap::PAGE_FAULT)]
+    #[linkme::distributed_slice(ax_hal::trap::PAGE_FAULT)]
     fn page_fault_handler(vaddr: VirtAddr, access_flags: MappingFlags) -> bool {
         println!(
             "Page fault @ {:#x}, access_flags: {:?}",
             vaddr, access_flags
         );
         println!("Page fault test OK!");
-        axhal::power::system_off();
+        ax_hal::power::system_off();
     }
 
     let fault_addr = 0xdeadbeef as *mut u8;
@@ -42,10 +42,10 @@ fn raise_page_fault() {
     }
 }
 
-#[cfg_attr(feature = "axstd", unsafe(no_mangle))]
+#[cfg_attr(feature = "ax-std", unsafe(no_mangle))]
 fn main() {
     println!("Running exception tests...");
     raise_break_exception();
-    #[cfg(feature = "axstd")]
+    #[cfg(feature = "ax-std")]
     raise_page_fault();
 }

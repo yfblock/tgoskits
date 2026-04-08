@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use ax_errno::{AxError, AxErrorKind, AxResult};
 use axaddrspace::{GuestPhysAddr, GuestVirtAddr, HostPhysAddr, MappingFlags, device::AccessWidth};
-use axerrno::{AxError, AxErrorKind, AxResult};
 use axvcpu::AxVCpuExitReason;
 use riscv::register::{scause, sie, sstatus};
 use riscv_decode::{
@@ -548,7 +548,7 @@ impl RISCVVCpu {
             };
         } else if instr_is_pseudo(instr as u32) {
             error!("fault on 1st stage page table walk");
-            return Err(axerrno::ax_err_type!(
+            return Err(ax_errno::ax_err_type!(
                 Unsupported,
                 "risc-v vcpu guest page fault handler encountered pseudo instruction"
             ));
@@ -567,7 +567,7 @@ impl RISCVVCpu {
 
         riscv_decode::decode(instr as u32)
             .map_err(|_| {
-                axerrno::ax_err_type!(
+                ax_errno::ax_err_type!(
                     Unsupported,
                     "risc-v vcpu guest pf handler decoding instruction failed"
                 )

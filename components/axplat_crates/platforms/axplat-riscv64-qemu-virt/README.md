@@ -1,6 +1,6 @@
-# axplat-riscv64-qemu-virt
+# ax-plat-riscv64-qemu-virt
 
-[![Crates.io](https://img.shields.io/crates/v/axplat-riscv64-qemu-virt)](https://crates.io/crates/axplat-riscv64-qemu-virt)
+[![Crates.io](https://img.shields.io/crates/v/ax-plat-riscv64-qemu-virt)](https://crates.io/crates/ax-plat-riscv64-qemu-virt)
 [![CI](https://github.com/arceos-org/axplat_crates/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/axplat_crates/actions/workflows/ci.yml)
 
 Implementation of [axplat](https://github.com/arceos-org/axplat_crates/tree/main/axplat) hardware abstraction layer for QEMU RISC-V virt board.
@@ -8,7 +8,7 @@ Implementation of [axplat](https://github.com/arceos-org/axplat_crates/tree/main
 ## Install
 
 ```bash
-cargo +nightly add axplat axplat-riscv64-qemu-virt
+cargo +nightly add axplat ax-plat-riscv64-qemu-virt
 ```
 
 ## Usage
@@ -16,18 +16,18 @@ cargo +nightly add axplat axplat-riscv64-qemu-virt
 #### 1. Write your kernel code
 
 ```rust
-#[axplat::main]
+#[ax_plat::main]
 fn kernel_main(cpu_id: usize, arg: usize) -> ! {
     // Initialize trap, console, time.
-    axplat::init::init_early(cpu_id, arg);
+    ax_plat::init::init_early(cpu_id, arg);
     // Initialize platform peripherals (not used in this example).
-    axplat::init::init_later(cpu_id, arg);
+    ax_plat::init::init_later(cpu_id, arg);
 
     // Write your kernel code here.
-    axplat::console_println!("Hello, ArceOS!");
+    ax_plat::console_println!("Hello, ArceOS!");
 
     // Power off the system.
-    axplat::power::system_off();
+    ax_plat::power::system_off();
 }
 ```
 
@@ -35,7 +35,7 @@ fn kernel_main(cpu_id: usize, arg: usize) -> ! {
 
 ```rust
 // Can be located at any dependency crate.
-extern crate axplat_riscv64_qemu_virt;
+extern crate ax_plat_riscv64_qemu_virt;
 ```
 
 #### 3. Use a linker script like the following

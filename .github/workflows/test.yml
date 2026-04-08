@@ -115,15 +115,9 @@ jobs:
       - intel
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - run: rustc --version
-
-      - uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: test-axvisor-x86_64
-          cache-bin: false
-          save-if: ${{ github.event_name == 'push' }}
 
       - name: Run axvisor x86_64 tests
         run: cargo axvisor test qemu --target x86_64
@@ -143,15 +137,9 @@ jobs:
       - board
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - run: rustc --version
-
-      - uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: test-axvisor-board-${{ matrix.test_group }}
-          cache-bin: false
-          save-if: ${{ github.event_name == 'push' }}
 
       - name: Run axvisor board tests
         run: cargo axvisor test board -t ${{ matrix.test_group }}

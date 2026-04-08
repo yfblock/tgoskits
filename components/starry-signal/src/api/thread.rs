@@ -5,8 +5,8 @@ use core::{
     sync::atomic::{AtomicBool, Ordering},
 };
 
-use axcpu::uspace::UserContext;
-use kspin::SpinNoIrq;
+use ax_cpu::uspace::UserContext;
+use ax_kspin::SpinNoIrq;
 use starry_vm::VmMutPtr;
 
 use super::ProcessSignalManager;

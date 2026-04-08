@@ -57,7 +57,7 @@ fn axvisor_snapshot_load_returns_default_when_missing() {
 fn snapshot_store_round_trips() {
     let root = tempdir().unwrap();
     let snapshot = ArceosCommandSnapshot {
-        package: Some("arceos-helloworld".into()),
+        package: Some("ax-helloworld".into()),
         target: Some("target".into()),
         plat_dyn: Some(true),
         qemu: ArceosQemuSnapshot {
@@ -160,7 +160,7 @@ fn prepare_request_uses_snapshot_and_default_target() {
     fs::write(
         root.path().join(ARCEOS_SNAPSHOT_FILE),
         r#"
-package = "arceos-helloworld"
+package = "ax-helloworld"
 
 [qemu]
 qemu_config = "configs/qemu.toml"
@@ -174,7 +174,7 @@ qemu_config = "configs/qemu.toml"
         .prepare_arceos_request(BuildCliArgs::default(), None, None)
         .unwrap();
 
-    assert_eq!(request.package, "arceos-helloworld");
+    assert_eq!(request.package, "ax-helloworld");
     assert_eq!(request.target, DEFAULT_ARCEOS_TARGET);
     assert_eq!(request.plat_dyn, None);
     assert_eq!(

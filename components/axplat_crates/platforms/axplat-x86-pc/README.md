@@ -1,6 +1,6 @@
-# axplat-x86-pc
+# ax-plat-x86-pc
 
-[![Crates.io](https://img.shields.io/crates/v/axplat-x86-pc)](https://crates.io/crates/axplat-x86-pc)
+[![Crates.io](https://img.shields.io/crates/v/ax-plat-x86-pc)](https://crates.io/crates/ax-plat-x86-pc)
 [![CI](https://github.com/arceos-org/axplat_crates/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/axplat_crates/actions/workflows/ci.yml)
 
 Implementation of [axplat](https://github.com/arceos-org/axplat_crates/tree/main/axplat) hardware abstraction layer for x86 Standard PC machine.
@@ -8,7 +8,7 @@ Implementation of [axplat](https://github.com/arceos-org/axplat_crates/tree/main
 ## Install
 
 ```bash
-cargo +nightly add axcpu axplat axplat-x86-pc
+cargo +nightly add ax-cpu axplat ax-plat-x86-pc
 ```
 
 ## Usage
@@ -16,20 +16,20 @@ cargo +nightly add axcpu axplat axplat-x86-pc
 #### 1. Write your kernel code
 
 ```rust
-#[axplat::main]
+#[ax_plat::main]
 fn kernel_main(cpu_id: usize, arg: usize) -> ! {
-    // x86_64 requires the `percpu` crate to be initialized first.
-    axcpu::init::init_percpu(cpu_id);
+    // x86_64 requires the `ax-percpu` crate to be initialized first.
+    ax-cpu::init::init_percpu(cpu_id);
     // Initialize trap, console, time.
-    axplat::init::init_early(cpu_id, arg);
+    ax_plat::init::init_early(cpu_id, arg);
     // Initialize platform peripherals (not used in this example).
-    axplat::init::init_later(cpu_id, arg);
+    ax_plat::init::init_later(cpu_id, arg);
 
     // Write your kernel code here.
-    axplat::console_println!("Hello, ArceOS!");
+    ax_plat::console_println!("Hello, ArceOS!");
 
     // Power off the system.
-    axplat::power::system_off();
+    ax_plat::power::system_off();
 }
 ```
 
@@ -37,7 +37,7 @@ fn kernel_main(cpu_id: usize, arg: usize) -> ! {
 
 ```rust
 // Can be located at any dependency crate.
-extern crate axplat_x86_pc;
+extern crate ax_plat_x86_pc;
 ```
 
 #### 3. Use a linker script like the following
@@ -95,6 +95,6 @@ Some symbols and sections are required to be defined in the linker script, liste
 - `_ebss`: End of BSS section.
 - `.text.boot`: Kernel boot code.
 - `.bss.stack`: Stack for kernel booting.
-- `.percpu` section and related symbols: CPU-local data managed by the [percpu](https://crates.io/crates/percpu) crate.
+- `.percpu` section and related symbols: CPU-local data managed by the [ax-percpu](https://crates.io/crates/ax-percpu) crate.
 
 [hello-kernel](https://github.com/arceos-org/axplat_crates/tree/main/examples/hello-kernel) is a complete example of a minimal kernel implemented using [axplat](https://github.com/arceos-org/axplat_crates/tree/main/axplat) and related platform packages.

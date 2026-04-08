@@ -19,7 +19,7 @@ axaddrspace = "0.5.0"
 axdevice_base = "0.4.2"
 axvisor_api = "0.5.0"
 
-axerrno = "0.4.2"
+ax-errno = "0.4.2"
 bitmaps = { version = "3.2", default-features = false }
 log = "0.4"
 spin = "0.10"

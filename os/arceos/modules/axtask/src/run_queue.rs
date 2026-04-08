@@ -3,11 +3,11 @@ use alloc::sync::Weak;
 use alloc::{collections::VecDeque, sync::Arc};
 use core::mem::MaybeUninit;
 
-use axhal::percpu::this_cpu_id;
-use axsched::BaseScheduler;
-use kernel_guard::BaseGuard;
-use kspin::{SpinNoIrqGuard, SpinRaw};
-use lazyinit::LazyInit;
+use ax_hal::percpu::this_cpu_id;
+use ax_kernel_guard::BaseGuard;
+use ax_kspin::{SpinNoIrqGuard, SpinRaw};
+use ax_lazyinit::LazyInit;
+use ax_sched::BaseScheduler;
 
 use crate::{
     AxCpuMask, AxTaskRef, Scheduler, TaskInner, WaitQueue,
@@ -22,7 +22,7 @@ macro_rules! percpu_static {
     ),* $(,)?) => {
         $(
             $(#[$comment])*
-            #[percpu::def_percpu]
+            #[ax_percpu::def_percpu]
             static $name: $ty = $init;
         )*
     };
@@ -47,8 +47,8 @@ percpu_static! {
 /// Access to this variable is marked as `unsafe` because it contains `MaybeUninit` references,
 /// which require careful handling to avoid undefined behavior. The array should be fully
 /// initialized before being accessed to ensure safe usage.
-static mut RUN_QUEUES: [MaybeUninit<&'static mut AxRunQueue>; axconfig::plat::MAX_CPU_NUM] =
-    [ARRAY_REPEAT_VALUE; axconfig::plat::MAX_CPU_NUM];
+static mut RUN_QUEUES: [MaybeUninit<&'static mut AxRunQueue>; ax_config::plat::MAX_CPU_NUM] =
+    [ARRAY_REPEAT_VALUE; ax_config::plat::MAX_CPU_NUM];
 #[allow(clippy::declare_interior_mutable_const)] // It's ok because it's used only for initialization `RUN_QUEUES`.
 const ARRAY_REPEAT_VALUE: MaybeUninit<&'static mut AxRunQueue> = MaybeUninit::uninit();
 
@@ -92,7 +92,7 @@ pub(crate) fn current_run_queue<G: BaseGuard>() -> CurrentRunQueueRef<'static, G
 ///
 /// This function will panic if `cpu_mask` is empty, indicating that there are no available CPUs for task execution.
 #[cfg(feature = "smp")]
-// The modulo operation is safe here because `axconfig::plat::MAX_CPU_NUM` is always greater than 1 with "smp" enabled.
+// The modulo operation is safe here because `ax_config::plat::MAX_CPU_NUM` is always greater than 1 with "smp" enabled.
 #[allow(clippy::modulo_one)]
 #[inline]
 fn select_run_queue_index(cpumask: AxCpuMask) -> usize {
@@ -103,7 +103,7 @@ fn select_run_queue_index(cpumask: AxCpuMask) -> usize {
 
     // Round-robin selection of the run queue index.
     loop {
-        let index = RUN_QUEUE_INDEX.fetch_add(1, Ordering::SeqCst) % axconfig::plat::MAX_CPU_NUM;
+        let index = RUN_QUEUE_INDEX.fetch_add(1, Ordering::SeqCst) % ax_config::plat::MAX_CPU_NUM;
         if cpumask.get(index) {
             return index;
         }
@@ -318,7 +318,7 @@ impl<G: BaseGuard> CurrentRunQueueRef<'_, G> {
     ///
     /// Note:
     /// preemption may happened in `enable_preempt`, which is called
-    /// each time a [`kspin::NoPreemptGuard`] is dropped.
+    /// each time a [`ax_kspin::NoPreemptGuard`] is dropped.
     #[cfg(feature = "preempt")]
     pub fn preempt_resched(&mut self) {
         // There is no need to disable IRQ and preemption here, because
@@ -327,7 +327,7 @@ impl<G: BaseGuard> CurrentRunQueueRef<'_, G> {
         assert!(curr.is_running());
 
         // When we call `preempt_resched()`, both IRQs and preemption must
-        // have been disabled by `kernel_guard::NoPreemptIrqSave`. So we need
+        // have been disabled by `ax_kernel_guard::NoPreemptIrqSave`. So we need
         // to set `current_disable_count` to 1 in `can_preempt()` to obtain
         // the preemption permission.
         let can_preempt = curr.can_preempt(1);
@@ -359,7 +359,7 @@ impl<G: BaseGuard> CurrentRunQueueRef<'_, G> {
             unsafe {
                 EXITED_TASKS.current_ref_mut_raw().clear();
             }
-            axhal::power::system_off();
+            ax_hal::power::system_off();
         } else {
             curr.set_state(TaskState::Exited);
 
@@ -441,13 +441,13 @@ impl<G: BaseGuard> CurrentRunQueueRef<'_, G> {
     }
 
     #[cfg(feature = "irq")]
-    pub fn sleep_until(&mut self, deadline: axhal::time::TimeValue) {
+    pub fn sleep_until(&mut self, deadline: ax_hal::time::TimeValue) {
         let curr = &self.current_task;
         debug!("task sleep: {}, deadline={:?}", curr.id_name(), deadline);
         assert!(curr.is_running());
         assert!(!curr.is_idle());
 
-        let now = axhal::time::wall_time();
+        let now = ax_hal::time::wall_time();
         if now < deadline {
             crate::timers::set_alarm_wakeup(deadline, curr.clone());
             curr.set_state(TaskState::Blocked);
@@ -467,7 +467,7 @@ impl AxRunQueue {
     /// Create a new run queue for the specified CPU.
     /// The run queue is initialized with a per-CPU gc task in its scheduler.
     fn new(cpu_id: usize) -> Self {
-        let gc_task = TaskInner::new(gc_entry, "gc".into(), axconfig::TASK_STACK_SIZE).into_arc();
+        let gc_task = TaskInner::new(gc_entry, "gc".into(), ax_config::TASK_STACK_SIZE).into_arc();
         // gc task should be pinned to the current CPU.
         gc_task.set_cpumask(AxCpuMask::one_shot(cpu_id));
 
@@ -548,7 +548,7 @@ impl AxRunQueue {
         // Make sure that IRQs are disabled by kernel guard or other means.
         #[cfg(all(target_os = "none", feature = "irq"))] // Note: irq is faked under unit tests.
         assert!(
-            !axhal::asm::irqs_enabled(),
+            !ax_hal::asm::irqs_enabled(),
             "IRQs must be disabled during scheduling"
         );
         trace!(
@@ -584,7 +584,7 @@ impl AxRunQueue {
             let prev_ctx_ptr = prev_task.ctx_mut_ptr();
             let next_ctx_ptr = next_task.ctx_mut_ptr();
 
-            // Store the weak pointer of **prev_task** in percpu variable `PREV_TASK`.
+            // Store the weak pointer of **prev_task** in ax-percpu variable `PREV_TASK`.
             #[cfg(feature = "smp")]
             {
                 *PREV_TASK.current_ref_mut_raw() = Arc::downgrade(&prev_task);
@@ -651,7 +651,7 @@ fn gc_entry() {
 /// then puts the task to the scheduler of target run queue.
 #[cfg(feature = "smp")]
 pub(crate) fn migrate_entry(migrated_task: AxTaskRef) {
-    select_run_queue::<kernel_guard::NoPreemptIrqSave>(&migrated_task)
+    select_run_queue::<ax_kernel_guard::NoPreemptIrqSave>(&migrated_task)
         .inner
         .scheduler
         .lock()

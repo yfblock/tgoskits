@@ -26,7 +26,7 @@
 //!
 //! # Re-exports
 //!
-//! This module re-exports [`PhysAddr`] and [`VirtAddr`] from the `memory_addr`
+//! This module re-exports [`PhysAddr`] and [`VirtAddr`] from the `ax_memory_addr`
 //! crate for convenience.
 //!
 //! # Types
@@ -51,7 +51,7 @@
 //! }
 //! ```
 
-pub use memory_addr::{PhysAddr, VirtAddr};
+pub use ax_memory_addr::{PhysAddr, VirtAddr};
 
 /// The API trait for memory allocation and address translation functionalities.
 ///

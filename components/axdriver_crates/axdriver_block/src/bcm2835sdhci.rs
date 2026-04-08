@@ -1,6 +1,6 @@
 //! SD card driver for raspi4
 
-use axdriver_base::{BaseDriverOps, DevError, DevResult, DeviceType};
+use ax_driver_base::{BaseDriverOps, DevError, DevResult, DeviceType};
 use bcm2835_sdhci::{
     Bcm2835SDhci::{BLOCK_SIZE, EmmcCtl},
     SDHCIError,

@@ -1,5 +1,5 @@
 [package]
-name = "axdriver_pci"
+name = "ax-driver-pci"
 edition.workspace = true
 version.workspace = true
 authors.workspace = true

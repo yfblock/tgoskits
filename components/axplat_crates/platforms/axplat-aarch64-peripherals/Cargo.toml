@@ -1,8 +1,8 @@
 [package]
-name = "axplat-aarch64-peripherals"
+name = "ax-plat-aarch64-peripherals"
 version.workspace = true
 description = "ARM64 common peripheral drivers with `axplat` compatibility"
-documentation = "https://docs.rs/axplat-aarch64-peripherals"
+documentation = "https://docs.rs/ax-plat-aarch64-peripherals"
 keywords = ["arceos", "os", "hal", "peripheral", "aarch64"]
 categories = ["embedded", "no-std", "hardware-support", "os"]
 edition.workspace = true
@@ -12,20 +12,20 @@ homepage.workspace = true
 repository.workspace = true
 
 [features]
-irq = ["axplat/irq"]
+irq = ["ax-plat/irq"]
 
 [dependencies]
-kspin = "0.3.1"
+ax-kspin = "0.3.1"
 log = "0.4"
 spin = "0.10"
-int_ratio = "0.3.2"
-lazyinit = "0.4.2"
+ax-int-ratio = "0.3.2"
+ax-lazyinit = "0.4.2"
 aarch64-cpu = "11.0"
-arm_pl011 = "0.3.0"
+ax-arm-pl011 = "0.3.0"
 arm-gic-driver = "0.16"
-arm_pl031 = "0.4.1"
-axcpu = { workspace = true }
-axplat = { workspace = true }
+ax-arm-pl031 = "0.4.1"
+ax-cpu = { workspace = true }
+ax-plat = { workspace = true }
 
 [package.metadata.docs.rs]
 targets = ["aarch64-unknown-none"]

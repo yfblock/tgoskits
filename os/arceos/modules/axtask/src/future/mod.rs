@@ -8,9 +8,9 @@ use core::{
     task::{Context, Poll, Waker},
 };
 
-use axerrno::AxError;
-use kernel_guard::NoPreemptIrqSave;
-use kspin::SpinNoIrq;
+use ax_errno::AxError;
+use ax_kernel_guard::NoPreemptIrqSave;
+use ax_kspin::SpinNoIrq;
 
 use crate::{AxTaskRef, WeakAxTaskRef, current, current_run_queue, select_run_queue};
 

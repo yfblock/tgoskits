@@ -1,7 +1,7 @@
-# crate_interface
+# ax-crate-interface
 
-[![Crates.io](https://img.shields.io/crates/v/crate_interface)](https://crates.io/crates/crate_interface)
-[![Docs.rs](https://docs.rs/crate_interface/badge.svg)](https://docs.rs/crate_interface)
+[![Crates.io](https://img.shields.io/crates/v/ax-crate-interface)](https://crates.io/crates/ax-crate-interface)
+[![Docs.rs](https://docs.rs/ax-crate-interface/badge.svg)](https://docs.rs/ax-crate-interface)
 [![CI](https://github.com/arceos-org/crate_interface/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/crate_interface/actions/workflows/ci.yml)
 
 Provides a way to **define** a static interface (as a Rust trait) in a crate,
@@ -19,7 +19,7 @@ using the `impl_interface!` attribute macro, and call it using the
 
 ```rust
 // Define the interface
-#[crate_interface::def_interface]
+#[ax_crate_interface::def_interface]
 pub trait HelloIf {
     fn hello(name: &str, id: usize) -> String;
 }
@@ -27,7 +27,7 @@ pub trait HelloIf {
 // Implement the interface in any crate
 struct HelloIfImpl;
 
-#[crate_interface::impl_interface]
+#[ax_crate_interface::impl_interface]
 impl HelloIf for HelloIfImpl {
     fn hello(name: &str, id: usize) -> String {
         format!("Hello, {} {}!", name, id)
@@ -35,7 +35,7 @@ impl HelloIf for HelloIfImpl {
 }
 
 // Call `HelloIfImpl::hello` in any crate
-use crate_interface::call_interface;
+use ax_crate_interface::call_interface;
 assert_eq!(
     call_interface!(HelloIf::hello("world", 123)),
     "Hello, world 123!"
@@ -57,7 +57,7 @@ provides a much more ergonomic API.
 
 ```rust
 // Define the interface with caller generation
-#[crate_interface::def_interface(gen_caller)]
+#[ax_crate_interface::def_interface(gen_caller)]
 pub trait HelloIf {
     fn hello(name: &str, id: usize) -> String;
 }
@@ -68,7 +68,7 @@ pub trait HelloIf {
 // Implement the interface in any crate
 struct HelloIfImpl;
 
-#[crate_interface::impl_interface]
+#[ax_crate_interface::impl_interface]
 impl HelloIf for HelloIfImpl {
     fn hello(name: &str, id: usize) -> String {
         format!("Hello, {} {}!", name, id)
@@ -91,14 +91,14 @@ done by adding the `namespace` argument to the `def_interface!`,
 
 ```rust
 mod a {
-    #[crate_interface::def_interface(namespace = ShoppingMall)]
+    #[ax_crate_interface::def_interface(namespace = ShoppingMall)]
     pub trait HelloIf {
         fn hello(name: &str, id: usize) -> String;
     }
 }
 
 mod b {
-    #[crate_interface::def_interface(namespace = Restaurant)]
+    #[ax_crate_interface::def_interface(namespace = Restaurant)]
     pub trait HelloIf {
         fn hello(name: &str, id: usize) -> String;
     }
@@ -109,7 +109,7 @@ mod c {
 
     struct HelloIfImplA;
 
-    #[crate_interface::impl_interface(namespace = ShoppingMall)]
+    #[ax_crate_interface::impl_interface(namespace = ShoppingMall)]
     impl a::HelloIf for HelloIfImplA {
         fn hello(name: &str, id: usize) -> String {
             format!("Welcome to the mall, {} {}!", name, id)
@@ -117,7 +117,7 @@ mod c {
     }
 
     struct HelloIfImplB;
-    #[crate_interface::impl_interface(namespace = Restaurant)]
+    #[ax_crate_interface::impl_interface(namespace = Restaurant)]
     impl b::HelloIf for HelloIfImplB {
         fn hello(name: &str, id: usize) -> String {
             format!("Welcome to the restaurant, {} {}!", name, id)
@@ -128,11 +128,11 @@ mod c {
 fn main() {
     // Call the interface functions using namespaces
     assert_eq!(
-        crate_interface::call_interface!(namespace = ShoppingMall, a::HelloIf::hello("Alice", 1)),
+        ax_crate_interface::call_interface!(namespace = ShoppingMall, a::HelloIf::hello("Alice", 1)),
         "Welcome to the mall, Alice 1!"
     );
     assert_eq!(
-        crate_interface::call_interface!(namespace = Restaurant, b::HelloIf::hello("Bob", 2)),
+        ax_crate_interface::call_interface!(namespace = Restaurant, b::HelloIf::hello("Bob", 2)),
         "Welcome to the restaurant, Bob 2!"
     );
 }
@@ -163,7 +163,7 @@ implementations:
 
 ```rust,ignore
 #![feature(linkage)]
-use crate_interface::def_interface;
+use ax_crate_interface::def_interface;
 
 #[def_interface]
 pub trait InitIf {
@@ -240,7 +240,7 @@ A few things to keep in mind when using this crate:
   (static methods) instead:
 
   ```rust,compile_fail
-  # use crate_interface::*;
+  # use ax_crate_interface::*;
   #[def_interface]
   trait MyIf {
       fn foo(&self); // error: methods with receiver (self) are not allowed
@@ -251,7 +251,7 @@ A few things to keep in mind when using this crate:
   generic type parameters, lifetime parameters, or const generic parameters:
 
   ```rust,compile_fail
-  # use crate_interface::*;
+  # use ax_crate_interface::*;
   #[def_interface]
   trait MyIf {
       fn foo<T>(x: T); // error: generic parameters are not allowed

@@ -1,8 +1,8 @@
 # axio
 
 [![Crates.io](https://img.shields.io/crates/v/axio)](https://crates.io/crates/axio)
-[![Docs.rs](https://docs.rs/axio/badge.svg)](https://docs.rs/axio)
-[![CI](https://github.com/arceos-org/axio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/axio/actions/workflows/ci.yml)
+[![Docs.rs](https://docs.rs/ax-io/badge.svg)](https://docs.rs/axio)
+[![CI](https://github.com/arceos-org/ax-io/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/ax-io/actions/workflows/ci.yml)
 
 [`std::io`][1] for `no_std` environment.
 
@@ -19,7 +19,7 @@
 
 ### Differences to `std::io`
 
-- Error types from `axerrno` instead of `std::io::Error`.
+- Error types from `ax-errno` instead of `std::io::Error`.
 - No `IoSlice` and `*_vectored` APIs.
 
 ### Limitations

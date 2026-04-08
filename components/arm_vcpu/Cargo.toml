@@ -25,8 +25,8 @@ spin = "0.10"
 aarch64-cpu = "11.0"
 numeric-enum-macro = "0.2"
 
-axerrno = "0.4.2"
-percpu = { version = "0.4.3", features = ["arm-el2"] }
+ax-errno = "0.4.2"
+ax-percpu = { version = "0.4.3", features = ["arm-el2"] }
 
 axaddrspace = "0.5.0"
 axdevice_base = "0.4.2"

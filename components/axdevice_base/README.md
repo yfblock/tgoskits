@@ -40,7 +40,7 @@ axdevice_base = "0.1"
 ```rust,ignore
 use axdevice_base::{BaseDeviceOps, EmuDeviceType};
 use axaddrspace::{GuestPhysAddr, GuestPhysAddrRange, device::AccessWidth};
-use axerrno::AxResult;
+use ax_errno::AxResult;
 
 struct MyUartDevice {
     base_addr: usize,

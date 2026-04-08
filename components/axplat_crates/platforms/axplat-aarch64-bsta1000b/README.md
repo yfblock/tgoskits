@@ -13,18 +13,18 @@ cargo +nightly add axplat axplat-aarch64-bsta1000b
 #### 1. Write your kernel code
 
 ```rust
-#[axplat::main]
+#[ax_plat::main]
 fn kernel_main(cpu_id: usize, arg: usize) -> ! {
     // Initialize trap, console, time.
-    axplat::init::init_early(cpu_id, arg);
+    ax_plat::init::init_early(cpu_id, arg);
     // Initialize platform peripherals (not used in this example).
-    axplat::init::init_later(cpu_id, arg);
+    ax_plat::init::init_later(cpu_id, arg);
 
     // Write your kernel code here.
-    axplat::console_println!("Hello, ArceOS!");
+    ax_plat::console_println!("Hello, ArceOS!");
 
     // Power off the system.
-    axplat::power::system_off();
+    ax_plat::power::system_off();
 }
 ```
 

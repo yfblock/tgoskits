@@ -12,6 +12,6 @@ readme = "README.md"
 documentation = "https://arceos-hypervisor.github.io/axklib"
 
 [dependencies]
-axerrno = "0.4.2"
-memory_addr = "0.6.1"
+ax-errno = "0.4.2"
+ax-memory-addr = "0.6.1"
 trait-ffi = "0.2"

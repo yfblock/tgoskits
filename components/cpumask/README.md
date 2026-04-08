@@ -1,7 +1,7 @@
-# cpumask
+# ax-cpumask
 
-[![Crates.io](https://img.shields.io/crates/v/cpumask)](https://crates.io/crates/cpumask)
-[![Docs.rs](https://docs.rs/cpumask/badge.svg)](https://docs.rs/cpumask)
+[![Crates.io](https://img.shields.io/crates/v/ax-cpumask)](https://crates.io/crates/ax-cpumask)
+[![Docs.rs](https://docs.rs/ax-cpumask/badge.svg)](https://docs.rs/ax-cpumask)
 [![CI](https://github.com/arceos-org/cpumask/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/cpumask/actions/workflows/ci.yml)
 
 CPU mask library
@@ -18,7 +18,7 @@ Reference:
 ## Examples
 
 ```Rust
-use cpumask::CpuMask;
+use ax_cpumask::CpuMask;
 const SMP: usize = 32;
 
 let mut cpumask = CpuMask::<SMP>::new();

@@ -14,10 +14,10 @@
 
 use core::{arch::asm, fmt};
 
-use page_table_entry::{GenericPTE, MappingFlags};
-use page_table_multiarch::PagingMetaData;
+use ax_page_table_entry::{GenericPTE, MappingFlags};
+use ax_page_table_multiarch::PagingMetaData;
 
-// use memory_addr::HostPhysAddr;
+// use ax_memory_addr::HostPhysAddr;
 use crate::{GuestPhysAddr, HostPhysAddr};
 
 bitflags::bitflags! {

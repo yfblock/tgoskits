@@ -30,11 +30,11 @@ axvisor_api_proc = { path = "axvisor_api_proc", version = "0.5.0"}
 # Address space abstraction
 axaddrspace = "0.5.0"
 # Interface definition tools
-crate_interface = "0.5.0"
+ax-crate-interface = "0.5.0"
 # Physical/virtual address types
-memory_addr = "0.6.1"
+ax-memory-addr = "0.6.1"
 # CPU mask
-cpumask = "0.3.0"
+ax-cpumask = "0.3.0"
 
 
 [package.metadata.docs.rs]

@@ -84,12 +84,12 @@ flowchart TD
 如果你改的是：
 
 - `components/axerrno`、`components/kspin` 这类基础 crate
-- 或 `os/arceos/modules/axhal`、`axtask`、`axdriver`、`axnet`
+- 或 `os/arceos/modules/axhal`、`ax-task`、`ax-driver`、`ax-net`
 
 建议先确认 ArceOS 最小路径仍然工作，再回到 StarryOS：
 
 ```bash
-cargo arceos qemu --package arceos-helloworld --target riscv64gc-unknown-none-elf
+cargo arceos qemu --package ax-helloworld --target riscv64gc-unknown-none-elf
 cargo starry qemu --arch riscv64
 ```
 

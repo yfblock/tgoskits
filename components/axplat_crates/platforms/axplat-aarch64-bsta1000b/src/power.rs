@@ -1,4 +1,4 @@
-use axplat::{mem::pa, power::PowerIf};
+use ax_plat::{mem::pa, power::PowerIf};
 
 struct PowerImpl;
 
@@ -16,7 +16,7 @@ impl PowerIf for PowerImpl {
 
     /// Shutdown the whole system.
     fn system_off() -> ! {
-        axplat_aarch64_peripherals::psci::system_off()
+        ax_plat_aarch64_peripherals::psci::system_off()
     }
 
     /// Get the number of CPU cores available on this platform.

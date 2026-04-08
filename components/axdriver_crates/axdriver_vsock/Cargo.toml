@@ -1,5 +1,5 @@
 [package]
-name = "axdriver_vsock"
+name = "ax-driver-vsock"
 edition.workspace = true
 version.workspace = true
 authors.workspace = true
@@ -16,5 +16,5 @@ readme = "README.md"
 default = []
 
 [dependencies]
-axdriver_base = { version = "0.3.4" }
+ax-driver-base = { version = "0.3.4" }
 log = "0.4"

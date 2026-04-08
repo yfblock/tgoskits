@@ -12,7 +12,7 @@ For instance, [fxmac_rs ethernet driver in Rust on ArceOS](https://github.com/ar
 pub struct FXmacDriver;
 
 #[crate_interface::impl_interface]
-impl axdriver_net::fxmac::KernelFunc for FXmacDriver{
+impl ax_driver_net::fxmac::KernelFunc for FXmacDriver{
 	/// 虚拟地址转换成物理地址
 	fn virt_to_phys(addr: usize) -> usize {
 	}

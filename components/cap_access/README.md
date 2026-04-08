@@ -1,7 +1,7 @@
-# cap_access
+# ax-cap-access
 
-[![Crates.io](https://img.shields.io/crates/v/cap_access)](https://crates.io/crates/cap_access)
-[![Docs.rs](https://docs.rs/cap_access/badge.svg)](https://docs.rs/cap_access)
+[![Crates.io](https://img.shields.io/crates/v/ax-cap-access)](https://crates.io/crates/ax-cap-access)
+[![Docs.rs](https://docs.rs/ax-cap-access/badge.svg)](https://docs.rs/ax-cap-access)
 [![CI](https://github.com/arceos-org/cap_access/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/cap_access/actions/workflows/ci.yml)
 
 Provide basic [capability-based][1] access control to objects.
@@ -14,7 +14,7 @@ associated with the object at initialization.
 ## Examples
 
 ```rust
-use cap_access::{Cap, WithCap};
+use ax_cap_access::{Cap, WithCap};
 
 let data = WithCap::new(42, Cap::READ | Cap::WRITE);
 
@@ -30,4 +30,3 @@ assert!(data.access(Cap::READ | Cap::EXECUTE).is_none());
 
 [1]: https://en.wikipedia.org/wiki/Capability-based_security
 [`WithCap`]: https://docs.rs/capability/latest/capability/struct.WithCap.html
-

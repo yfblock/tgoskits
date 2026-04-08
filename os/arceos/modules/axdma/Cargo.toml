@@ -1,5 +1,5 @@
 [package]
-name = "axdma"
+name = "ax-dma"
 edition.workspace = true
 version.workspace = true
 authors = ["Zhour Rui <zrufo747@outlook.com>"]
@@ -15,12 +15,12 @@ default = []
 buddy-slab = ["dep:buddy-slab-allocator"]
 
 [dependencies]
-axalloc.workspace = true
-axallocator.workspace = true
-axconfig.workspace = true
-axhal.workspace = true
-axmm.workspace = true
+ax-alloc.workspace = true
+ax-allocator.workspace = true
+ax-config.workspace = true
+ax-hal.workspace = true
+ax-mm.workspace = true
 buddy-slab-allocator = { workspace = true, optional = true }
-kspin.workspace = true
+ax-kspin.workspace = true
 log.workspace = true
-memory_addr.workspace = true
+ax-memory-addr.workspace = true

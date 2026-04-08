@@ -1,11 +1,11 @@
 //! snps,dw-apb-uart serial driver
 
-use axplat::{
+use ax_kspin::SpinNoIrq;
+use ax_plat::{
     console::ConsoleIf,
     mem::{PhysAddr, pa},
 };
 use dw_apb_uart::DW8250;
-use kspin::SpinNoIrq;
 
 use crate::mem::phys_to_virt;
 

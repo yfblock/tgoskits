@@ -19,10 +19,10 @@ use alloc::{
 use core::ptr::NonNull;
 
 use super::vm_fdt::{FdtWriter, FdtWriterNode};
+use ax_memory_addr::MemoryAddr;
 use axaddrspace::GuestPhysAddr;
 use axvm::{VMMemoryRegion, config::AxVMCrateConfig};
 use fdt_parser::{Fdt, Node};
-use memory_addr::MemoryAddr;
 
 use crate::vmm::{VMRef, images::load_vm_image_from_memory};
 

@@ -72,7 +72,7 @@ RUN rustup component add rust-src llvm-tools rustfmt clippy \
       riscv64gc-unknown-none-elf \
       aarch64-unknown-none-softfloat \
       loongarch64-unknown-none-softfloat \
-    && cargo install cargo-binutils axconfig-gen cargo-axplat
+    && cargo install cargo-binutils ax-config-gen cargo-axplat
 
 WORKDIR /workspace
 

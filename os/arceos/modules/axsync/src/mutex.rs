@@ -2,7 +2,7 @@
 
 use core::sync::atomic::{AtomicU64, Ordering};
 
-use axtask::{WaitQueue, current};
+use ax_task::{WaitQueue, current};
 
 /// A [`lock_api::RawMutex`] implementation.
 ///
@@ -118,7 +118,7 @@ pub type MutexGuard<'a, T> = lock_api::MutexGuard<'a, RawMutex, T>;
 mod tests {
     use std::sync::Once;
 
-    use axtask as thread;
+    use ax_task as thread;
 
     use crate::Mutex;
 

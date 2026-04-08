@@ -1,4 +1,4 @@
-# axdriver_pci
+# ax-driver-pci
 
 Structures and functions for PCI bus operations in `no_std` environments.
 

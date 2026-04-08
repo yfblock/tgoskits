@@ -1,6 +1,6 @@
 //! Wrapper functions for assembly instructions.
 
-use memory_addr::{PhysAddr, VirtAddr};
+use ax_memory_addr::{PhysAddr, VirtAddr};
 use riscv::{
     asm,
     register::{satp, sstatus, stvec},

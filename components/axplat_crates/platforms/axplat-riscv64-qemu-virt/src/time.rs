@@ -1,4 +1,4 @@
-use axplat::time::{NANOS_PER_SEC, TimeIf};
+use ax_plat::time::{NANOS_PER_SEC, TimeIf};
 use riscv::register::time;
 
 const NANOS_PER_TICK: u64 = NANOS_PER_SEC / crate::config::devices::TIMER_FREQUENCY as u64;

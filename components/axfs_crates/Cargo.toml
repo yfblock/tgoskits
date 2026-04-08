@@ -3,8 +3,8 @@ resolver = "2"
 
 members = [
     "axfs_vfs",
-    "axfs_devfs",
-    "axfs_ramfs",
+    "ax-fs-devfs",
+    "ax-fs-ramfs",
 ]
 
 [workspace.package]
@@ -18,4 +18,4 @@ repository = "https://github.com/arceos-org/axfs_crates"
 categories = ["os", "no-std", "filesystem"]
 
 [workspace.dependencies]
-axfs_vfs = { path = "axfs_vfs", version = "0.3.2" }
+ax-fs-vfs = { path = "axfs_vfs", version = "0.3.2" }

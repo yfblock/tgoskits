@@ -1,7 +1,7 @@
-# kspin
+# ax-kspin
 
-[![Crates.io](https://img.shields.io/crates/v/kspin)](https://crates.io/crates/kspin)
-[![Docs.rs](https://docs.rs/kspin/badge.svg)](https://docs.rs/kspin)
+[![Crates.io](https://img.shields.io/crates/v/ax-kspin)](https://crates.io/crates/ax-kspin)
+[![Docs.rs](https://docs.rs/ax-kspin/badge.svg)](https://docs.rs/ax-kspin)
 [![CI](https://github.com/arceos-org/kspin/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/kspin/actions/workflows/ci.yml)
 
 Spinlocks used for kernel space that can disable preemption or IRQs in the
@@ -14,7 +14,7 @@ critical section.
 ## Examples
 
 ```rust
-use kspin::{SpinNoIrq, SpinNoPreempt, SpinRaw};
+use ax_kspin::{SpinNoIrq, SpinNoPreempt, SpinRaw};
 
 let data = SpinRaw::new(());
 let mut guard = data.lock();

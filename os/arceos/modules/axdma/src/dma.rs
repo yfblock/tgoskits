@@ -1,14 +1,14 @@
 use core::{alloc::Layout, ptr::NonNull};
 
-use axalloc::{DefaultByteAllocator, UsageKind, global_allocator};
+use ax_alloc::{DefaultByteAllocator, UsageKind, global_allocator};
 #[cfg(not(feature = "buddy-slab"))]
-use axallocator::{AllocError, AllocResult, BaseAllocator, ByteAllocator};
-use axhal::{mem::virt_to_phys, paging::MappingFlags};
+use ax_allocator::{AllocError, AllocResult, BaseAllocator, ByteAllocator};
+use ax_hal::{mem::virt_to_phys, paging::MappingFlags};
+use ax_kspin::SpinNoIrq;
+use ax_memory_addr::{PAGE_SIZE_4K, VirtAddr, va};
 #[cfg(feature = "buddy-slab")]
 use buddy_slab_allocator::{AllocError, AllocResult, ByteAllocator};
-use kspin::SpinNoIrq;
 use log::{debug, error};
-use memory_addr::{PAGE_SIZE_4K, VirtAddr, va};
 
 use crate::{BusAddr, DMAInfo, phys_to_bus};
 
@@ -115,7 +115,7 @@ impl DmaAllocator {
         flags: MappingFlags,
     ) -> AllocResult<()> {
         let expand_size = num_pages * PAGE_SIZE_4K;
-        axmm::kernel_aspace()
+        ax_mm::kernel_aspace()
             .lock()
             .protect(vaddr, expand_size, flags)
             .map_err(|e| {
@@ -147,5 +147,5 @@ fn virt_to_bus(addr: VirtAddr) -> BusAddr {
 }
 
 const fn layout_pages(layout: &Layout) -> usize {
-    memory_addr::align_up_4k(layout.size()) / PAGE_SIZE_4K
+    ax_memory_addr::align_up_4k(layout.size()) / PAGE_SIZE_4K
 }

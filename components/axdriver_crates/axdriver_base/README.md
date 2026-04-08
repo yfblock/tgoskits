@@ -1,4 +1,4 @@
-# axdriver_base
+# ax-driver-base
 
 Common interfaces for all kinds of device drivers in `no_std` environments.
 

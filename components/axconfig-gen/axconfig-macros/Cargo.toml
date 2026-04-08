@@ -1,7 +1,7 @@
 [package]
-name = "axconfig-macros"
+name = "ax-config-macros"
 description = "Procedural macros for converting TOML format configurations to Rust constant definitions."
-documentation = "https://docs.rs/axconfig-macros"
+documentation = "https://docs.rs/ax-config-macros"
 categories = ["development-tools::procedural-macro-helpers", "config", "parsing", "parser-implementations"]
 keywords.workspace = true
 version.workspace = true
@@ -19,7 +19,7 @@ nightly = []
 proc-macro2 = "1.0"
 quote = "1.0"
 syn = { version = "2.0", features = ["full"] }
-axconfig-gen = { path = "../axconfig-gen", version = "0.4.1" }
+ax-config-gen = { path = "../axconfig-gen", version = "0.4.1" }
 
 [lib]
 proc-macro = true

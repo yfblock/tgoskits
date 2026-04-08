@@ -19,8 +19,8 @@
 
 use alloc::{format, string::String, sync::Arc, vec, vec::Vec};
 
-use axerrno::{AxError, AxResult};
-use axfs_vfs::VfsOps;
+use ax_errno::{AxError, AxResult};
+use ax_fs_vfs::VfsOps;
 use log::{debug, info, warn};
 
 use crate::dev::Disk;

@@ -1,7 +1,7 @@
 use alloc::collections::VecDeque;
 
-use kernel_guard::{NoOp, NoPreemptIrqSave};
-use kspin::{SpinNoIrq, SpinNoIrqGuard};
+use ax_kernel_guard::{NoOp, NoPreemptIrqSave};
+use ax_kspin::{SpinNoIrq, SpinNoIrqGuard};
 
 use crate::{AxTaskRef, CurrentTask, current_run_queue, select_run_queue};
 
@@ -12,14 +12,14 @@ use crate::{AxTaskRef, CurrentTask, current_run_queue, select_run_queue};
 /// ```
 /// use core::sync::atomic::{AtomicU32, Ordering};
 ///
-/// use axtask::WaitQueue;
+/// use ax_task::WaitQueue;
 ///
 /// static VALUE: AtomicU32 = AtomicU32::new(0);
 /// static WQ: WaitQueue = WaitQueue::new();
 ///
-/// axtask::init_scheduler();
+/// ax_task::init_scheduler();
 /// // spawn a new task that updates `VALUE` and notifies the main task
-/// axtask::spawn(|| {
+/// ax_task::spawn(|| {
 ///     assert_eq!(VALUE.load(Ordering::Acquire), 0);
 ///     VALUE.fetch_add(1, Ordering::Release);
 ///     WQ.notify_one(true); // wake up the main task
@@ -107,7 +107,7 @@ impl WaitQueue {
     pub fn wait_timeout(&self, dur: core::time::Duration) -> bool {
         let mut rq = current_run_queue::<NoPreemptIrqSave>();
         let curr = crate::current();
-        let deadline = axhal::time::wall_time() + dur;
+        let deadline = ax_hal::time::wall_time() + dur;
         debug!(
             "task wait_timeout: {} deadline={:?}",
             curr.id_name(),
@@ -135,7 +135,7 @@ impl WaitQueue {
         F: Fn() -> bool,
     {
         let curr = crate::current();
-        let deadline = axhal::time::wall_time() + dur;
+        let deadline = ax_hal::time::wall_time() + dur;
         debug!(
             "task wait_timeout: {}, deadline={:?}",
             curr.id_name(),
@@ -146,7 +146,7 @@ impl WaitQueue {
         let mut timeout = true;
         loop {
             let mut rq = current_run_queue::<NoPreemptIrqSave>();
-            if axhal::time::wall_time() >= deadline {
+            if ax_hal::time::wall_time() >= deadline {
                 break;
             }
             let wq = self.queue.lock();

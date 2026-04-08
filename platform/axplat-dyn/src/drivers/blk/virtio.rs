@@ -3,11 +3,11 @@ extern crate alloc;
 use alloc::format;
 use core::{marker::PhantomData, ptr::NonNull};
 
-use axalloc::{UsageKind, global_allocator};
-use axdriver_base::DeviceType;
-use axdriver_block::BlockDriverOps;
-use axdriver_virtio::{BufferDirection, MmioTransport, PhysAddr as VirtIoPhysAddr, VirtIoHal};
-use axplat::mem::{PhysAddr, phys_to_virt};
+use ax_alloc::{UsageKind, global_allocator};
+use ax_driver_base::DeviceType;
+use ax_driver_block::BlockDriverOps;
+use ax_driver_virtio::{BufferDirection, MmioTransport, PhysAddr as VirtIoPhysAddr, VirtIoHal};
+use ax_plat::mem::{PhysAddr, phys_to_virt};
 use rdrive::{
     DriverGeneric, PlatformDevice, module_driver, probe::OnProbeError, register::FdtInfo,
 };
@@ -15,7 +15,7 @@ use rdrive::{
 use super::PlatformDeviceBlock;
 use crate::drivers::iomap;
 
-type Device<T> = axdriver_virtio::VirtIoBlkDev<VirtIoHalImpl, T>;
+type Device<T> = ax_driver_virtio::VirtIoBlkDev<VirtIoHalImpl, T>;
 
 module_driver!(
     name: "Virtio Block",
@@ -46,7 +46,7 @@ fn probe(info: FdtInfo<'_>, plat_dev: PlatformDevice) -> Result<(), OnProbeError
     let mmio_base = iomap(mmio_base, mmio_size)?.as_ptr();
 
     let (ty, transport) =
-        axdriver_virtio::probe_mmio_device(mmio_base, mmio_size).ok_or(OnProbeError::NotMatch)?;
+        ax_driver_virtio::probe_mmio_device(mmio_base, mmio_size).ok_or(OnProbeError::NotMatch)?;
 
     if ty != DeviceType::Block {
         return Err(OnProbeError::NotMatch);
@@ -149,20 +149,22 @@ impl rd_block::IQueue for BlockQueue {
     }
 }
 
-fn maping_dev_err_to_blk_err(err: axdriver_base::DevError) -> rd_block::BlkError {
+fn maping_dev_err_to_blk_err(err: ax_driver_base::DevError) -> rd_block::BlkError {
     match err {
-        axdriver_base::DevError::Again => rd_block::BlkError::Retry,
-        axdriver_base::DevError::AlreadyExists => {
+        ax_driver_base::DevError::Again => rd_block::BlkError::Retry,
+        ax_driver_base::DevError::AlreadyExists => {
             rd_block::BlkError::Other("Already exists".into())
         }
-        axdriver_base::DevError::BadState => rd_block::BlkError::Other("Bad internal state".into()),
-        axdriver_base::DevError::InvalidParam => {
+        ax_driver_base::DevError::BadState => {
+            rd_block::BlkError::Other("Bad internal state".into())
+        }
+        ax_driver_base::DevError::InvalidParam => {
             rd_block::BlkError::Other("Invalid parameter".into())
         }
-        axdriver_base::DevError::Io => rd_block::BlkError::Other("I/O error".into()),
-        axdriver_base::DevError::NoMemory => rd_block::BlkError::NoMemory,
-        axdriver_base::DevError::ResourceBusy => rd_block::BlkError::Other("Resource busy".into()),
-        axdriver_base::DevError::Unsupported => rd_block::BlkError::NotSupported,
+        ax_driver_base::DevError::Io => rd_block::BlkError::Other("I/O error".into()),
+        ax_driver_base::DevError::NoMemory => rd_block::BlkError::NoMemory,
+        ax_driver_base::DevError::ResourceBusy => rd_block::BlkError::Other("Resource busy".into()),
+        ax_driver_base::DevError::Unsupported => rd_block::BlkError::NotSupported,
     }
 }
 

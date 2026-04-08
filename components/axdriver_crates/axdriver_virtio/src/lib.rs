@@ -1,5 +1,5 @@
 //! Wrappers of some devices in the [`virtio-drivers`][1] crate, that implement
-//! traits in the [`axdriver_base`][2] series crates.
+//! traits in the [`ax-driver-base`][2] series crates.
 //!
 //! Like the [`virtio-drivers`][1] crate, you must implement the [`VirtIoHal`]
 //! trait (alias of [`virtio-drivers::Hal`][3]), to allocate DMA regions and
@@ -38,7 +38,7 @@ pub use self::net::VirtIoNetDev;
 
 #[cfg(feature = "socket")]
 mod socket;
-use axdriver_base::{DevError, DeviceType};
+use ax_driver_base::{DevError, DeviceType};
 use virtio_drivers::transport::DeviceType as VirtIoDevType;
 pub use virtio_drivers::{
     BufferDirection, Hal as VirtIoHal, PhysAddr,

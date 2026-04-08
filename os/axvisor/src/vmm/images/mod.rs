@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use ax_errno::{AxResult, ax_err_type};
 use axaddrspace::GuestPhysAddr;
-use axerrno::{AxResult, ax_err_type};
 
 use axvm::VMMemoryRegion;
 use axvm::config::AxVMCrateConfig;
@@ -243,7 +243,7 @@ pub fn load_vm_image_from_memory(
 pub mod fs {
     use super::*;
     use crate::hal::CacheOp;
-    use axerrno::{AxResult, ax_err, ax_err_type};
+    use ax_errno::{AxResult, ax_err, ax_err_type};
     use std::{fs::File, vec::Vec};
 
     pub fn kernal_read(config: &AxVMCrateConfig, read_size: usize) -> AxResult<Vec<u8>> {

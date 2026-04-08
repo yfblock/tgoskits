@@ -1,11 +1,11 @@
-#![cfg_attr(feature = "axstd", no_std)]
-#![cfg_attr(feature = "axstd", no_main)]
+#![cfg_attr(feature = "ax-std", no_std)]
+#![cfg_attr(feature = "ax-std", no_main)]
 
 #[macro_use]
-#[cfg(feature = "axstd")]
-extern crate axstd as std;
+#[cfg(feature = "ax-std")]
+extern crate ax_std as std;
 
-#[cfg(feature = "axstd")]
+#[cfg(feature = "ax-std")]
 use std::sync::atomic::AtomicBool;
 use std::{
     sync::atomic::{AtomicUsize, Ordering},
@@ -81,11 +81,11 @@ fn test_sleep() {
     println!("IRQ state tests on task sleep run OK!");
 }
 
-#[cfg(feature = "axstd")]
+#[cfg(feature = "ax-std")]
 fn test_wait_queue() {
-    use std::os::arceos::modules::axtask;
+    use std::os::arceos::modules::ax_task;
 
-    use axtask::WaitQueue;
+    use ax_task::WaitQueue;
 
     static WQ1: WaitQueue = WaitQueue::new();
     static WQ2: WaitQueue = WaitQueue::new();
@@ -96,7 +96,7 @@ fn test_wait_queue() {
     println!("Hello, main task test_wait_queue()!");
 
     for _ in 0..NUM_TASKS {
-        axtask::spawn(move || {
+        ax_task::spawn(move || {
             assert_irq_enabled();
 
             // equals to sleep(100ms)
@@ -132,13 +132,13 @@ fn test_wait_queue() {
     println!("IRQ state tests on task wait run OK!");
 }
 
-#[cfg_attr(feature = "axstd", unsafe(no_mangle))]
+#[cfg_attr(feature = "ax-std", unsafe(no_mangle))]
 fn main() {
     println!("Hello, main task");
 
     test_yielding();
     test_sleep();
-    #[cfg(feature = "axstd")]
+    #[cfg(feature = "ax-std")]
     test_wait_queue();
 
     println!("All tests passed!");

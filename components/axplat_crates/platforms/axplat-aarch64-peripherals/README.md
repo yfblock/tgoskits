@@ -1,7 +1,7 @@
-# axplat-aarch64-peripherals
+# ax-plat-aarch64-peripherals
 
-[![Crates.io](https://img.shields.io/crates/v/axplat-aarch64-peripherals)](https://crates.io/crates/axplat-aarch64-peripherals)
-[![Docs.rs](https://docs.rs/axplat-aarch64-peripherals/badge.svg)](https://docs.rs/axplat-aarch64-peripherals)
+[![Crates.io](https://img.shields.io/crates/v/ax-plat-aarch64-peripherals)](https://crates.io/crates/ax-plat-aarch64-peripherals)
+[![Docs.rs](https://docs.rs/ax-plat-aarch64-peripherals/badge.svg)](https://docs.rs/ax-plat-aarch64-peripherals)
 [![CI](https://github.com/arceos-org/axplat_crates/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arceos-org/axplat_crates/actions/workflows/ci.yml)
 
 Common peripheral drivers for ARM64 platforms.

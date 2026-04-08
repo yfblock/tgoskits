@@ -1,11 +1,11 @@
-# axconfig-macros
+# ax-config-macros
 
 Procedural macros for converting TOML format configurations to equivalent Rust constant definitions.
 
 ## Example
 
 ```rust
-axconfig_macros::parse_configs!(r#"
+ax_config_macros::parse_configs!(r#"
 are-you-ok = true
 one-two-three = 123
 
@@ -40,9 +40,9 @@ pub mod hello {
 You can also include the configuration file directly:
 
 ```rust,ignore
-axconfig_macros::include_configs!("path/to/config.toml");
+ax_config_macros::include_configs!("path/to/config.toml");
 // or specify the config file path via an environment variable
-axconfig_macros::include_configs!(path_env = "AX_CONFIG_PATH");
+ax_config_macros::include_configs!(path_env = "AX_CONFIG_PATH");
 // or with a fallback path if the environment variable is not set
-axconfig_macros::include_configs!(path_env = "AX_CONFIG_PATH", fallback = "path/to/defconfig.toml");
+ax_config_macros::include_configs!(path_env = "AX_CONFIG_PATH", fallback = "path/to/defconfig.toml");
 ```

@@ -1,6 +1,6 @@
 use core::ptr::{read_volatile, write_volatile};
 
-use axplat::time::{Duration, busy_wait};
+use ax_plat::time::{Duration, busy_wait};
 
 use crate::{
     config::devices::{A1000BASE_SAFETYCRM, A1000BASE_TOPCRM},
@@ -34,7 +34,7 @@ pub fn reset_cpu() {
         write_volatile(ptr, read_volatile(ptr) & !0b1);
     }
     loop {
-        axcpu::asm::halt();
+        ax_cpu::asm::halt();
     }
 }
 

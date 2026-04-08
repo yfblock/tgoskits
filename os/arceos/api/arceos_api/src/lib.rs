@@ -19,11 +19,11 @@ extern crate alloc;
 mod macros;
 mod imp;
 
-pub use axerrno::{AxError, AxResult};
+pub use ax_errno::{AxError, AxResult};
 
 /// Platform-specific constants and parameters.
 pub mod config {
-    pub use axconfig::*;
+    pub use ax_config::*;
 }
 
 /// System operations.
@@ -393,26 +393,26 @@ pub mod io {
 /// here should only be used if other APIs do not meet your requirements.
 pub mod modules {
     #[cfg(feature = "alloc")]
-    pub use axalloc;
-    pub use axconfig;
+    pub use ax_alloc;
+    pub use ax_config;
     #[cfg(feature = "display")]
-    pub use axdisplay;
+    pub use ax_display;
     #[cfg(feature = "dma")]
-    pub use axdma;
+    pub use ax_dma;
     #[cfg(any(feature = "fs", feature = "net", feature = "display"))]
-    pub use axdriver;
+    pub use ax_driver;
     #[cfg(feature = "fs")]
-    pub use axfs;
-    pub use axhal;
+    pub use ax_fs;
+    pub use ax_hal;
     #[cfg(feature = "ipi")]
-    pub use axipi;
-    pub use axlog;
+    pub use ax_ipi;
+    pub use ax_log;
     #[cfg(feature = "paging")]
-    pub use axmm;
+    pub use ax_mm;
     #[cfg(feature = "net")]
-    pub use axnet;
-    pub use axruntime;
-    pub use axsync;
+    pub use ax_net;
+    pub use ax_runtime;
+    pub use ax_sync;
     #[cfg(feature = "multitask")]
-    pub use axtask;
+    pub use ax_task;
 }

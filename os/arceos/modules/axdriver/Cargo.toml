@@ -57,7 +57,7 @@ ax-driver-vsock = { workspace = true, optional = true }
 ax-errno = { workspace = true, optional = true }
 ax-hal = { workspace = true, optional = true }
 cfg-if.workspace = true
-crate_interface.workspace = true
+ax-crate-interface.workspace = true
 log.workspace = true
 smallvec = { version = "1.15", features = ["const_generics", "union"] }
 axplat-dyn = { workspace = true, optional = true }

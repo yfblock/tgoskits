@@ -3,7 +3,7 @@ members = ["crate_interface_lite"]
 exclude = ["test_crates"]
 
 [package]
-name = "crate_interface"
+name = "ax-crate-interface"
 version = "0.5.0"
 edition = "2021"
 authors = ["Yuekai Jia <equation618@gmail.com>", "Su Mingxian <aarkegz@gmail.com>"]
@@ -11,7 +11,7 @@ description = "Provides a way to define an interface (trait) in a crate, but can
 license = "Apache-2.0"
 homepage = "https://github.com/arceos-org/arceos"
 repository = "https://github.com/arceos-org/crate_interface"
-documentation = "https://docs.rs/crate_interface"
+documentation = "https://docs.rs/ax-crate-interface"
 keywords = ["arceos", "api", "macro"]
 categories = ["development-tools::procedural-macro-helpers", "no-std"]
 rust-version = "1.68"

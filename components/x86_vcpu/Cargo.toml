@@ -29,7 +29,7 @@ numeric-enum-macro = "0.2"
 ax-errno = "0.4.2"
 ax-page-table-entry = "0.8.1"
 memory_addr = "0.6.1"
-crate_interface = "0.5.0"
+ax-crate-interface = "0.5.0"
 
 axaddrspace = "0.5.0"
 axvcpu = "0.5.0"

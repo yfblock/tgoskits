@@ -50,7 +50,7 @@ graph LR
 - `ax-config-macros`
 - `ax-cpu`
 - `ax-cpumask`
-- `ax-display`
+- `ax-crate-interface`
 - 另外还有 `66` 个同类项未在此展开
 
 ### 3.3 被依赖情况

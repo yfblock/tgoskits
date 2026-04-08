@@ -53,7 +53,7 @@
 
 #### `NoPreempt`
 
-进入时关闭抢占，离开时恢复抢占。它本身不实现抢占逻辑，而是通过 `crate_interface` 调用外部 `KernelGuardIf` 接口。
+进入时关闭抢占，离开时恢复抢占。它本身不实现抢占逻辑，而是通过 `ax-crate-interface` 调用外部 `KernelGuardIf` 接口。
 
 #### `NoPreemptIrqSave`
 
@@ -71,7 +71,7 @@
 
 这说明它的“关中断”不是通过 HAL 间接实现，而是直接贴 ISA 写的。
 
-### 1.6 与 `crate_interface` 的关系
+### 1.6 与 `ax-crate-interface` 的关系
 
 抢占开关不是本 crate 自己决定的。它只定义：
 
@@ -124,7 +124,7 @@
 | 依赖 | 作用 |
 | --- | --- |
 | `cfg-if` | 条件编译架构后端 |
-| `crate_interface` | 定义和调用 `KernelGuardIf` |
+| `ax-crate-interface` | 定义和调用 `KernelGuardIf` |
 
 ### 3.2 主要消费者
 

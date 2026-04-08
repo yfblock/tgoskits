@@ -17,7 +17,7 @@ edition = "2021"
 publish = false
 
 [workspace.dependencies]
-crate_interface = { path = ".." }
+ax-crate-interface = { path = ".." }
 define-simple-traits = { path = "./define-simple-traits" }
 define-weak-traits = { path = "./define-weak-traits" }
 impl-simple-traits = { path = "./impl-simple-traits" }

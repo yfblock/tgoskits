@@ -48,7 +48,7 @@ cfg_if::cfg_if! {
 struct KernelGuardIfImpl;
 
 #[cfg(feature = "preempt")]
-#[crate_interface::impl_interface]
+#[ax_crate_interface::impl_interface]
 impl ax_kernel_guard::KernelGuardIf for KernelGuardIfImpl {
     fn disable_preempt() {
         if let Some(curr) = current_may_uninit() {

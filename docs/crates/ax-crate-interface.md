@@ -1,12 +1,12 @@
-# `crate_interface` 技术文档
+# `ax-crate-interface` 技术文档
 
 > 路径：`components/crate_interface`
 > 类型：过程宏 crate
 > 分层：组件层 / 跨 crate 接口绑定层
-> 版本：`0.3.0`
+> 版本：`0.5.0`
 > 文档依据：当前仓库源码、`Cargo.toml`、`README.md`、`src/lib.rs`、`src/def_interface.rs`、`src/impl_interface.rs`、`src/args.rs`、`src/naming.rs`
 
-`crate_interface` 是 ArceOS 生态里非常关键、也非常“非典型”的基础设施。它通过过程宏把 trait 定义、实现和调用拆到不同 crate 中，再用链接期符号把它们重新拼起来，从而避免传统泛型注入或显式依赖带来的循环依赖问题。`axplat`、`kernel_guard`、`ax-log`、`axvisor_api` 等公共契约层都建立在这套机制之上。
+`ax-crate-interface` 是 ArceOS 生态里非常关键、也非常“非典型”的基础设施。它通过过程宏把 trait 定义、实现和调用拆到不同 crate 中，再用链接期符号把它们重新拼起来，从而避免传统泛型注入或显式依赖带来的循环依赖问题。`axplat`、`kernel_guard`、`ax-log`、`axvisor_api` 等公共契约层都建立在这套机制之上。
 
 ## 1. 架构设计分析
 
@@ -19,7 +19,7 @@
 - C crate 需要调用接口
 - 但三者之间不希望形成强耦合或循环依赖
 
-为此，`crate_interface` 采用的不是 trait object，也不是把实现类型作为泛型一路向上传递，而是：
+为此，`ax-crate-interface` 采用的不是 trait object，也不是把实现类型作为泛型一路向上传递，而是：
 
 - 用 trait 表达接口语义
 - 用过程宏生成 `extern "Rust"` 符号声明和定义
@@ -240,7 +240,7 @@ graph TD
 
 - 错误通常会表现为链接失败，而非普通编译报错
 - 对不熟悉这套机制的开发者来说，排查路径比普通 trait 调用更难
-- 版本混用时要特别注意 `crate_interface` 语义差异，尤其是 `weak_default`
+- 版本混用时要特别注意 `ax-crate-interface` 语义差异，尤其是 `weak_default`
 
 ## 6. 跨项目定位分析
 
@@ -252,4 +252,4 @@ graph TD
 
 ## 7. 总结
 
-`crate_interface` 的意义，在于它为整个仓库提供了一种“比 trait 更靠近链接层、又比裸符号更有语义”的接口绑定方式。它不是普通过程宏工具，而是 ArceOS、StarryOS 和 Axvisor 公共基础设施中的一个关键连接件：把定义方、实现方和调用方从依赖图上解开，再在最终二进制里重新绑定。
+`ax-crate-interface` 的意义，在于它为整个仓库提供了一种“比 trait 更靠近链接层、又比裸符号更有语义”的接口绑定方式。它不是普通过程宏工具，而是 ArceOS、StarryOS 和 Axvisor 公共基础设施中的一个关键连接件：把定义方、实现方和调用方从依赖图上解开，再在最终二进制里重新绑定。

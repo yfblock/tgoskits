@@ -109,7 +109,6 @@ jobs:
 
   test_axvisor_x86_64:
     name: Test axvisor x86_64
-    if: ${{ contains(fromJSON('["main","dev"]'), github.event_name == 'pull_request' && github.base_ref || github.ref_name) }}
     runs-on:
       - self-hosted
       - linux
@@ -125,7 +124,6 @@ jobs:
 
   test_axvisor_board:
     name: Test axvisor ${{ matrix.test_group }}
-    if: ${{ (github.event_name == 'pull_request' && github.base_ref || github.ref_name) == 'main' }}
     strategy:
       fail-fast: false
       matrix:

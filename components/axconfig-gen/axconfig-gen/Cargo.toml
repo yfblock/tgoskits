@@ -7,8 +7,8 @@ version.workspace = true
 repository.workspace = true
 edition.workspace = true
 authors.workspace = true
-license.workspace = true
 rust-version.workspace = true
+license.workspace = true
 
 [dependencies]
 toml_edit = { version = "0.22" }

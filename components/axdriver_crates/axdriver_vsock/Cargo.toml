@@ -6,9 +6,9 @@ repository.workspace = true
 authors.workspace = true
 description = "Common traits and types for vsock drivers"
 keywords = ["arceos", "driver", "vsock"]
-license.workspace = true
 categories.workspace = true
 readme = "README.md"
+license.workspace = true
 
 [features]
 default = []

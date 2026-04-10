@@ -8,8 +8,8 @@ authors = [
     "guoweikang <guoweikang.kernel@gmail.com>",
 ]
 description = "Various scheduler algorithms in a unified interface"
-license = "GPL-3.0-or-later OR Apache-2.0 OR MulanPSL-2.0"
 rust-version = "1.76"
+license = "Apache-2.0"
 
 [dependencies]
 ax-linked-list-r4l = "0.5.0"

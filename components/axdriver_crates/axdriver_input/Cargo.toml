@@ -6,9 +6,9 @@ repository.workspace = true
 authors.workspace = true
 description = "Common traits and types for input device drivers"
 keywords = ["arceos", "driver", "input"]
-license.workspace = true
 categories.workspace = true
 readme = "README.md"
+license.workspace = true
 
 [dependencies]
 ax-driver-base = { version = "0.3.4" }

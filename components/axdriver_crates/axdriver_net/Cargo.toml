@@ -11,9 +11,9 @@ authors = [
 ]
 description = "Common traits and types for network device (NIC) drivers"
 keywords = ["arceos", "driver", "nic"]
-license.workspace = true
 categories.workspace = true
 readme = "README.md"
+license.workspace = true
 
 [features]
 default = []

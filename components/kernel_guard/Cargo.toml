@@ -5,9 +5,9 @@ repository = "https://github.com/rcore-os/tgoskits"
 edition = "2021"
 authors = ["Yuekai Jia <equation618@gmail.com>"]
 description = "RAII wrappers to create a critical section with local IRQs or preemption disabled"
-license = "Apache-2.0"
 keywords = ["arceos", "synchronization", "preemption"]
 categories = ["os", "no-std"]
+license = "Apache-2.0"
 
 [features]
 preempt = []

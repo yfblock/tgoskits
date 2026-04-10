@@ -6,9 +6,9 @@ repository.workspace = true
 authors.workspace = true
 description = "Structures and functions for PCI bus operations"
 keywords = ["arceos", "driver", "pci"]
-license.workspace = true
 categories.workspace = true
 readme = "README.md"
+license.workspace = true
 
 [dependencies]
 virtio-drivers = "0.7.4"

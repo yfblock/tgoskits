@@ -5,10 +5,10 @@ description = "Macros for registering constructor functions for Rust under no_st
 version.workspace = true
 repository.workspace = true
 authors.workspace = true
-license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 readme = "README.md"
+license.workspace = true
 
 [dependencies]
 proc-macro2 = "1.0"

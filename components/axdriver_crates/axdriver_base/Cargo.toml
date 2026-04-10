@@ -6,8 +6,8 @@ repository.workspace = true
 authors.workspace = true
 description = "Common interfaces for all kinds of device drivers"
 keywords = ["arceos", "driver"]
-license.workspace = true
 categories.workspace = true
 readme = "README.md"
+license.workspace = true
 
 [dependencies]

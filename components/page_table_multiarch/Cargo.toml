@@ -7,11 +7,11 @@ members = ["page_table_multiarch", "page_table_entry"]
 version = "0.8.1"
 edition = "2024"
 authors = ["Yuekai Jia <equation618@gmail.com>"]
-license = "GPL-3.0-or-later OR Apache-2.0 OR MulanPSL-2.0"
 repository = "https://github.com/rcore-os/tgoskits"
 keywords = ["arceos", "paging", "page-table", "virtual-memory"]
 categories = ["os", "hardware-support", "memory-management", "no-std"]
 rust-version = "1.85"
+license = "Apache-2.0"
 
 [workspace.dependencies]
 ax-memory-addr = "0.6.1"

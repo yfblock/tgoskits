@@ -5,9 +5,9 @@ repository.workspace = true
 edition.workspace = true
 authors.workspace = true
 description = "Input device management for ArceOS"
-license.workspace = true
 keywords.workspace = true
 categories.workspace = true
+license.workspace = true
 
 [dependencies]
 ax-driver = { workspace = true, features = ["input"] }

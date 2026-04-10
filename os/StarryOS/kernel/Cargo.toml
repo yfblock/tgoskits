@@ -10,8 +10,8 @@ authors = [
     "朝倉水希 <asakuramizu111@gmail.com>",
     "Mivik <mivikq@gmail.com>",
 ]
-license.workspace = true
 repository.workspace = true
+license.workspace = true
 
 [features]
 dev-log = []

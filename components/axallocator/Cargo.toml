@@ -8,8 +8,8 @@ authors = [
     "Yu Chen <yuchen@tsinghua.edu.cn>",
 ]
 description = "Various allocator algorithms in a unified interface"
-license = "GPL-3.0-or-later OR Apache-2.0 OR MulanPSL-2.0"
 readme = "README.md"
+license = "Apache-2.0"
 
 [features]
 default = ["page-alloc-256m"]

@@ -5,9 +5,9 @@ version.workspace = true
 repository = "https://github.com/rcore-os/tgoskits"
 authors = ["Zhour Rui <zrufo747@outlook.com>"]
 description = "ArceOS global DMA allocator"
-license.workspace = true
 keywords.workspace = true
 categories.workspace = true
+license.workspace = true
 
 [features]
 default = []

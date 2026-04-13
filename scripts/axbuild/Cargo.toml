@@ -39,8 +39,10 @@ tracing-subscriber = {version = "0.3", features = ["fmt", "std", "time"]}
 xz2 = "0.1"
 
 [features]
-cli = ["clap", "tokio"]
+clap = ["dep:clap", "dep:tokio"]
+cli = ["clap"]
 default = ["cli"]
+tokio = ["dep:tokio", "dep:clap"]
 
 [dev-dependencies]
 tempfile = "3"

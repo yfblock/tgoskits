@@ -7,7 +7,7 @@ extern crate log;
 #[macro_use]
 extern crate anyhow;
 
-use clap::{Parser, Subcommand};
+use clap::{Args, Parser, Subcommand};
 
 use crate::{arceos::ArceOS, axvisor::Axvisor, starry::Starry};
 
@@ -30,12 +30,22 @@ struct Cli {
     command: Commands,
 }
 
+#[derive(Args, Clone, Debug, PartialEq, Eq)]
+pub(crate) struct ClippyArgs {
+    /// Audit every workspace package instead of the maintained whitelist
+    #[arg(long)]
+    pub(crate) all: bool,
+    /// Run clippy only for the named workspace package(s)
+    #[arg(long = "package", value_name = "PACKAGE")]
+    pub(crate) packages: Vec<String>,
+}
+
 #[derive(Subcommand)]
 enum Commands {
     /// Run std tests for the configured workspace package whitelist
     Test,
-    /// Run clippy for each root workspace package and each named feature in isolation
-    Clippy,
+    /// Run clippy for the maintained whitelist by default
+    Clippy(ClippyArgs),
     /// Remote board management via ostool-server
     Board {
         #[command(subcommand)]
@@ -66,7 +76,7 @@ pub async fn run() -> anyhow::Result<()> {
 async fn run_root_cli(cli: Cli) -> anyhow::Result<()> {
     match cli.command {
         Commands::Test => test_std::run_std_test_command(),
-        Commands::Clippy => clippy::run_workspace_clippy_command(),
+        Commands::Clippy(args) => clippy::run_workspace_clippy_command(&args),
         Commands::Board { command } => board::execute(command).await,
         Commands::Axvisor { command } => Axvisor::new()?.execute(command).await,
         Commands::Arceos { command } => ArceOS::new()?.execute(command).await,
@@ -98,8 +108,57 @@ mod tests {
         let cli = Cli::try_parse_from(["axbuild", "clippy"]).unwrap();
 
         match cli.command {
-            Commands::Clippy => {}
+            Commands::Clippy(args) => {
+                assert!(!args.all);
+                assert!(args.packages.is_empty());
+            }
             _ => panic!("expected `clippy` command"),
+        }
+    }
+
+    #[test]
+    fn cli_parses_clippy_all_command() {
+        let cli = Cli::try_parse_from(["axbuild", "clippy", "--all"]).unwrap();
+
+        match cli.command {
+            Commands::Clippy(args) => {
+                assert!(args.all);
+                assert!(args.packages.is_empty());
+            }
+            _ => panic!("expected `clippy --all` command"),
+        }
+    }
+
+    #[test]
+    fn cli_parses_clippy_package_command() {
+        let cli = Cli::try_parse_from(["axbuild", "clippy", "--package", "ax-driver"]).unwrap();
+
+        match cli.command {
+            Commands::Clippy(args) => {
+                assert!(!args.all);
+                assert_eq!(args.packages, vec!["ax-driver"]);
+            }
+            _ => panic!("expected `clippy --package` command"),
+        }
+    }
+
+    #[test]
+    fn cli_parses_repeated_clippy_package_command() {
+        let cli = Cli::try_parse_from([
+            "axbuild",
+            "clippy",
+            "--package",
+            "ax-driver",
+            "--package",
+            "axbuild",
+        ])
+        .unwrap();
+
+        match cli.command {
+            Commands::Clippy(args) => {
+                assert_eq!(args.packages, vec!["ax-driver", "axbuild"]);
+            }
+            _ => panic!("expected repeated `clippy --package` command"),
         }
     }
 

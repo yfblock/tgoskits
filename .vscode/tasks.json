@@ -6,7 +6,7 @@
       "hide": true,
       "isBackground": true,
       "type": "process",
-      "command": "python3",
+      "command": "python",
       "args": [
         "${workspaceFolder}/.vscode/session.py",
         "start"
@@ -35,6 +35,7 @@
         },
         "background": {
           "activeOnStart": true,
+          "beginsPattern": "^QEMU_DEBUG_STARTING session=arceos\\b.*$",
           "endsPattern": "^QEMU_GDB_READY session=arceos\\b.*$"
         }
       }
@@ -43,7 +44,7 @@
       "label": "TGOS: Stop ArceOS QEMU debug",
       "hide": true,
       "type": "process",
-      "command": "python3",
+      "command": "python",
       "args": [
         "${workspaceFolder}/.vscode/session.py",
         "stop"
@@ -68,7 +69,7 @@
       "hide": true,
       "isBackground": true,
       "type": "process",
-      "command": "python3",
+      "command": "python",
       "args": [
         "${workspaceFolder}/.vscode/session.py",
         "start"
@@ -97,6 +98,7 @@
         },
         "background": {
           "activeOnStart": true,
+          "beginsPattern": "^QEMU_DEBUG_STARTING session=axvisor\\b.*$",
           "endsPattern": "^QEMU_GDB_READY session=axvisor\\b.*$"
         }
       }
@@ -105,7 +107,7 @@
       "label": "TGOS: Stop Axvisor QEMU debug",
       "hide": true,
       "type": "process",
-      "command": "python3",
+      "command": "python",
       "args": [
         "${workspaceFolder}/.vscode/session.py",
         "stop"
@@ -130,7 +132,7 @@
       "hide": true,
       "isBackground": true,
       "type": "process",
-      "command": "python3",
+      "command": "python",
       "args": [
         "${workspaceFolder}/.vscode/session.py",
         "start"
@@ -159,6 +161,7 @@
         },
         "background": {
           "activeOnStart": true,
+          "beginsPattern": "^QEMU_DEBUG_STARTING session=starry\\b.*$",
           "endsPattern": "^QEMU_GDB_READY session=starry\\b.*$"
         }
       }
@@ -167,7 +170,7 @@
       "label": "TGOS: Stop StarryOS QEMU debug",
       "hide": true,
       "type": "process",
-      "command": "python3",
+      "command": "python",
       "args": [
         "${workspaceFolder}/.vscode/session.py",
         "stop"

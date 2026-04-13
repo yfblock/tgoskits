@@ -778,6 +778,7 @@ mod tests {
             },
             target: target.to_string(),
             plat_dyn,
+            debug: false,
             build_info_path,
             qemu_config: None,
             uboot_config: None,

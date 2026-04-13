@@ -29,17 +29,11 @@ pub trait VirtIoDevMeta {
 
 cfg_if! {
     if #[cfg(net_dev = "virtio-net")] {
-        const VIRTIO_NET_QUEUE_SIZE: usize = if cfg!(debug_assertions) { 8 } else { 64 };
-
         pub struct VirtIoNet;
 
         impl VirtIoDevMeta for VirtIoNet {
             const DEVICE_TYPE: DeviceType = DeviceType::Net;
-            type Device = ax_driver_virtio::VirtIoNetDev<
-                VirtIoHalImpl,
-                VirtIoTransport,
-                VIRTIO_NET_QUEUE_SIZE,
-            >;
+            type Device = ax_driver_virtio::VirtIoNetDev<VirtIoHalImpl, VirtIoTransport, 64>;
 
             fn try_new(transport: VirtIoTransport, irq: Option<usize>) -> DevResult<AxDeviceEnum> {
                 Ok(AxDeviceEnum::from_net(Self::Device::try_new(transport, irq)?))

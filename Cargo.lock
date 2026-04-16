@@ -516,7 +516,7 @@ dependencies = [
 
 [[package]]
 name = "ax-alloc"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-allocator",
  "ax-errno",
@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "ax-api"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-config",
@@ -669,7 +669,7 @@ dependencies = [
 
 [[package]]
 name = "ax-display"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-driver",
  "ax-lazyinit",
@@ -679,7 +679,7 @@ dependencies = [
 
 [[package]]
 name = "ax-dma"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-allocator",
@@ -694,7 +694,7 @@ dependencies = [
 
 [[package]]
 name = "ax-driver"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-config",
@@ -797,7 +797,7 @@ dependencies = [
 
 [[package]]
 name = "ax-feat"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-config",
@@ -819,7 +819,7 @@ dependencies = [
 
 [[package]]
 name = "ax-fs"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-cap-access",
  "ax-driver",
@@ -847,7 +847,7 @@ dependencies = [
 
 [[package]]
 name = "ax-fs-ng"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-driver",
@@ -891,7 +891,7 @@ dependencies = [
 
 [[package]]
 name = "ax-hal"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-config",
@@ -955,7 +955,7 @@ dependencies = [
 
 [[package]]
 name = "ax-input"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-driver",
  "ax-lazyinit",
@@ -979,7 +979,7 @@ dependencies = [
 
 [[package]]
 name = "ax-ipi"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-config",
  "ax-hal",
@@ -1012,7 +1012,7 @@ version = "0.4.6"
 
 [[package]]
 name = "ax-libc"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-errno",
  "ax-feat",
@@ -1027,7 +1027,7 @@ version = "0.5.4"
 
 [[package]]
 name = "ax-log"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-crate-interface",
  "ax-kspin",
@@ -1051,7 +1051,7 @@ dependencies = [
 
 [[package]]
 name = "ax-mm"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-errno",
@@ -1066,7 +1066,7 @@ dependencies = [
 
 [[package]]
 name = "ax-net"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-driver",
  "ax-errno",
@@ -1083,7 +1083,7 @@ dependencies = [
 
 [[package]]
 name = "ax-net-ng"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "async-channel",
  "async-trait",
@@ -1303,7 +1303,7 @@ dependencies = [
 
 [[package]]
 name = "ax-posix-api"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-config",
@@ -1333,7 +1333,7 @@ dependencies = [
 
 [[package]]
 name = "ax-runtime"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-alloc",
  "ax-config",
@@ -1376,7 +1376,7 @@ dependencies = [
 
 [[package]]
 name = "ax-std"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-api",
  "ax-errno",
@@ -1390,7 +1390,7 @@ dependencies = [
 
 [[package]]
 name = "ax-sync"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-kspin",
  "ax-sync",
@@ -1401,7 +1401,7 @@ dependencies = [
 
 [[package]]
 name = "ax-task"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "ax-config",
  "ax-cpumask",
@@ -1649,7 +1649,7 @@ dependencies = [
 
 [[package]]
 name = "axplat-dyn"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "anyhow",
  "ax-alloc",
@@ -2419,7 +2419,7 @@ version = "3.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "faf9468729b8cbcea668e36183cb69d317348c2e08e994829fb56ebfdfbaac34"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -3420,7 +3420,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -4409,7 +4409,7 @@ checksum = "3640c1c38b8e4e43584d8df18be5fc6b0aa314ce6ebf51b53313d4306cca8e46"
 dependencies = [
  "hermit-abi",
  "libc",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -5111,7 +5111,7 @@ version = "0.50.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7957b9740744892f114936ab4a57b3f487491bbeafaf8083688b16841a4240e5"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -5852,7 +5852,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -6726,7 +6726,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.4.15",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -6739,7 +6739,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.12.1",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -6798,7 +6798,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -7808,7 +7808,7 @@ dependencies = [
  "getrandom 0.4.2",
  "once_cell",
  "rustix 1.1.4",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -7891,7 +7891,7 @@ checksum = "e5416993d37cd34e93dbb9ca8777dda4d0c6e307661c5d519fd88e2a70a1f20b"
 
 [[package]]
 name = "tg-xtask"
-version = "0.5.6"
+version = "0.5.9"
 dependencies = [
  "anyhow",
  "axbuild",
@@ -9018,7 +9018,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -9111,15 +9111,6 @@ name = "windows-sys"
 version = "0.52.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "282be5f36a8ce781fad8c8ae18fa3f9beff57ec1b52cb3de0789201425d9a33d"
-dependencies = [
- "windows-targets 0.52.6",
-]
-
-[[package]]
-name = "windows-sys"
-version = "0.59.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e38bc4d79ed67fd075bcc251a1c39b32a1776bbe92e5bef1f0bf1f8c531853b"
 dependencies = [
  "windows-targets 0.52.6",
 ]

@@ -1,4 +1,4 @@
-board_type = "Phytiumpi"
+board_type = "PhytiumPi"
 fail_regex = [
   "(?i)\\bpanic(?:ked)?\\b",
   "(?i)kernel panic",

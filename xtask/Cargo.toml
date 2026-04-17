@@ -5,7 +5,7 @@ license.workspace = true
 name = "tg-xtask"
 publish = false
 repository.workspace = true
-version.workspace = true
+version = "0.5.11"
 
 [dependencies]
 anyhow = {workspace = true}

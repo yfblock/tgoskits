@@ -1,6 +1,6 @@
 [package]
 name = "axplat-dyn"
-version.workspace = true
+version = "0.5.11"
 authors = ["周睿 <zrufo747@outlook.com>"]
 categories.workspace = true
 description = "A dynamic platform module for ArceOS, providing runtime platform detection and configuration"
@@ -28,8 +28,8 @@ virtio-net-pci = ["net"]
 
 [dependencies]
 anyhow = { version = "1", default-features = false }
-ax-alloc = { version = "0.5.0", path = "../../os/arceos/modules/axalloc", default-features = false, features = ["buddy-slab"] }
-ax-config-macros = "0.4.1"
+ax-alloc = { version = "0.5", path = "../../os/arceos/modules/axalloc", default-features = false, features = ["buddy-slab"] }
+ax-config-macros = "0.4"
 ax-cpu.workspace = true
 ax-driver-base.workspace = true
 ax-driver-block.workspace = true

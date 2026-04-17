@@ -7,11 +7,13 @@ arceos-ipi
 arceos-irq
 arceos-memtest
 arceos-net-echoserver
+arceos-net-httpclient
 arceos-net-httpserver
 arceos-net-udpserver
 arceos-parallel
 arceos-priority
 arceos-sleep
+arceos-tls
 arceos-wait-queue
 ax-allocator
 ax-arm-pl011
@@ -34,6 +36,7 @@ ax-int-ratio
 ax-io
 ax-ipi
 ax-kernel-guard
+ax-kspin
 ax-lazyinit
 ax-linked-list-r4l
 ax-log
@@ -48,10 +51,13 @@ axfs-ng-vfs
 axhvc
 axklib
 axpoll
+axplat-x86-qemu-q35
 axvmconfig
 bitmap-allocator
 range-alloc-arceos
+riscv64-qemu-virt-hv
 riscv-h
+riscv_vcpu
 scope-local
 starry-process
 starry-vm

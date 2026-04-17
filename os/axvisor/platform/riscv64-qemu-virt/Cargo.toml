@@ -18,7 +18,7 @@ irq = ["ax-plat/irq"]
 rtc = ["riscv_goldfish"]
 smp = ["ax-plat/smp"]
 
-[dependencies]
+[target.'cfg(target_arch = "riscv64")'.dependencies]
 ax-kspin = "0.3"
 ax-lazyinit = "0.4"
 log = "0.4"

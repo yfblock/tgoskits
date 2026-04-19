@@ -1,0 +1,601 @@
+---
+sidebar_position: 5
+sidebar_label: "StarryOS 测试套件"
+---
+
+# StarryOS 测试套件设计
+
+## 1. 概览
+
+StarryOS 测试分为**普通测试**（`normal/`）和**压力测试**（`stress/`）两组，每组下每个子目录代表一个独立的测试用例。用例可以无源码（仅平台配置文件），也可以包含 C 或 Rust 源码（分别放在 `c/` 或 `rust/` 子目录中）。目录名即测试用例名，由 xtask 自动扫描发现。
+
+### 1.1 入口
+
+当前 StarryOS 测试套件的权威实现入口主要在：
+
+- `scripts/axbuild/src/starry/mod.rs`
+- `scripts/axbuild/src/starry/test_suit.rs`
+- `scripts/axbuild/src/starry/rootfs.rs`
+
+其中：
+
+- `mod.rs` 负责 CLI 参数解析、测试分发和逐 case 执行
+- `test_suit.rs` 负责测试组、case 发现、目标归一化和结果汇总
+- `rootfs.rs` 负责 rootfs 下载、per-case 资产准备、磁盘注入和默认 QEMU 参数补齐
+
+```mermaid
+flowchart TD
+    root["test-suit/starryos/"]
+    normal["normal/<br/>普通测试用例"]
+    stress["stress/<br/>压力测试用例"]
+    smoke["smoke/<br/>无源码用例"]
+    ccase["my_c_test/<br/>含 C 源码用例"]
+    rcase["my_rust_test/<br/>含 Rust 源码用例"]
+    stressng["stress-ng-0/"]
+    smoke_cfg["qemu-*.toml<br/>board-orangepi-5-plus.toml"]
+    c_src["c/<br/>main.c"]
+    c_cfg["qemu-*.toml"]
+    r_src["rust/<br/>Cargo.toml + src/main.rs"]
+    r_cfg["qemu-*.toml"]
+    stress_cfg["qemu-*.toml"]
+
+    root --> normal
+    root --> stress
+    normal --> smoke
+    normal --> ccase
+    normal --> rcase
+    smoke --> smoke_cfg
+    ccase --> c_src
+    ccase --> c_cfg
+    rcase --> r_src
+    rcase --> r_cfg
+    stress --> stressng
+    stressng --> stress_cfg
+```
+
+### 1.2 分组
+
+| 分组 | 路径 | 说明 | 运行命令 |
+|------|------|------|----------|
+| normal | `test-suit/starryos/normal/` | 普通功能测试 | `cargo xtask starry test qemu --target <arch>` |
+| stress | `test-suit/starryos/stress/` | 压力/负载测试 | `cargo xtask starry test qemu --target <arch> --stress` |
+
+#### 1.2.1 执行链路
+
+从实现上看，`cargo xtask starry test qemu ...` 的主流程为：
+
+1. 在 `mod.rs` 中解析 `--target`、`--stress`、`--test-case`
+2. 在 `test_suit.rs` 中归一化目标架构并发现当前测试组的 case
+3. 依据目标架构加载默认 build config，并确保基础 rootfs 已就绪
+4. 对每个 case：
+   - 读取 case 自己的 `qemu-{arch}.toml`
+   - 调用 `rootfs.rs` 为该 case 准备独立 rootfs 资产
+   - 若 case 含 `c/` 或 `rust/`，构建并把产物注入 case rootfs
+   - 将 case 级 QEMU 配置交给 `AppContext::qemu(...)`
+5. 汇总通过/失败列表并输出总耗时
+
+在当前实现中，case 目录结构、rootfs 资产准备和 QEMU 判定逻辑属于同一条执行链路。
+
+### 1.3 普通用例
+
+以下为 `normal/` 目录下当前已注册的全部测试用例：
+
+| 用例名 | 类型 | 说明 | 特殊说明 |
+|--------|------|------|----------|
+| `smoke` | 无源码 | 冒烟测试：启动后执行 Shell 命令验证系统基本可用 | 含板级配置 `board-orangepi-5-plus.toml` |
+| `helloworld` | C | 基础 Hello World 程序 | — |
+| `bug-open-dir-wronly` | C | 以 O_WRONLY 打开目录应返回 EISDIR 而非成功 | — |
+| `bug-pipe-fd-errno` | C | pipe fd 的 errno 行为回归测试 | — |
+| `bug-proc-status-affinity` | C | `/proc/status` 中 affinity 掩码显示正确性 | — |
+| `bug-unlinkat-einval` | C | unlinkat 对无效路径返回 EINVAL | — |
+| `test-credentials` | C | 进程凭证（uid/gid）系统调用测试 | — |
+| `test-epoll-pwait-sigsetsize` | C | epoll_pwait sigsetsize 参数边界测试 | — |
+| `test-fsync-dir` | C | fsync/fdatasync 对目录的操作行为 | — |
+| `test-prctl-pdeathsig` | C | prctl SET_PDEATHSIG 信号传递测试 | — |
+| `test-rlimit-stack` | C | RLIMIT_STACK 资源限制设置与验证 | — |
+| `test-sa-restart` | C | SA_RESTART 标志对信号中断系统调用的影响 | — |
+| `test_ioctl_fionbio_int` | C | ioctl FIONBIO 非阻塞 I/O 设置测试 | — |
+| `times` | C | times() 系统调用测试 | **仅支持 riscv64 架构**（仅有 `qemu-riscv64.toml`） |
+| `usb` | USB 设备驱动测试 | USB 子系统功能验证 | 使用 `prebuild.sh` 预构建脚本和 `include/` 头文件目录 |
+
+### 1.4 压力用例
+
+| 用例名 | 类型 | 说明 |
+|--------|------|------|
+| `stress-ng-0` | 无源码 | 通过 apk 安装 stress-ng 执行 CPU/内存/信号压力测试 |
+
+> **注**：StarryOS 当前暂无 Rust 测试用例。Rust 测试的目录结构模板（§3）保留供后续扩展使用。
+
+## 2. C 用例
+
+### 2.1 结构
+
+```mermaid
+flowchart TD
+    case["test-suit/starryos/normal/my_c_test/"]
+    cdir["c/<br/>C 源码目录"]
+    cmake["CMakeLists.txt"]
+    mainc["main.c"]
+    otherc["其他 .c / .h 文件"]
+    qemu["qemu-*.toml"]
+    board["board-orangepi-5-plus.toml<br/>可选"]
+
+    case --> cdir
+    case --> qemu
+    case --> board
+    cdir --> cmake
+    cdir --> mainc
+    cdir --> otherc
+```
+
+### 2.2 源码
+
+| 文件/目录 | 必需 | 说明 |
+|-----------|------|------|
+| `c/` | 是（C 测试） | C 源码目录，包含所有 `.c`、`.h` 文件和 CMake 脚本 |
+| `c/CMakeLists.txt` | 是 | CMake 构建脚本，定义目标架构的交叉编译规则 |
+| `c/main.c` | 是 | C 入口文件，包含 `main()` 函数 |
+| `c/*.c` | 是 | 其他 C 源文件 |
+
+#### 2.2.1 扩展文件
+
+部分测试用例可能包含以下额外文件：
+
+| 文件/目录 | 说明 | 示例用例 |
+|-----------|------|----------|
+| `c/prebuild.sh` | 构建前执行的预处理脚本，用于生成代码或准备依赖 | `usb` |
+| `c/include/` | 额外的头文件目录，供 C 源码 `#include` 引用 | `usb` |
+
+#### 2.2.2 架构支持
+
+默认情况下，每个测试用例应为所有支持的目标架构提供对应的 `qemu-{arch}.toml`。若某用例仅适用于特定架构，则只需提供该架构的配置文件，xtask 扫描时将自动跳过不匹配的架构。当前示例：
+
+| 用例名 | 支持架构 | 原因 |
+|--------|---------|------|
+| `times` | 仅 riscv64 | 该测试验证 riscv64 特定的 times 系统调用行为 |
+
+### 2.3 QEMU 配置
+
+`qemu-{arch}.toml` QEMU 测试配置，放在用例根目录下（与 `c/` 同级），定义 QEMU 启动参数、Shell 交互行为以及测试结果判定规则。
+
+**示例** — `normal/smoke/qemu-x86_64.toml`：
+
+```toml
+args = [
+    "-nographic",
+    "-device",
+    "virtio-blk-pci,drive=disk0",
+    "-drive",
+    "id=disk0,if=none,format=raw,file=${workspace}/target/x86_64-unknown-none/rootfs-x86_64.img",
+    "-device",
+    "virtio-net-pci,netdev=net0",
+    "-netdev",
+    "user,id=net0",
+]
+uefi = false
+to_bin = false
+shell_prefix = "root@starry:"
+shell_init_cmd = "pwd && echo 'All tests passed!'"
+success_regex = ["(?m)^All tests passed!\\s*$"]
+fail_regex = ['(?i)\bpanic(?:ked)?\b']
+timeout = 15
+```
+
+**示例** — `stress/stress-ng-0/qemu-x86_64.toml`：
+
+```toml
+args = [
+    "-nographic",
+    "-device",
+    "virtio-blk-pci,drive=disk0",
+    "-drive",
+    "id=disk0,if=none,format=raw,file=${workspace}/target/x86_64-unknown-none/rootfs-x86_64.img",
+    "-device",
+    "virtio-net-pci,netdev=net0",
+    "-netdev",
+    "user,id=net0",
+]
+uefi = false
+to_bin = false
+shell_prefix = "starry:~#"
+shell_init_cmd = '''
+apk update && \
+apk add stress-ng && \
+stress-ng --cpu 8 --timeout 10s && \
+stress-ng --sigsegv 8 --sigsegv-ops 1000    && \
+pwd && ls -al && echo 'All tests passed!'
+'''
+success_regex = ["(?m)^All tests passed!\\s*$"]
+fail_regex = ['(?i)\bpanic(?:ked)?\b', '(m)^stress-ng: info: .*failed: [1-9]\d*\s*$']
+timeout = 50
+```
+
+**字段说明：**
+
+| 字段 | 类型 | 必需 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| `args` | `[String]` | 是 | — | QEMU 命令行参数，支持 `${workspace}` 占位符 |
+| `uefi` | `bool` | 否 | `false` | 是否使用 UEFI 启动 |
+| `to_bin` | `bool` | 否 | `false` | 是否将 ELF 转换为 raw binary |
+| `shell_prefix` | `String` | 否 | — | Shell 提示符前缀，用于检测 shell 就绪 |
+| `shell_init_cmd` | `String` | 否 | — | Shell 就绪后执行的命令，支持多行 `'''` |
+| `success_regex` | `[String]` | 是 | — | 成功判定正则列表，任一匹配即判定成功 |
+| `fail_regex` | `[String]` | 否 | `[]` | 失败判定正则列表，任一匹配即判定失败 |
+| `timeout` | `u64` | 否 | — | 超时秒数 |
+
+### 2.4 Board 配置
+
+`board-{board_name}.toml` 板级测试配置，放在用例根目录下（与 `c/` 同级），用于物理开发板上的测试，通过串口交互判定结果。与 QEMU 配置相比没有 `args`、`uefi`、`to_bin` 字段，但增加了 `board_type` 标识板型。
+
+**示例** — `normal/smoke/board-orangepi-5-plus.toml`：
+
+```toml
+board_type = "OrangePi-5-Plus"
+shell_prefix = "root@starry:/root #"
+shell_init_cmd = "pwd && echo 'test pass'"
+success_regex = ["(?m)^test pass\\s*$"]
+fail_regex = []
+timeout = 300
+```
+
+**字段说明：**
+
+| 字段 | 类型 | 必需 | 说明 |
+|------|------|------|------|
+| `board_type` | `String` | 是 | 板型标识，需对应 `os/StarryOS/configs/board/{board_name}.toml` |
+| `shell_prefix` | `String` | 是 | Shell 提示符前缀 |
+| `shell_init_cmd` | `String` | 是 | Shell 就绪后执行的命令 |
+| `success_regex` | `[String]` | 是 | 成功判定正则列表 |
+| `fail_regex` | `[String]` | 否 | 失败判定正则列表 |
+| `timeout` | `u64` | 是 | 超时秒数，物理板通常需要更长时间（如 300s） |
+
+### 2.5 QEMU 流程
+
+#### 2.5.1 参数
+
+```text
+cargo xtask starry test qemu --target <arch> [--stress] [--test-case <case>]
+```
+
+| 参数 | 说明 |
+|------|------|
+| `--target` / `-t` | 目标架构或完整 target triple（如 `aarch64`、`riscv64`、`x86_64`、`loongarch64`，或 `aarch64-unknown-none-softfloat`、`riscv64gc-unknown-none-elf`） |
+| `--stress` | 运行 stress 组测试，缺省运行 normal 组 |
+| `--test-case` / `-c` | 仅运行指定用例 |
+
+#### 2.5.2 发现
+
+xtask 扫描 `test-suit/starryos/{normal|stress}/` 下所有子目录，检查其中是否存在 `qemu-{arch}.toml` 文件。若存在，则将该子目录名作为用例名，并将该 TOML 文件作为 QEMU 运行配置加载。
+
+```text
+发现路径: test-suit/starryos/<group>/<case-name>/qemu-<arch>.toml
+```
+
+例如，对于架构 `aarch64`：
+
+- `test-suit/starryos/normal/smoke/qemu-aarch64.toml` → 用例名 `smoke`
+- `test-suit/starryos/stress/stress-ng-0/qemu-aarch64.toml` → 用例名 `stress-ng-0`
+
+#### 2.5.3 构建
+
+xtask 定位用例目录中的 `c/CMakeLists.txt`，配置交叉编译工具链（根据目标架构选择对应的 sysroot 和 compiler），然后执行 `cmake --build` 编译 C 程序。
+
+CMake 脚本需要满足以下要求：
+
+- 使用 `cmake_minimum_required()` 指定最低版本
+- 通过 `project()` 声明项目名称和语言
+- 定义可执行目标，将所有 `.c` 源文件加入编译
+- 使用交叉编译工具链（xtask 会通过 `CMAKE_TOOLCHAIN_FILE` 传入）
+
+**示例** — `c/CMakeLists.txt`：
+
+```cmake
+cmake_minimum_required(VERSION 3.20)
+project(my_c_test C)
+
+add_executable(my_c_test main.c)
+```
+
+源码要求：
+
+- 入口函数为标准 `int main(void)` 或 `int main(int argc, char *argv[])`
+- 可引用标准 C 库头文件（`<stdio.h>`、`<stdlib.h>`、`<string.h>` 等）
+- 可引用 POSIX 头文件（`<pthread.h>`、`<unistd.h>`、`<sys/socket.h>` 等）
+- 所有 `.c` 和 `.h` 文件放在 `c/` 目录下
+
+#### 2.5.4 Rootfs
+
+rootfs 镜像是 StarryOS 测试的基础运行环境，提供完整的 Linux 用户态文件系统（含 shell、apk 包管理器等）。xtask 在测试运行前自动下载 rootfs，并将编译产物注入其中。
+
+**1. 下载 rootfs**
+
+xtask 根据目标架构选择对应的 rootfs 镜像，检查本地是否已存在。若不存在，自动从远程仓库下载压缩包并解压：
+
+```text
+下载地址: https://github.com/Starry-OS/rootfs/releases/download/20260214/rootfs-{arch}.img.xz
+存放路径: {workspace}/target/{target}/rootfs-{arch}.img
+```
+
+各架构对应的 rootfs 文件：
+
+| 架构 | rootfs 文件 | 存放路径 |
+|------|------------|----------|
+| `x86_64` | `rootfs-x86_64.img` | `target/x86_64-unknown-none/` |
+| `aarch64` | `rootfs-aarch64.img` | `target/aarch64-unknown-none-softfloat/` |
+| `riscv64` | `rootfs-riscv64.img` | `target/riscv64gc-unknown-none-elf/` |
+| `loongarch64` | `rootfs-loongarch64.img` | `target/loongarch64-unknown-none-softfloat/` |
+
+下载流程：
+
+1. 检查 `{target}/rootfs-{arch}.img` 是否存在
+2. 若不存在，下载 `rootfs-{arch}.img.xz` 到 `{target}/` 目录
+3. 解压 `.xz` 文件得到 `.img` 镜像
+4. 删除 `.xz` 压缩包
+
+也可通过命令手动下载：
+
+```text
+cargo xtask starry rootfs --arch <arch>
+```
+
+**2. 注入编译产物**
+
+对于含 C/Rust 源码的测试用例，xtask 将编译产物注入到对应架构的 rootfs 镜像中，使其在系统启动后可直接通过 shell 执行。
+
+**3. 配置 QEMU 磁盘参数**
+
+xtask 自动将 rootfs 镜像路径注入到 QEMU 的 `-drive` 参数中，替换 TOML 配置里的 `${workspace}` 占位符。如果配置中没有声明磁盘设备参数，xtask 会自动添加默认的 `virtio-blk-pci` 和 `virtio-net-pci` 设备。
+
+#### 2.5.5 执行
+
+1. 加载 `qemu-{arch}.toml` 配置，构造 QEMU 启动命令
+2. 启动 QEMU，开始捕获串口输出
+3. 若设置了 `shell_prefix`，等待该前缀出现后发送 `shell_init_cmd`
+4. 每收到新输出时，先检查 `fail_regex`（任一匹配 → 失败），再检查 `success_regex`（任一匹配 → 成功）
+5. 超时未判定 → 失败
+
+#### 2.5.6 补充
+
+与“单次构建后直接跑全部 case”的简单模式不同，StarryOS 当前实现是**逐 case 准备运行资产**：
+
+- 每个 case 会读取自己的 `qemu-{arch}.toml`
+- 每个 case 会获得独立的 rootfs 副本或注入结果
+- 若 QEMU 参数中未声明磁盘设备，运行前会自动补齐默认磁盘与网络参数
+
+这使得不同 case 可以拥有不同的 rootfs 内容、不同的 shell 初始化命令和不同的成功/失败判据，而不会彼此污染。
+
+### 2.6 Board 流程
+
+#### 2.6.1 参数
+
+```text
+cargo xtask starry test board [--test-group <group>] [--board-test-config <path>] [--board-type <type>] [--server <addr>] [--port <port>]
+```
+
+| 参数 | 说明 |
+|------|------|
+| `--test-group` / `-t` | 指定测试组名（如 `smoke-orangepi-5-plus`） |
+| `--board-test-config` | 指定板级测试配置文件路径；当前要求与 `--test-group` 一起使用 |
+| `--board-type` / `-b` | 指定板型（如 `OrangePi-5-Plus`） |
+| `--server` | 串口服务器地址 |
+| `--port` | 串口服务器端口 |
+
+#### 2.6.2 发现
+
+xtask 扫描 `test-suit/starryos/normal/` 下所有子目录，检查其中是否存在 `board-{board_name}.toml` 文件。若存在，进一步验证对应的构建配置 `os/StarryOS/configs/board/{board_name}.toml` 是否存在，从中提取架构和 target 信息。
+
+```text
+测试配置:   test-suit/starryos/normal/<case>/board-<board_name>.toml
+构建配置:   os/StarryOS/configs/board/<board_name>.toml
+```
+
+#### 2.6.3 构建
+
+与 QEMU 测试相同，xtask 使用 CMake 交叉编译 C 程序。
+
+#### 2.6.4 Rootfs
+
+与 QEMU 测试相同，详见[第 2.5.4 节 rootfs 准备与注入](#254-rootfs-准备与注入)。
+
+#### 2.6.5 执行
+
+1. 加载 `board-{board_name}.toml` 配置，通过串口服务器连接物理板
+2. 等待 `shell_prefix` 出现后发送 `shell_init_cmd`
+3. 检查 `fail_regex` 和 `success_regex` 判定结果
+4. 超时未判定 → 失败
+
+### 2.7 新增用例
+
+**新增普通测试：**
+
+1. 在 `test-suit/starryos/normal/` 下创建用例目录（如 `my_c_feature/`）
+2. 创建 `c/` 子目录，放入 `CMakeLists.txt` 和 `.c` 源文件
+3. 为每个支持的架构创建 `qemu-{arch}.toml`
+4. 如需在物理板上测试，创建 `board-{board_name}.toml`
+
+**新增压力测试：**
+
+1. 在 `test-suit/starryos/stress/` 下创建用例目录
+2. 创建 `c/` 子目录，放入 `CMakeLists.txt` 和 `.c` 源文件
+3. 为每个支持的架构创建 `qemu-{arch}.toml`
+4. 压力测试通常使用更长的 `timeout` 和更复杂的 `shell_init_cmd`
+
+## 3. Rust 用例
+
+### 3.1 结构
+
+```mermaid
+flowchart TD
+    case["test-suit/starryos/normal/my_rust_test/"]
+    rustdir["rust/<br/>标准 Cargo 项目"]
+    cargo["Cargo.toml"]
+    src["src/main.rs"]
+    qemu["qemu-*.toml"]
+
+    case --> rustdir
+    case --> qemu
+    rustdir --> cargo
+    rustdir --> src
+```
+
+### 3.2 源码
+
+| 文件/目录 | 必需 | 说明 |
+|-----------|------|------|
+| `rust/` | 是（Rust 测试） | Rust 源码目录，标准 Cargo 项目结构 |
+| `rust/Cargo.toml` | 是 | 包定义文件 |
+| `rust/src/main.rs` | 是 | 入口源码文件 |
+| `rust/src/*.rs` | 是 | 其他源码文件 |
+
+源码要求：
+
+- 入口函数为标准 `fn main()`
+- 可使用 `#![no_std]` 和 `#![no_main]` 配合自定义入口（视 OS 支持而定）
+- `Cargo.toml` 中声明所需的依赖和 features
+
+### 3.3 QEMU 配置
+
+配置文件格式与 C 测试用例相同，详见[第 2.3 节 QEMU 测试配置](#23-qemu-测试配置)。
+
+### 3.4 Board 配置
+
+配置文件格式与 C 测试用例相同，详见[第 2.4 节 板级测试配置](#24-板级测试配置)。
+
+### 3.5 QEMU 流程
+
+#### 3.5.1 参数
+
+与 C 测试用例相同：`cargo xtask starry test qemu --target <arch> [--stress] [--test-case <case>]`
+
+详见[第 2 节 C 测试用例](#2-c-测试用例)。
+
+#### 3.5.2 发现
+
+与 C 测试用例相同，xtask 扫描 `test-suit/starryos/{normal|stress}/` 下所有子目录中的 `qemu-{arch}.toml`。
+
+#### 3.5.3 构建
+
+xtask 定位用例目录中的 `rust/Cargo.toml`，根据目标架构配置交叉编译目标，执行 `cargo build` 编译 Rust 程序。
+
+#### 3.5.4 Rootfs
+
+与 C 测试用例相同，详见[第 2.5.4 节 rootfs 准备与注入](#254-rootfs-准备与注入)。
+
+#### 3.5.5 执行
+
+与 C 测试用例相同，详见[第 2.5.5 节 执行测例](#255-执行测例)。
+
+### 3.6 Board 流程
+
+#### 3.6.1 参数
+
+与 C 测试用例相同：`cargo xtask starry test board [--test-group <group>] [--board-type <type>] [--server <addr>] [--port <port>]`
+
+详见[第 2 节 C 测试用例](#2-c-测试用例)。
+
+#### 3.6.2 发现
+
+与 C 测试用例相同，xtask 扫描 `test-suit/starryos/normal/` 下所有子目录中的 `board-{board_name}.toml`。
+
+#### 3.6.3 构建
+
+与 QEMU 测试相同，xtask 使用 `cargo build` 交叉编译 Rust 程序。
+
+#### 3.6.4 Rootfs
+
+与 QEMU 测试相同，详见[第 2.5.4 节 rootfs 准备与注入](#254-rootfs-准备与注入)。
+
+#### 3.6.5 执行
+
+与 C 测试用例相同，详见[第 2.6.5 节 执行测例](#265-执行测例)。
+
+### 3.7 新增用例
+
+**新增普通测试：**
+
+1. 在 `test-suit/starryos/normal/` 下创建用例目录
+2. 创建 `rust/` 子目录，放入 `Cargo.toml` 和 `src/main.rs`
+3. 为每个支持的架构创建 `qemu-{arch}.toml`
+4. 如需在物理板上测试，创建 `board-{board_name}.toml`
+
+**新增压力测试：**
+
+1. 在 `test-suit/starryos/stress/` 下创建用例目录
+2. 创建 `rust/` 子目录，放入 `Cargo.toml` 和 `src/main.rs`
+3. 为每个支持的架构创建 `qemu-{arch}.toml`
+
+## 4. 无源码用例
+
+无源码用例不需要编写 C 或 Rust 代码，而是利用 StarryOS 文件系统中包管理器（如 `apk add`）直接安装已有的可执行程序，然后通过 Shell 交互驱动测试。此类用例只需提供平台配置文件（`qemu-{arch}.toml` 或 `board-{board_name}.toml`），测试逻辑完全由 `shell_init_cmd` 中的命令序列定义。
+
+典型的无源码用例是 `stress-ng-0`：系统启动后，`shell_init_cmd` 中通过 `apk add stress-ng` 安装压力测试工具，再执行对应的测试命令。
+
+### 4.1 结构
+
+```mermaid
+flowchart TD
+    root["test-suit/starryos/"]
+    normal["normal/"]
+    stress["stress/"]
+    smoke["smoke/<br/>仅平台配置文件"]
+    stressng["stress-ng-0/<br/>apk 安装后执行"]
+    smoke_cfg["qemu-*.toml<br/>board-orangepi-5-plus.toml"]
+    stress_cfg["qemu-*.toml"]
+
+    root --> normal
+    root --> stress
+    normal --> smoke
+    stress --> stressng
+    smoke --> smoke_cfg
+    stressng --> stress_cfg
+```
+
+### 4.2 配置
+
+配置文件格式与 C/Rust 测试用例相同，详见[第 2.3 节 QEMU 测试配置](#23-qemu-测试配置)和[第 2.4 节 板级测试配置](#24-板级测试配置)。
+
+关键区别在于：
+
+- 目录中不包含 `c/` 或 `rust/` 子目录
+- 测试逻辑完全由 `shell_init_cmd` 定义，通常包含安装和执行两个阶段
+
+**示例** — `stress/stress-ng-0/qemu-x86_64.toml`：
+
+```toml
+shell_init_cmd = '''
+apk update && \
+apk add stress-ng && \
+stress-ng --cpu 8 --timeout 10s && \
+stress-ng --sigsegv 8 --sigsegv-ops 1000 && \
+pwd && ls -al && echo 'All tests passed!'
+'''
+```
+
+### 4.3 流程
+
+1. xtask 扫描发现用例目录中的 `qemu-{arch}.toml`
+2. 由于没有 `c/` 或 `rust/` 子目录，跳过构建和 rootfs 注入步骤
+3. 直接使用 StarryOS 预构建的 rootfs 镜像启动 QEMU
+4. 等待 `shell_prefix` 出现后发送 `shell_init_cmd`（安装并运行测试程序）
+5. 通过 `success_regex` / `fail_regex` 判定结果
+
+### 4.4 新增用例
+
+**新增普通测试：**
+
+1. 在 `test-suit/starryos/normal/` 下创建用例目录（如 `my_smoke_test/`）
+2. 为每个支持的架构创建 `qemu-{arch}.toml`，在 `shell_init_cmd` 中编写安装和测试命令
+3. 如需在物理板上测试，创建 `board-{board_name}.toml`
+
+**新增压力测试：**
+
+1. 在 `test-suit/starryos/stress/` 下创建用例目录
+2. 为每个支持的架构创建 `qemu-{arch}.toml`
+3. 压力测试通常使用更长的 `timeout` 和更复杂的 `shell_init_cmd`
+
+## 5. 限制
+
+- StarryOS 当前**没有正式在仓库中落地的 Rust 测试用例**；Rust 章节主要描述目录模板和未来扩展方式。
+- `test board` 当前只发现 `normal/` 组中的 `board-*.toml`，不会扫描 `stress/` 组。
+- CI 中虽然预留了 StarryOS `stress` 测试矩阵，但 `.github/workflows/ci.yml` 里当前仍是占位命令 `echo "TODO!"`，尚未接入正式执行。
+- 文档中的 QEMU / board 配置字段是当前主流实现约定，但底层执行仍依赖 `ostool` 的配置解析与运行行为。

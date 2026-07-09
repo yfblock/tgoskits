@@ -5,11 +5,18 @@ name: MMIO audit
 # `read_volatile` / `write_volatile` register access outside the canonical
 # `mmio-api` crate shows up as a result here.
 #
-# The queries are purely syntactic, but the CodeQL Rust extractor needs to
-# observe a build to capture the full workspace source (a no-build database
-# misses some crates such as sdhci-cv1800 / arm-gic-driver / dwmmc-host). We
-# therefore build a single leaf crate (`mmio-api`, which compiles for the host)
-# under the extractor; that is enough to scan every workspace member.
+# The queries depend on `codeql/rust-all`. The CodeQL CLI bundle from
+# github/codeql-cli-binaries ships only the Rust *extractor* (no Rust query
+# library), and the library bundled with github/codeql-action is incomplete in
+# 2.26.0 (its `codeql/rust-all` references a `codeql/namebinding` that is not
+# shipped). We therefore drive `codeql` directly: the CLI bundle for the
+# extractor, plus a version-matched sparse checkout of github/codeql for the
+# `codeql/rust-all` query library (resolved via --search-path).
+#
+# A build is required: a no-build database misses several crates that contain
+# ad-hoc MMIO access (sdhci-cv1800, arm-gic-driver, dwmmc-host, ...), so
+# `cargo build -p mmio-api` is run under the extractor for full workspace
+# source coverage.
 
 on:
   push:
@@ -37,6 +44,8 @@ jobs:
   mmio-audit:
     name: CodeQL MMIO read/write audit
     runs-on: ubuntu-latest
+    env:
+      CODEQL_VERSION: "2.26.0"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,20 +53,50 @@ jobs:
       - name: Set up Rust (pinned by rust-toolchain.toml)
         uses: actions-rust-lang/setup-rust-toolchain@v1
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+      - name: Cache CodeQL CLI bundle
+        id: cache-codeql
+        uses: actions/cache@v4
         with:
-          languages: rust
-          build-mode: none
-          config: |
-            disable-default-queries: true
-            queries:
-              - uses: ./codeql/mmio-audit
+          path: ${{ runner.temp }}/codeql
+          key: codeql-cli-linux64-${{ env.CODEQL_VERSION }}
 
-      - name: Build for CodeQL extraction
-        run: cargo build -p mmio-api
+      - name: Download CodeQL CLI bundle
+        if: steps.cache-codeql.outputs.cache-hit != 'true'
+        run: |
+          curl -fsSL -o /tmp/codeql.zip \
+            "https://github.com/github/codeql-cli-binaries/releases/download/v${CODEQL_VERSION}/codeql-linux64.zip"
+          unzip -q /tmp/codeql.zip -d "$RUNNER_TEMP"
 
-      - name: Analyze
-        uses: github/codeql-action/analyze@v3
+      - name: Add CodeQL to PATH
+        run: echo "$RUNNER_TEMP/codeql" >> "$GITHUB_PATH"
+
+      - name: Fetch codeql/rust-all source library (version-matched)
+        run: |
+          git clone --depth 1 --filter=blob:none --sparse \
+            --branch "codeql-cli/v${CODEQL_VERSION}" \
+            https://github.com/github/codeql.git "$RUNNER_TEMP/codeql-src"
+          cd "$RUNNER_TEMP/codeql-src"
+          git sparse-checkout set rust/ql/lib rust/ql/src shared
+
+      - name: Build CodeQL database (intercepting cargo build)
+        run: |
+          codeql database create "$RUNNER_TEMP/mmio-db" \
+            --language=rust \
+            --source-root=. \
+            --command="cargo build -p mmio-api" \
+            --overwrite
+
+      - name: Run MMIO audit queries
+        run: |
+          codeql database analyze "$RUNNER_TEMP/mmio-db" \
+            codeql/mmio-audit/AdHocVolatileRegisterAccess.ql \
+            codeql/mmio-audit/InlineAsmRegisterAccess.ql \
+            --search-path="$RUNNER_TEMP/codeql-src" \
+            --format=sarif-latest \
+            --output="$RUNNER_TEMP/mmio-audit.sarif"
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
         with:
+          sarif_file: ${{ runner.temp }}/mmio-audit.sarif
           category: mmio-audit

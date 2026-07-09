@@ -90,17 +90,26 @@ grep -rnE '"(str|strb|strh|ldr|ldrb|ldrh|ldur|stur)(\{| |,|\[)' --include='*.rs'
 
 `.github/workflows/mmio-audit.yml` runs the audit on push to `main` and on pull
 requests whose changed paths include `**/*.rs`, `codeql/**`, or the workflow
-itself. It uses `github/codeql-action/init@v3` with `languages: rust`,
-`build-mode: none`, and `config.queries: ./codeql/mmio-audit` (so only this pack
-runs — default CodeQL queries are disabled), then `cargo build -p mmio-api` for
-extraction, then `github/codeql-action/analyze@v3`, uploading SARIF to the
-repo's **Security** tab. In CI the `codeql/rust-all` dependency is resolved from
-the CodeQL CLI bundle, so no local `codeql-lib` clone is needed.
+itself.
 
-A build is required (not `build-mode: none` source-only): a no-build database
-misses several crates that contain ad-hoc MMIO access
-(`sdhci-cv1800`, `arm-gic-driver`, `dwmmc-host`, …), so `cargo build -p mmio-api`
-under the extractor is what gives full workspace coverage.
+The queries depend on `codeql/rust-all`, which is awkward to obtain in CI:
+the `github/codeql-cli-binaries` `codeql-linux64.zip` ships only the Rust
+**extractor** (no Rust query library), and the library bundled with
+`github/codeql-action` is incomplete in 2.26.0 (its `codeql/rust-all` references
+a `codeql/namebinding` that is not shipped, so `config.queries` fails to
+resolve). The workflow therefore drives the `codeql` CLI directly:
+
+1. download + cache the `codeql-linux64.zip` CLI bundle (extractor only),
+2. sparse-checkout a **version-matched** `github/codeql` source tree
+   (`codeql-cli/v2.26.0`) for the `codeql/rust-all` library,
+3. `codeql database create --command='cargo build -p mmio-api'` (a build is
+   required — a no-build database misses `sdhci-cv1800`, `arm-gic-driver`,
+   `dwmmc-host`, …),
+4. `codeql database analyze --search-path=<source> …` → SARIF,
+5. `github/codeql-action/upload-sarif@v3` → the repo's **Security** tab.
+
+This is the same recipe `codeql/run-mmio-audit.sh` uses locally (minimal CLI +
+cloned source on `--search-path`), validated end-to-end (292 ad-hoc hits).
 
 ## Requirements (local runs)
 

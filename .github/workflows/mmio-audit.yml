@@ -1,0 +1,63 @@
+name: MMIO audit
+
+# Runs the CodeQL MMIO read/write audit (codeql/mmio-audit) and uploads the
+# findings as SARIF to the repository's "Security" tab. Any new hand-rolled
+# `read_volatile` / `write_volatile` register access outside the canonical
+# `mmio-api` crate shows up as a result here.
+#
+# The queries are purely syntactic, but the CodeQL Rust extractor needs to
+# observe a build to capture the full workspace source (a no-build database
+# misses some crates such as sdhci-cv1800 / arm-gic-driver / dwmmc-host). We
+# therefore build a single leaf crate (`mmio-api`, which compiles for the host)
+# under the extractor; that is enough to scan every workspace member.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/*.rs"
+      - "codeql/**"
+      - ".github/workflows/mmio-audit.yml"
+      - "Cargo.toml"
+      - "rust-toolchain.toml"
+  pull_request:
+    paths:
+      - "**/*.rs"
+      - "codeql/**"
+      - ".github/workflows/mmio-audit.yml"
+      - "Cargo.toml"
+      - "rust-toolchain.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  mmio-audit:
+    name: CodeQL MMIO read/write audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Rust (pinned by rust-toolchain.toml)
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: rust
+          build-mode: none
+          config: |
+            disable-default-queries: true
+            queries:
+              - uses: ./codeql/mmio-audit
+
+      - name: Build for CodeQL extraction
+        run: cargo build -p mmio-api
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: mmio-audit

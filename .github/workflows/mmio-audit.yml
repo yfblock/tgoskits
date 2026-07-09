@@ -100,3 +100,20 @@ jobs:
         with:
           sarif_file: ${{ runner.temp }}/mmio-audit.sarif
           category: mmio-audit
+
+      - name: Fail if ad-hoc MMIO access was found
+        run: |
+          # Count results across all runs in the SARIF and fail the job if any
+          # ad-hoc MMIO read/write access is present. (SARIF is already uploaded
+          # above, so the findings are still reviewable in the Security tab /
+          # PR annotations even when this step fails.)
+          n=$(python3 -c '
+          import json, sys
+          d = json.load(open(sys.argv[1]))
+          print(sum(len(r.get("results", [])) for r in d.get("runs", [])))
+          ' "$RUNNER_TEMP/mmio-audit.sarif")
+          echo "MMIO audit results: $n"
+          if [ "$n" -gt 0 ]; then
+            echo "::error::Found $n ad-hoc MMIO read/write access site(s) outside mmio-api — migrate to mmio_api::MmioRaw::read/write. See the uploaded SARIF."
+            exit 1
+          fi

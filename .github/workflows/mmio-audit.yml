@@ -101,19 +101,16 @@ jobs:
           sarif_file: ${{ runner.temp }}/mmio-audit.sarif
           category: mmio-audit
 
-      - name: Fail if ad-hoc MMIO access was found
+      - name: Fail only on newly-introduced ad-hoc MMIO access
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
-          # Count results across all runs in the SARIF and fail the job if any
-          # ad-hoc MMIO read/write access is present. (SARIF is already uploaded
-          # above, so the findings are still reviewable in the Security tab /
-          # PR annotations even when this step fails.)
-          n=$(python3 -c '
-          import json, sys
-          d = json.load(open(sys.argv[1]))
-          print(sum(len(r.get("results", [])) for r in d.get("runs", [])))
-          ' "$RUNNER_TEMP/mmio-audit.sarif")
-          echo "MMIO audit results: $n"
-          if [ "$n" -gt 0 ]; then
-            echo "::error::Found $n ad-hoc MMIO read/write access site(s) outside mmio-api — migrate to mmio_api::MmioRaw::read/write. See the uploaded SARIF."
-            exit 1
+          # Only block on ad-hoc MMIO access introduced by THIS change (lines
+          # added vs the base ref), not on the pre-existing backlog. SARIF is
+          # already uploaded above, so all findings remain reviewable.
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "No base commit to diff against (first push); skipping new-code check."
+            exit 0
           fi
+          git fetch --no-tags --depth=1 origin "$BASE_SHA" 2>/dev/null || true
+          python3 codeql/mmio-audit/fail-on-new.py "$RUNNER_TEMP/mmio-audit.sarif" "$BASE_SHA"

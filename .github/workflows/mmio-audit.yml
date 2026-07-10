@@ -49,6 +49,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history so `git diff <base>...HEAD` in the fail-on-new step
+          # can resolve the PR base commit.
+          fetch-depth: 0
 
       - name: Set up Rust (pinned by rust-toolchain.toml)
         uses: actions-rust-lang/setup-rust-toolchain@v1

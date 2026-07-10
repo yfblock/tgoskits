@@ -1,0 +1,7 @@
+---
+library: false
+warnOnImplicitThis: false
+name: tgoskits/mmio-audit
+version: 0.1.0
+dependencies:
+  codeql/rust-all: "*"

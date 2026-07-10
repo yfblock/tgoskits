@@ -63,3 +63,7 @@ os/StarryOS-REF
 .Ds_Store
 starry-*.log
 loongarch64-axvisor-guest-tests.md
+
+# CodeQL MMIO audit (local helpers / outputs)
+codeql/codeql-lib/
+codeql/mmio-audit-results.csv

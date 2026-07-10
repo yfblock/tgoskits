@@ -1,0 +1,6 @@
+# MMIO read/write audit suite — runs every query in this pack.
+# Run with:
+#   codeql database analyze <db> codeql/mmio-audit/mmio-audit.qls \
+#     --search-path=codeql/codeql-lib --format=csv --output=results.csv
+query: ./AdHocVolatileRegisterAccess.ql
+query: ./InlineAsmRegisterAccess.ql

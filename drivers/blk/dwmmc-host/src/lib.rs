@@ -571,3 +571,11 @@ mod tests {
         assert_eq!(host.data_cmd_index, 6);
     }
 }
+
+/// DEMO for the codeql mmio-audit CI: an ad-hoc volatile register read that
+/// bypasses `mmio-api`. Intentionally here to trigger the audit's
+/// "newly-introduced ad-hoc MMIO access" check — delete once verified.
+#[allow(dead_code)]
+pub fn codeql_mmio_audit_trigger_read(addr: usize) -> u32 {
+    unsafe { core::ptr::read_volatile(addr as *const u32) }
+}

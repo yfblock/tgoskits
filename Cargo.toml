@@ -326,3 +326,10 @@ bcm2835-sdhci = "0.1.1-preview.1"
 x86 = "0.52"
 kmod-tools = "0.3"
 kprobe = "0.6"
+
+# 开发期本地 override：把 sg200x-bsp 解析到 sibling 本地源码，使其新增的
+# UVC 会话层（usb::class::uvc_session：错误恢复 + 热拔插）等改动对 StarryOS 可见。
+# 发布新版 sg200x-bsp 后应改为 bump workspace.dependencies 里的 version 并移除此 patch。
+# 详见 docs/docs/development/components.md §5.4。
+[patch.crates-io]
+sg200x-bsp = { git = "https://github.com/yfblock/sg200x-bsp", branch = "oscomp" }

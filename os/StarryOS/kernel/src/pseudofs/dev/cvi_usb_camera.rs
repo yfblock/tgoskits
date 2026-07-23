@@ -18,9 +18,8 @@ use sg200x_bsp::{
     },
     usb::{
         self,
-        class::uvc,
-        error::UsbError,
-        host::{self, UvcEnumerated, dwc2, dwc2::ep0 as dwc2_ep0},
+        class::{uvc, uvc_session::UvcSession},
+        host::dwc2,
     },
 };
 use starry_vm::{VmMutPtr, vm_write_slice};
@@ -53,8 +52,9 @@ fn iomap_usize(paddr: usize, size: usize) -> usize {
 
 const CAMERA_FORMAT_MJPEG: u8 = 1;
 const MIN_VALID_JPEG_BYTES: usize = 4096;
-const MAX_CAPTURE_TRIES: u32 = 8;
 /// Default resolution cap (640×480 = 307200 pixels) guiding UVC frame selection.
+/// Also the JPU 1 MiB DMA pool's hard decode ceiling — larger frames make
+/// `jpu_alloc` fail.
 const DEFAULT_RESOLUTION: u32 = 640 * 480;
 
 pub const CVI_CAMERA_IOCTL_INIT: u32 = 1;
@@ -72,15 +72,14 @@ pub struct CameraInfo {
     pub connected: u8,
 }
 
-struct UsbCameraSession {
-    cam: UvcEnumerated,
-    sel: uvc::UvcStreamSelection,
-}
-
 #[derive(Default)]
 struct UsbCameraState {
-    session: Option<UsbCameraSession>,
+    /// 当前 UVC 会话。`None` = 未初始化，或上次因拔插/错误拆除后待重新建立。
+    session: Option<UvcSession>,
     jpu: Option<JpuDecoder>,
+    /// 板级平台初始化（时钟/PHY/VBUS/MMIO 基址/DWC2 probe）只做一次；热拔插重 open
+    /// 时不重复——控制器由 `UvcSession::open` 内部 `dwc2_host_init` 重新 bring-up。
+    platform_inited: bool,
 }
 
 fn jpu_dma_to_phys(v: usize) -> usize {
@@ -157,170 +156,124 @@ fn enable_usb_vbus_gpio() {
     gpio.pin(VBUS_GPIO_PIN).set(VBUS_GPIO_ACTIVE_HIGH);
 }
 
-fn map_usb_init_error(e: UsbError) -> &'static str {
-    match e {
-        UsbError::NotImplemented => "no VS bulk/isoch video endpoint found",
-        _ => "failed to parse UVC stream parameters",
+impl UsbCameraState {
+    /// 板级平台初始化（幂等，仅首次执行）。
+    fn platform_init_once(&mut self) -> VfsResult<()> {
+        if self.platform_inited {
+            return Ok(());
+        }
+        unsafe {
+            enable_usb_clocks_cv181x();
+            cvitek_usb_top_host_bringup();
+        }
+        pinmux_usb_vbus_det_gpio_output_prep();
+        enable_usb_vbus_gpio();
+        ax_task::sleep(Duration::from_micros(2_000_000));
+
+        usb::set_dwc2_base_virt(iomap_usize(DWC2_BASE, REG_MMIO_SIZE));
+        usb::set_cv182x_phy_base_virt(iomap_usize(CV182X_USB2_PHY_BASE, REG_MMIO_SIZE));
+        usb::set_usb_dma_to_phys_fn(Some(ep0_dma_virt_to_phys));
+
+        unsafe {
+            dwc2::dwc2_probe().map_err(|e| {
+                warn!("cvi-camera: DWC2 probe failed: {e:?}");
+                AxError::Io
+            })?;
+        }
+        self.platform_inited = true;
+        Ok(())
     }
-}
 
-fn init_usb_camera() -> Result<UsbCameraSession, &'static str> {
-    unsafe {
-        enable_usb_clocks_cv181x();
-        cvitek_usb_top_host_bringup();
-    }
-    pinmux_usb_vbus_det_gpio_output_prep();
-    enable_usb_vbus_gpio();
-    ax_task::sleep(Duration::from_micros(2_000_000));
+    /// 确保会话就绪：平台初始化 + `UvcSession::open`（枚举/协商/warmup）。
+    /// 已有会话则直接返回；会话为 None（未初始化或上次 teardown 后）则重新建立。
+    fn ensure_initialized(&mut self) -> VfsResult<()> {
+        if self.session.is_some() {
+            return Ok(());
+        }
+        self.platform_init_once()?;
 
-    usb::set_dwc2_base_virt(iomap_usize(DWC2_BASE, REG_MMIO_SIZE));
-    usb::set_cv182x_phy_base_virt(iomap_usize(CV182X_USB2_PHY_BASE, REG_MMIO_SIZE));
-    usb::set_usb_dma_to_phys_fn(Some(ep0_dma_virt_to_phys));
+        // 帧选择偏好：640×480（JPU pool 上限）+ 倾向 30fps。
+        uvc::set_preferred_max_pixels(DEFAULT_RESOLUTION);
+        uvc::set_preferred_frame_size(640, 480);
+        uvc::set_preferred_frame_interval(333_333);
 
-    unsafe {
-        dwc2::dwc2_probe().map_err(|e| {
-            warn!("cvi-camera: DWC2 probe failed: {e:?}");
-            "DWC2 probe failed"
-        })?;
-    }
-
-    let mut last_err = None;
-    let extras = (0..4)
-        .find_map(|attempt| {
-            if attempt > 0 {
-                busy_wait(Duration::from_micros(1_500_000 * attempt as u64));
-            }
-            match host::enumerate_topology_only() {
-                Ok(extras) => Some(extras),
-                Err(e) => {
-                    warn!("cvi-camera: USB enumerate failed #{}: {:?}", attempt + 1, e);
-                    last_err = Some(e);
-                    None
-                }
-            }
-        })
-        .ok_or_else(|| {
-            warn!(
-                "cvi-camera: USB enumerate retries exhausted: {:?}",
-                last_err
-            );
-            "USB topology enumeration failed"
-        })?;
-
-    let cam = extras.uvc.ok_or("no UVC camera detected")?;
-    info!(
-        "cvi-camera: UVC addr={} VID={:04x} PID={:04x} ep0_mps={}",
-        cam.addr, cam.vid, cam.pid, cam.ep0_mps
-    );
-
-    let dev = u32::from(cam.addr);
-    let ep0 = cam.ep0_mps;
-    let cfg_buf = uvc::read_configuration_descriptor(dev, ep0, 1).map_err(|e| {
-        warn!("cvi-camera: read configuration descriptor failed: {e:?}");
-        "failed to read configuration descriptor"
-    })?;
-    let cfg_total = u16::from_le_bytes([cfg_buf[2], cfg_buf[3]]) as usize;
-    let cfg = &cfg_buf[..cfg_total.min(cfg_buf.len())];
-    uvc::set_preferred_max_pixels(DEFAULT_RESOLUTION);
-    let mut sel = uvc::parse_uvc_video_stream(cfg, cfg_total).map_err(|e| {
-        warn!("cvi-camera: parse UVC video stream failed: {e:?}");
-        map_usb_init_error(e)
-    })?;
-
-    if let Some(entities) = uvc::parse_uvc_control_entities(cfg, cfg_total) {
         let tune = uvc::UvcImageTuning {
             brightness: Some(96),
             ..uvc::UvcImageTuning::default()
         };
-        let _ = uvc::uvc_init_camera_controls(dev, ep0, &entities, &tune);
-    }
-
-    uvc::uvc_start_video_stream(dev, ep0, &mut sel).map_err(|e| {
-        warn!("cvi-camera: start UVC stream failed: {e:?}");
-        "UVC PROBE/COMMIT or SET_INTERFACE failed"
-    })?;
-    info!(
-        "cvi-camera: stream ready {}x{} payload={} frame_size={}",
-        sel.frame_w, sel.frame_h, sel.negotiated_payload_size, sel.negotiated_frame_size
-    );
-
-    // Warm-up frame: discard the first capture after stream start so the
-    // isochronous pipeline and DMA buffer are ready for real reads.
-    let _ = uvc::uvc_capture_one_frame(dev, ep0, &sel);
-    Ok(UsbCameraSession { cam, sel })
-}
-
-fn capture_frame(session: &UsbCameraSession) -> Result<&'static [u8], &'static str> {
-    let dev = u32::from(session.cam.addr);
-    let ep0 = session.cam.ep0_mps;
-    let mut last_n = 0;
-    let mut last_msg = None;
-    for attempt in 0..MAX_CAPTURE_TRIES {
-        let n = uvc::uvc_capture_one_frame(dev, ep0, &session.sel).map_err(|e| {
-            warn!("cvi-camera: capture failed: {e:?}");
-            "frame capture failed"
-        })?;
-        last_n = n;
-        let frame = dwc2_ep0::dma_rx_slice(uvc::UVC_ASSEMBLED_JPEG_DMA_OFF, n)
-            .ok_or("DMA slice out of bounds")?;
-        let starts_jpeg = n >= 2 && frame[0] == 0xff && frame[1] == 0xd8;
-        let ends_jpeg = n >= 2 && frame[n - 2] == 0xff && frame[n - 1] == 0xd9;
-        if starts_jpeg && ends_jpeg && n >= MIN_VALID_JPEG_BYTES {
-            return Ok(frame);
+        match UvcSession::open(&tune) {
+            Ok(s) => {
+                info!(
+                    "cvi-camera: UVC session ready addr={} {}x{}",
+                    s.dev(),
+                    s.selection().frame_w,
+                    s.selection().frame_h
+                );
+                self.session = Some(s);
+                Ok(())
+            }
+            Err(e) => {
+                warn!("cvi-camera: UvcSession::open failed: {e:?}");
+                Err(AxError::Io)
+            }
         }
-        last_msg = Some(if !starts_jpeg {
-            "first bytes are not ff d8"
-        } else if !ends_jpeg {
-            "last bytes are not ff d9 (truncated)"
-        } else {
-            "frame too small"
-        });
-        warn!(
-            "cvi-camera: invalid frame (try #{}/{}, size={}, {}), reset FID",
-            attempt + 1,
-            MAX_CAPTURE_TRIES,
-            n,
-            last_msg.unwrap_or("?")
-        );
-        uvc::reset_frame_continuity();
-    }
-    warn!(
-        "cvi-camera: no complete JPEG after {} retries, size={} {}",
-        MAX_CAPTURE_TRIES,
-        last_n,
-        last_msg.unwrap_or("?")
-    );
-    dwc2_ep0::dma_rx_slice(uvc::UVC_ASSEMBLED_JPEG_DMA_OFF, last_n).ok_or("DMA slice out of bounds")
-}
-
-impl UsbCameraState {
-    fn ensure_initialized(&mut self) -> VfsResult<()> {
-        if self.session.is_none() {
-            self.session = Some(init_usb_camera().map_err(|msg| {
-                warn!("cvi-camera: init failed: {msg}");
-                AxError::Io
-            })?);
-        }
-        Ok(())
     }
 
     fn info(&mut self) -> VfsResult<CameraInfo> {
         self.ensure_initialized()?;
         let session = self.session.as_ref().ok_or(AxError::BadState)?;
         Ok(CameraInfo {
-            width: session.sel.frame_w,
-            height: session.sel.frame_h,
+            width: session.selection().frame_w,
+            height: session.selection().frame_h,
             format: CAMERA_FORMAT_MJPEG,
-            connected: 1,
+            connected: u8::from(session.connected()),
         })
     }
 
+    /// 抓 1 帧 MJPEG，带错误恢复 + 热拔插透明处理。
+    ///
+    /// `UvcSession::capture_recovering` 内部按 sdmmc 风格重试（中止通道 + 重协商）；
+    /// 返回 `Disconnected`/`NeedsReenum` 时拆除会话并重新 `open` 再试一次（即热插回）。
+    /// 仍失败则返回 `Io`（摄像头可能已拔出，userspace 下次 ioctl 会再次尝试重建）。
     fn frame(&mut self) -> VfsResult<&'static [u8]> {
-        self.ensure_initialized()?;
-        capture_frame(self.session.as_ref().ok_or(AxError::BadState)?).map_err(|msg| {
-            warn!("cvi-camera: capture failed: {msg}");
-            AxError::Io
-        })
+        for attempt in 0..2u32 {
+            self.ensure_initialized()?;
+            let res = self
+                .session
+                .as_mut()
+                .expect("session set by ensure_initialized")
+                .capture_recovering();
+            match res {
+                Ok(jpeg) => {
+                    let n = jpeg.len();
+                    let bad_header = n < 2 || jpeg[0] != 0xff || jpeg[1] != 0xd8;
+                    let bad_footer = n < 2 || jpeg[n - 2] != 0xff || jpeg[n - 1] != 0xd9;
+                    if n < MIN_VALID_JPEG_BYTES || bad_header || bad_footer {
+                        warn!(
+                            "cvi-camera: invalid frame size={n} (attempt {}); retry",
+                            attempt + 1
+                        );
+                        // 瞬时错误：丢弃本帧重试。capture_recovering 自带 FID/EOF 连续性
+                        // 处理，这里直接进入下一轮循环。
+                        continue;
+                    }
+                    return Ok(jpeg);
+                }
+                Err(e) => {
+                    warn!(
+                        "cvi-camera: capture_recovering failed (attempt {}): {:?}; teardown + re-init",
+                        attempt + 1,
+                        e
+                    );
+                    if let Some(mut s) = self.session.take() {
+                        s.teardown();
+                    }
+                    // 循环回到 ensure_initialized 重新 open（热插回路径）。
+                }
+            }
+        }
+        warn!("cvi-camera: frame recovery exhausted (camera unplugged?)");
+        Err(AxError::Io)
     }
 
     fn ensure_jpu(&mut self) -> VfsResult<&mut JpuDecoder> {

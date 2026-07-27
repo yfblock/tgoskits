@@ -1,0 +1,14 @@
+[package]
+name = "yuv-fps"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[profile.release]
+lto = "thin"
+opt-level = "z"
+panic = "abort"
+debug = 0
+strip = true

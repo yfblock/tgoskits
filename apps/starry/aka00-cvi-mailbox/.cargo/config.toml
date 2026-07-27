@@ -1,0 +1,2 @@
+[target.riscv64gc-unknown-linux-musl]
+linker = "/home/yfblock/Env/riscv64-linux-musl-cross/bin/riscv64-linux-musl-gcc"

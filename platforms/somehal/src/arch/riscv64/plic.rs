@@ -44,6 +44,41 @@ pub fn systick_irq() -> rdrive::IrqId {
     RISCV_S_TIMER_IRQ.into()
 }
 
+/// 查询某 PLIC source 是否 pending（用于诊断邮箱中断是否真的到了 PLIC）。
+pub fn plic_is_pending(source: u32) -> Option<bool> {
+    let src = NonZeroU32::new(source)?;
+    with_plic("querying pending", |plic| plic.inner.is_pending(src))
+}
+
+/// PLIC 基址 VA（probe 时记录），供无锁诊断读寄存器用。
+static PLIC_BASE_VA: core::sync::atomic::AtomicUsize = core::sync::atomic::AtomicUsize::new(0);
+
+/// 诊断入口：供 starry-kernel（非 somehal 依赖方）用 `extern "C"` 调用。
+/// **无锁**——直接 volatile 读 PLIC pending 寄存器。
+/// 不要用 `with_plic`（取 rdrive 设备锁会挂死调用方），也不要新建
+/// `iomap(0x70000000)`（与 PLIC 驱动已有映射冲突同样会挂死）。
+/// 返回 1=pending, 0=not pending, 0xFFFF_FFFF=PLIC 未就绪。
+#[unsafe(no_mangle)]
+pub extern "C" fn somehal_plic_pending(source: u32) -> u32 {
+    let base = PLIC_BASE_VA.load(core::sync::atomic::Ordering::Acquire);
+    if base == 0 || source == 0 {
+        return 0xFFFF_FFFF;
+    }
+    // pending 位图 @ +0x1000，每 32 个 source 一个 word
+    let word = (base + 0x1000 + (source as usize / 32) * 4) as *const u32;
+    let bit = source % 32;
+    let v = unsafe { core::ptr::read_volatile(word) };
+    (v >> bit) & 1
+}
+
+/// 全局非缓存邮箱控制器 VA（由 starry_kernel 的 cvi_mailbox 设置，timer ISR 读取）。
+#[unsafe(no_mangle)]
+pub static MBOX_CTRL_VA: core::sync::atomic::AtomicUsize = core::sync::atomic::AtomicUsize::new(0);
+
+/// timer ISR 检测到的最新 frame_count（无锁，中断上下文安全）。
+#[unsafe(no_mangle)]
+pub static MBOX_LATEST_FC: core::sync::atomic::AtomicU32 = core::sync::atomic::AtomicU32::new(0);
+
 pub fn local_irq_set_enable(irq: rdrive::IrqId, enable: bool) -> Result<(), crate::irq::IrqError> {
     let raw: usize = irq.into();
     match raw {
@@ -116,13 +151,39 @@ impl Drop for ActiveIrq {
 
 pub fn begin_irq(raw: usize) -> Option<ActiveIrq> {
     match classify_riscv_trap(raw) {
-        RiscvTrapIrq::Timer => Some(ActiveIrq {
-            irq: RISCV_S_TIMER_IRQ.into(),
-            completion: Completion::None,
-        }),
+        RiscvTrapIrq::Timer => {
+            // 邮箱改用真·HW 中断（PLIC source 101）。这里的轮询后备暂时关掉，
+            // 否则无法分辨帧号是中断送来的还是定时器轮询出来的。
+            // 若需恢复后备方案，把 MBOX_POLL_FALLBACK 改回 true。
+            const MBOX_POLL_FALLBACK: bool = false;
+            if MBOX_POLL_FALLBACK {
+                static TCNT: core::sync::atomic::AtomicU32 =
+                    core::sync::atomic::AtomicU32::new(0);
+                let tn = TCNT.fetch_add(1, core::sync::atomic::Ordering::Relaxed);
+                if tn % 50 == 0 {
+                    let va = MBOX_CTRL_VA.load(core::sync::atomic::Ordering::Acquire);
+                    if va != 0 {
+                        let magic = unsafe { core::ptr::read_volatile(va as *const u32) };
+                        if magic == 0xC906_C906 {
+                            let fc = unsafe { core::ptr::read_volatile((va + 4) as *const u32) };
+                            MBOX_LATEST_FC.store(fc, core::sync::atomic::Ordering::Release);
+                        }
+                    }
+                }
+            }
+            Some(ActiveIrq {
+                irq: RISCV_S_TIMER_IRQ.into(),
+                completion: Completion::None,
+            })
+        }
         RiscvTrapIrq::Ipi => {
             unsafe {
                 sip::clear_ssoft();
+            }
+            static IPI_ONCE: core::sync::atomic::AtomicU32 = core::sync::atomic::AtomicU32::new(0);
+            let n = IPI_ONCE.fetch_add(1, core::sync::atomic::Ordering::Relaxed);
+            if n < 3 {
+                info!("cvi-irq: SSI (IPI) received #{}", n);
             }
             Some(ActiveIrq {
                 irq: RISCV_S_SOFT_IRQ.into(),
@@ -143,6 +204,12 @@ pub fn begin_irq(raw: usize) -> Option<ActiveIrq> {
 
 fn begin_external_irq() -> Option<ActiveIrq> {
     let source = claim_external_irq_source()?;
+    let s = source.get() as usize;
+    static SEEN: [core::sync::atomic::AtomicBool; 128] =
+        [const { core::sync::atomic::AtomicBool::new(false) }; 128];
+    if s < 128 && !SEEN[s].swap(true, core::sync::atomic::Ordering::SeqCst) {
+        info!("cvi-irq: claimed PLIC source {}", s);
+    }
     Some(ActiveIrq {
         irq: (source.get() as usize).into(),
         completion: Completion::Plic(source),
@@ -175,6 +242,56 @@ pub fn send_ipi_to_cpu(cpu_id: usize) {
     }
 }
 
+/// 诊断入口：无锁读 context 1(大核 S-mode) 的 enable 位。
+/// 返回 1=enabled, 0=disabled, 0xFFFF_FFFF=PLIC 未就绪。
+#[unsafe(no_mangle)]
+pub extern "C" fn somehal_plic_enabled_ctx1(source: u32) -> u32 {
+    let base = PLIC_BASE_VA.load(core::sync::atomic::Ordering::Acquire);
+    if base == 0 || source == 0 {
+        return 0xFFFF_FFFF;
+    }
+    // enable 位图 @ +0x2000 + context*0x80
+    let word = (base + 0x2000 + 0x80 + (source as usize / 32) * 4) as *const u32;
+    let bit = source % 32;
+    let v = unsafe { core::ptr::read_volatile(word) };
+    (v >> bit) & 1
+}
+
+/// 诊断入口：无锁读 context 1 的 threshold 与某 source 的 priority。
+/// 返回 `(threshold << 16) | priority`。
+#[unsafe(no_mangle)]
+pub extern "C" fn somehal_plic_thresh_prio(source: u32) -> u32 {
+    let base = PLIC_BASE_VA.load(core::sync::atomic::Ordering::Acquire);
+    if base == 0 {
+        return 0xFFFF_FFFF;
+    }
+    let thresh = unsafe {
+        core::ptr::read_volatile((base + 0x20_0000 + 0x1000) as *const u32)
+    };
+    let prio = unsafe { core::ptr::read_volatile((base + source as usize * 4) as *const u32) };
+    ((thresh & 0xFFFF) << 16) | (prio & 0xFFFF)
+}
+
+/// 诊断/止暴入口：无锁改 context 1(大核 S-mode) 的 enable 位。
+/// 供中断上下文调用——`with_plic` 会取 rdrive 锁，在 ISR 里用必然死锁。
+/// ISR 里关掉 source、任务上下文再打开，可以把中断速率钳死成"每次消费一个"，
+/// 无论外设那边 deassert 有没有生效都不会形成风暴。
+#[unsafe(no_mangle)]
+pub extern "C" fn somehal_plic_set_enable_ctx1(source: u32, on: u32) -> u32 {
+    let base = PLIC_BASE_VA.load(core::sync::atomic::Ordering::Acquire);
+    if base == 0 || source == 0 {
+        return 0xFFFF_FFFF;
+    }
+    let word = (base + 0x2000 + 0x80 + (source as usize / 32) * 4) as *mut u32;
+    let bit = 1u32 << (source % 32);
+    unsafe {
+        let v = core::ptr::read_volatile(word);
+        let nv = if on != 0 { v | bit } else { v & !bit };
+        core::ptr::write_volatile(word, nv);
+    }
+    0
+}
+
 fn probe_plic(probe: ProbeFdt<'_>) -> Result<(), OnProbeError> {
     let (info, dev) = probe.into_parts();
     let reg = info
@@ -194,6 +311,8 @@ fn probe_plic(probe: ProbeFdt<'_>) -> Result<(), OnProbeError> {
                 .ok_or_else(|| OnProbeError::other("PLIC MMIO mapping is null"))?,
         )
     };
+    // 记下 PLIC 基址 VA，供无锁诊断读 pending 位（见 somehal_plic_pending）。
+    PLIC_BASE_VA.store(mmio.as_ptr() as usize, core::sync::atomic::Ordering::Release);
     let ndev = info
         .node
         .as_node()
@@ -330,6 +449,14 @@ struct RiscvPlicIrqHandler {
 }
 
 impl RiscvPlicIrqHandler {
+    /// 无锁读 source 是否 pending（直接读 PLIC 寄存器，不走 with_plic mutex——
+    /// 可在 IRQ path 里安全调用）。
+    fn is_pending_raw(&self, source: u32) -> bool {
+        NonZeroU32::new(source)
+            .map(|s| self.inner.is_pending(s))
+            .unwrap_or(false)
+    }
+
     fn current_context(&self) -> Option<usize> {
         current_context(&self.context_by_cpu)
     }
@@ -394,9 +521,21 @@ impl RiscvPlic {
             return Err(crate::irq::IrqError::InvalidIrq);
         }
         self.enabled_by_source[source.get() as usize] = true;
-        self.inner.set_priority(source, DEFAULT_PRIORITY);
+        // 给 source 101(邮箱) 最高优先级 7，避免被 cvsd(source 36, 117/s, priority 1) 饥饿。
+        // PLIC 同优先级下选 source ID 最小的——36 < 101，所以 101 必须比 36 高才能被交付。
+        let priority = if source.get() == 101 { 7 } else { DEFAULT_PRIORITY };
+        self.inner.set_priority(source, priority);
         let current = current_context(&self.context_by_cpu);
-        for context in self.contexts_for_source(source) {
+        let ctxs = self.contexts_for_source(source);
+        info!(
+            "cvi-irq: enable_source {} sources_max={} current_ctx={:?} ctxs={:?} prio={}",
+            source.get(),
+            self.sources,
+            current,
+            ctxs,
+            priority
+        );
+        for context in ctxs {
             self.inner.enable(source, context);
         }
         if current.is_none() {

@@ -1,0 +1,13 @@
+[package]
+name = "mbmon"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# 独立 workspace，用宿主 stable + riscv64-linux-musl 交叉链接（与 cvi-camera-bench 同）。
+[workspace]
+
+[profile.release]
+lto = "thin"
+opt-level = "z"
+panic = "abort"

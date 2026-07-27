@@ -264,6 +264,12 @@ impl PlicIrqHandler {
         NonZeroU32::new(self.regs().contexts[ctx].interrupt_claim_complete.get())
     }
 
+    /// Read whether `source` is pending (lock-free, safe from IRQ context).
+    pub fn is_pending(&self, source: NonZeroU32) -> bool {
+        let (group, field) = parse_group_and_field(source.get() as usize);
+        self.regs().interrupt_pending[group].read(field) != 0
+    }
+
     /// Mark that interrupt identified by `source` is completed in `context`.
     pub fn complete(&self, ctx: usize, source: NonZeroU32) {
         self.regs().contexts[ctx]

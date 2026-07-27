@@ -37,7 +37,9 @@ pub mod tpu;
 pub mod tty;
 
 #[cfg(feature = "sg2002")]
-mod cvi_usb_camera;
+mod cvi_mailbox;
+#[cfg(feature = "sg2002")]
+mod cvi_yuv;
 
 use alloc::{format, sync::Arc};
 use core::{
@@ -96,6 +98,7 @@ pub(super) fn request_shared_disabled(
 ) -> Result<IrqRegistration, ax_runtime::hal::irq::IrqError> {
     let request = ax_runtime::hal::irq::IrqRequest::new(handler)
         .share_mode(ax_runtime::hal::irq::ShareMode::Shared)
+        .affinity(ax_runtime::hal::irq::IrqAffinity::Fixed(ax_runtime::hal::irq::CpuId(0)))
         .auto_enable(ax_runtime::hal::irq::AutoEnable::No);
     ax_runtime::hal::irq::request_irq(irq, request).map(IrqRegistration::new)
 }
@@ -699,12 +702,21 @@ fn builder(fs: Arc<SimpleFs>) -> DirMaker {
             ),
         );
         root.add(
-            "cvi-usb-camera0",
+            "cvi-mailbox",
             Device::new(
                 fs.clone(),
                 NodeType::CharacterDevice,
-                DeviceId::new(10, 202),
-                Arc::new(cvi_usb_camera::CviCamera::new()),
+                DeviceId::new(10, 203),
+                cvi_mailbox::CviMailbox::new_arc(),
+            ),
+        );
+        root.add(
+            "cvi-yuv",
+            Device::new(
+                fs.clone(),
+                NodeType::CharacterDevice,
+                DeviceId::new(10, 204),
+                Arc::new(cvi_yuv::CviYuv::new()),
             ),
         );
     }

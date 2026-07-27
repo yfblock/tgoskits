@@ -97,6 +97,32 @@ struct ProbeBuf {
     cursor: usize,
 }
 
+/// 小核运行统计块（只读）。布局须与 `bare-metal/src/stats.rs` 的 `Stats` 一致。
+/// 用途：主循环 `uvc_capture_one_frame` 的 Err 分支原本静默，抓帧持续失败时
+/// 只表现为 frame_count 冻结，靠这块计数器才能分清卡在 USB 还是 JPU。
+#[repr(C)]
+#[derive(Clone, Copy, Default)]
+struct SmallCoreStats {
+    magic: u32,
+    loop_iters: u32,
+    cap_ok: u32,
+    cap_err: u32,
+    jpu_ok: u32,
+    jpu_err: u32,
+    jpu_reset: u32,
+    stage: u32,
+    /// JPU `decode()` 内部步号（sg200x_bsp::jpu::trace::step）。
+    jpu_trace: u32,
+    /// 小核 `rdtime` 低 32 位（标定 timebase 用）。
+    time_lo: u32,
+    /// JPU 轮询轮次 / 轮询时刻——主循环被 JPU 堵住时只有这两个还在动。
+    poll_count: u32,
+    poll_time: u32,
+}
+
+const STATS_PA: usize = 0x8FFF_E040;
+const STATS_MAGIC: u32 = 0x5354_4154;
+
 pub struct CviMailbox {
     dram_va: AtomicUsize,
     hw_va: AtomicUsize,
@@ -143,7 +169,15 @@ impl CviMailbox {
     }
 
     fn dram_va(&self) -> Option<usize> {
-        Self::lazy_iomap(&self.dram_va, DRAM_MBOX_PA, DRAM_MBOX_SIZE)
+        // 映射整页：统计块在 0x8FFFE040，和邮箱(0x8FFFE000)同页，一次映射两个都能读。
+        Self::lazy_iomap(&self.dram_va, DRAM_MBOX_PA, 0x1000)
+    }
+
+    /// 读小核统计块（magic 不对说明小核还没起来）。
+    fn read_stats(&self) -> Option<SmallCoreStats> {
+        let va = self.dram_va()? + (STATS_PA - DRAM_MBOX_PA);
+        let s = unsafe { core::ptr::read_volatile(va as *const SmallCoreStats) };
+        (s.magic == STATS_MAGIC).then_some(s)
     }
 
     fn hw_va(&self) -> Option<usize> {
@@ -227,25 +261,23 @@ impl CviMailbox {
             fn somehal_plic_enabled_ctx1(source: u32) -> u32;
         }
         let hw = self.hw_va.load(Ordering::Acquire);
-        let (st, en, st2, en2) = if hw != 0 {
+        let (st, en) = if hw != 0 {
             unsafe {
                 (
                     // CPU1(大核) int 块 @ 0x10+1*16 = 0x20: clr+0, mask+4, st+8, raw+12
                     core::ptr::read_volatile((hw + 0x28) as *const u32),
                     core::ptr::read_volatile((hw + 0x04) as *const u32),
-                    // CPU2(小核) int 块 @ 0x10+2*16 = 0x30: st @ +8 = 0x38
-                    core::ptr::read_volatile((hw + 0x38) as *const u32),
-                    core::ptr::read_volatile((hw + 0x08) as *const u32),
                 )
             }
         } else {
-            (0xffff_ffff, 0xffff_ffff, 0xffff_ffff, 0xffff_ffff)
+            (0xffff_ffff, 0xffff_ffff)
         };
         let mb = self.read_dram().unwrap_or_default();
+        let sc = self.read_stats().unwrap_or_default();
         let mut s = ProbeStr::new();
         let _ = write!(
             s,
-            "S2B: isr={} fc={} st={:#x} en={:#x} pend101={} en101={} | B2S: tx={} last={:#x} st2={:#x} en2={:#x} rmagic={:#x} rdata={:#x} rseq={}\n",
+            "S2B: isr={} fc={} st={:#x} en={:#x} pend101={} en101={} | B2S: tx={} last={:#x} rdata={:#x} rseq={} | C906L: loop={} cap_ok={} cap_err={} jpu_ok={} jpu_err={} rst={} stage={} trace={} t={} pc={} pt={}\n",
             self.isr_count.load(Ordering::Relaxed),
             mb.frame_count,
             st,
@@ -254,11 +286,19 @@ impl CviMailbox {
             unsafe { somehal_plic_enabled_ctx1(101) },
             self.tx_count.load(Ordering::Relaxed),
             self.last_tx.load(Ordering::Relaxed),
-            st2,
-            en2,
-            mb.reply_magic,
             mb.reply_data,
             mb.reply_seq,
+            sc.loop_iters,
+            sc.cap_ok,
+            sc.cap_err,
+            sc.jpu_ok,
+            sc.jpu_err,
+            sc.jpu_reset,
+            sc.stage,
+            sc.jpu_trace,
+            sc.time_lo,
+            sc.poll_count,
+            sc.poll_time,
         );
         (s.buf, s.len)
     }

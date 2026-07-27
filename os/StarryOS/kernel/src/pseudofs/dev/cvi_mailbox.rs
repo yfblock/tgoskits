@@ -37,7 +37,15 @@ const HW_MBOX_PA: usize = 0x0190_0000;
 const HW_MBOX_SIZE: usize = 0x1000;
 const HW_MBOX_CTX_OFF: usize = 0x400;
 const RECEIVE_CPU: usize = 1; // C906B 大核自己——邮箱寄存器索引 = 接收方 CPU
+/// 发给小核时索引用小核的 CPU 号（cvi_mailbox.h: SEND_TO_CPU = 2 = C906L）。
+const SEND_TO_CPU: usize = 2;
+/// 小核→大核用 slot 0（本设备 ISR 收），大核→小核用 slot 1（write_at 发）。
+///
+/// `mbox_set` 是**全局**寄存器，由 `cpu_mbox_en[cpu]` 决定谁收。两个方向必须
+/// 错开 slot：同 slot 会让自己置的 en bit 把对方的 mbox_set 也收进来，
+/// 而且 0x400 的 context buffer 同一 slot 的 payload 会被覆盖。
 const SLOT: usize = 0;
+const SLOT_B2S: usize = 1;
 
 pub const MAILBOX_MAGIC: u32 = 0xC906_C906;
 pub const REPLY_MAGIC: u32 = 0x52504C59;
@@ -98,6 +106,9 @@ pub struct CviMailbox {
     isr_count: core::sync::atomic::AtomicU32,
     /// 任务侧最后确认到的 isr_count（用于判断"中断跑飞了没人消费"）。
     isr_ack: core::sync::atomic::AtomicU32,
+    /// 大核→小核发送次数 / 最后发出的消息（验证往返用）。
+    tx_count: core::sync::atomic::AtomicU32,
+    last_tx: core::sync::atomic::AtomicU32,
     /// 小缓冲读的流式诊断缓存。
     probe_buf: ax_sync::Mutex<ProbeBuf>,
 }
@@ -117,6 +128,8 @@ impl CviMailbox {
             latest_frame: core::sync::atomic::AtomicU32::new(0),
             isr_count: core::sync::atomic::AtomicU32::new(0),
             isr_ack: core::sync::atomic::AtomicU32::new(0),
+            tx_count: core::sync::atomic::AtomicU32::new(0),
+            last_tx: core::sync::atomic::AtomicU32::new(0),
             probe_buf: ax_sync::Mutex::new(ProbeBuf {
                 buf: [0; 256],
                 len: 0,
@@ -203,49 +216,49 @@ impl CviMailbox {
         n
     }
 
-    /// 采样一次诊断并格式化成定长 ASCII 行。
-    /// 判定小核 notify 触发的邮箱中断卡在哪一环：
-    /// 邮箱控制器已置位(st) → PLIC 已 pending(pend101) → ISR 已跑(isr)。
+    /// 采样一次诊断并格式化成定长 ASCII 行（双向）。
+    /// 小核→大核：`isr` 应与 `fc` 同步增长。
+    /// 大核→小核：`tx` 是发送次数，`rmagic/rdata/rseq` 是小核 ISR 回写的 reply
+    /// 字段——`rdata` 等于最后发出的 `last_tx`、`rseq` 随 `tx` 增长即往返成功。
     fn probe_format(&self) -> ([u8; 256], usize) {
         use core::fmt::Write;
         unsafe extern "C" {
             fn somehal_plic_pending(source: u32) -> u32;
             fn somehal_plic_enabled_ctx1(source: u32) -> u32;
-            fn somehal_plic_thresh_prio(source: u32) -> u32;
         }
         let hw = self.hw_va.load(Ordering::Acquire);
-        let (st, raw, mask, en, mstatus) = if hw != 0 {
+        let (st, en, st2, en2) = if hw != 0 {
             unsafe {
                 (
-                    // CPU1 邮箱 int 块 @ 0x10+1*16 = 0x20: clr+0, mask+4, st+8, raw+12
+                    // CPU1(大核) int 块 @ 0x10+1*16 = 0x20: clr+0, mask+4, st+8, raw+12
                     core::ptr::read_volatile((hw + 0x28) as *const u32),
-                    core::ptr::read_volatile((hw + 0x2c) as *const u32),
-                    core::ptr::read_volatile((hw + 0x24) as *const u32),
                     core::ptr::read_volatile((hw + 0x04) as *const u32),
-                    core::ptr::read_volatile((hw + 0x64) as *const u32),
+                    // CPU2(小核) int 块 @ 0x10+2*16 = 0x30: st @ +8 = 0x38
+                    core::ptr::read_volatile((hw + 0x38) as *const u32),
+                    core::ptr::read_volatile((hw + 0x08) as *const u32),
                 )
             }
         } else {
-            (0xffff_ffff, 0xffff_ffff, 0xffff_ffff, 0xffff_ffff, 0xffff_ffff)
+            (0xffff_ffff, 0xffff_ffff, 0xffff_ffff, 0xffff_ffff)
         };
-        let fc = self.read_dram().map(|m| m.frame_count).unwrap_or(0);
-        let tp = unsafe { somehal_plic_thresh_prio(101) };
+        let mb = self.read_dram().unwrap_or_default();
         let mut s = ProbeStr::new();
         let _ = write!(
             s,
-            "isr={} fc={} st={:#x} raw={:#x} mask={:#x} en={:#x} mst={:#x} pend101={} pend61={} en101={} thr={} prio={}\n",
+            "S2B: isr={} fc={} st={:#x} en={:#x} pend101={} en101={} | B2S: tx={} last={:#x} st2={:#x} en2={:#x} rmagic={:#x} rdata={:#x} rseq={}\n",
             self.isr_count.load(Ordering::Relaxed),
-            fc,
+            mb.frame_count,
             st,
-            raw,
-            mask,
             en,
-            mstatus,
             unsafe { somehal_plic_pending(101) },
-            unsafe { somehal_plic_pending(61) },
             unsafe { somehal_plic_enabled_ctx1(101) },
-            tp >> 16,
-            tp & 0xFFFF,
+            self.tx_count.load(Ordering::Relaxed),
+            self.last_tx.load(Ordering::Relaxed),
+            st2,
+            en2,
+            mb.reply_magic,
+            mb.reply_data,
+            mb.reply_seq,
         );
         (s.buf, s.len)
     }
@@ -362,7 +375,42 @@ impl DeviceOps for CviMailbox {
         Ok(DRAM_MBOX_SIZE)
     }
 
+    /// 写 `/dev/cvi-mailbox` = 给小核发一条 4 字节消息（大核→小核）。
+    /// 触发小核 PLIC source 61（`MBOX_INT_C906_2ND`），小核 ISR 会把消息
+    /// 回显到 DRAM 邮箱的 reply 字段，读回即证明往返成功。
     fn write_at(&self, buf: &[u8], _offset: u64) -> VfsResult<usize> {
+        // 0 长度写不发消息：shell 的 `> /dev/cvi-mailbox` 重定向会多打一次空 write，
+        // 补零发出去会变成一条伪造的 msg=0（表现为日志里夹 [MB-RX] msg=0x0）。
+        if buf.is_empty() {
+            return Ok(0);
+        }
+        let hw = self.hw_va.load(Ordering::Acquire);
+        if hw == 0 {
+            return Err(ax_errno::AxError::Io);
+        }
+        // 取前 4 字节当消息；不足则补 0。文本也能发（`echo hi` → 0x0a6968）。
+        let mut m = [0u8; 4];
+        let n = buf.len().min(4);
+        m[..n].copy_from_slice(&buf[..n]);
+        let msg = u32::from_le_bytes(m);
+        unsafe {
+            // payload 放 context slot 1（B2S），和小核→大核的 slot 0 错开
+            core::ptr::write_volatile(
+                (hw + HW_MBOX_CTX_OFF + SLOT_B2S * 8) as *mut u32,
+                msg,
+            );
+            // 索引用**接收方** CPU 号：小核 = CPU2
+            let bit = 1u32 << SLOT_B2S;
+            core::ptr::write_volatile((hw + 0x10 + SEND_TO_CPU * 16) as *mut u32, bit);
+            core::ptr::write_volatile((hw + 0x10 + SEND_TO_CPU * 16 + 4) as *mut u32, 0);
+            let en = (hw + SEND_TO_CPU * 4) as *mut u32;
+            let old = core::ptr::read_volatile(en);
+            core::ptr::write_volatile(en, old | bit);
+            // 全局 mbox_set 触发
+            core::ptr::write_volatile((hw + 0x60) as *mut u32, bit);
+        }
+        self.tx_count.fetch_add(1, Ordering::Relaxed);
+        self.last_tx.store(msg, Ordering::Relaxed);
         Ok(buf.len())
     }
 

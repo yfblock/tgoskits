@@ -26,10 +26,10 @@ pub struct Mailbox {
     pub _pad: u32,
 }
 
-const DRAM_MBOX_PA: usize = 0x8FFF_E000;
+const DRAM_MBOX_PA: usize = 0x9004_0000;
 const DRAM_MBOX_SIZE: usize = core::mem::size_of::<Mailbox>();
 
-/// YUV 共享缓冲区物理地址（dtb 预留区 0x8FE00000，2MB）。
+/// YUV 共享缓冲区物理地址（dtb 预留区 0x8FE00000，4MB）。
 const YUV_BUF_PA: usize = 0x8FE0_0000;
 const YUV_BUF_SIZE: usize = 512 * 1024;
 
@@ -120,7 +120,7 @@ struct SmallCoreStats {
     poll_time: u32,
 }
 
-const STATS_PA: usize = 0x8FFF_E040;
+const STATS_PA: usize = 0x9004_0040;
 const STATS_MAGIC: u32 = 0x5354_4154;
 
 pub struct CviMailbox {
@@ -277,7 +277,7 @@ impl CviMailbox {
         let mut s = ProbeStr::new();
         let _ = write!(
             s,
-            "S2B: isr={} fc={} st={:#x} en={:#x} pend101={} en101={} | B2S: tx={} last={:#x} rdata={:#x} rseq={} | C906L: loop={} cap_ok={} cap_err={} jpu_ok={} jpu_err={} rst={} stage={} trace={} t={} pc={} pt={}\n",
+            "S2B: isr={} fc={} st={:#x} en={:#x} pend101={} en101={} | B2S: tx={} last={:#x} rdata={:#x} rseq={} | C906L: loop={} cap_ok={} cap_err={} jpu_ok={} jpu_err={} rst={} stage={} trace={} slot={} t={} pc={} pt={}\n",
             self.isr_count.load(Ordering::Relaxed),
             mb.frame_count,
             st,
@@ -296,6 +296,7 @@ impl CviMailbox {
             sc.jpu_reset,
             sc.stage,
             sc.jpu_trace,
+            (mb.flags >> 2) & 1,
             sc.time_lo,
             sc.poll_count,
             sc.poll_time,
